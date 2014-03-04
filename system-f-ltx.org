@@ -1,0 +1,194 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Polymorphism
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+#+LATEX_HEADER: \newcommand{\ty}[1]{\ensuremath{\mathbf{#1}}}
+
+* Untyped $\lamdba$-Calculus
+  - model computation with functions
+  - simple structure:
+    \begin{align*}
+       e ::&= x & \text{variable}\\
+           &|\quad \lambda x. e & \text{abstraction} \\
+           &|\quad e_1 e_2 & \text{application}
+      \end{align*}
+  
+* $\lamdba$-Calculus Evaluation
+  - key idea: application by substitution
+  $$
+  (\lambda x. e)s \Rightarrow [s/x]e
+  $$
+  - $[s/x]e$ = “replace $x$ with $s$ in $e$ ”
+  - handy mnemonic (thanks Sergei): multiplying by $\frac{s}{x}$ and canceling
+  - remember to worry about “capturing”
+
+* Simple Types
+  - extend $\lamdba$-calculus with *types*
+  - base types
+    - $\ty{unit}$, $\ty{int}$... etc
+  - function types
+    - $\ty{int} \to \ty{int}$
+    - $(\ty{unit} \to \ty{unit}) \to \ty{int} \to \ty{int}$
+
+* Syntax: Terms and Types
+    \begin{align*}
+       \tau ::&= \ty{unit} & \text{unit type}\\
+           &|\quad \tau_1 \to \tau_2 & \text{function types}\\
+      e ::&= () & \text{unit value}\\
+          &|\quad x & \text{variable}\\
+          &|\quad \lambda x:\tau. e & \text{abstraction}\\
+          &|\quad e_1 e_2 & \text{application}
+      \end{align*}
+
+* Typing Rules
+  - functions:
+  $$ \frac{\Gamma, x : \tau \vdash e : \tau'}{\Gamma \vdash (\lambda
+  x:\tau. e) : \tau \to \tau'} $$
+  - application:
+  $$ \frac{\Gamma \vdash e_1 : \tau \to \tau' \quad \Gamma \vdash e_2 : \tau}{\Gamma
+  \vdash e_1 e_2 : \tau'} $$
+
+* Problem: Repetition
+  - every type has *an* identity function: $$\lambda x : \tau. x$$
+  - *different* for every possible $\tau$
+  $$id_{\ty{unit}}, id_{\ty{int}}, id_{\ty{int \to int}} \ldots$$
+  - a single term can have *multiple* incompatible types
+
+* Solution: System F
+  - add polymorphism to our types
+    - types parameterized by other types
+  - what is a “parameterized term”x?
+    - $\lamdba$ abstraction (function)
+  - so: function *for* types
+  - $id$ would take a type $\tau$ and give you $id_\tau$ 
+
+* New Syntax
+    \begin{align*}
+       \tau ::&= \ty{unit} & \text{unit type}\\
+           &|\quad \alpha & \text{type variable}\\
+           &|\quad \tau_1 \to \tau_2 & \text{function types}\\
+           &|\quad \forall\alpha.\tau & \text{type quantification}\\
+      e ::&= () & \text{unit value}\\
+          &|\quad x & \text{variable}\\
+          &|\quad \lambda x:\tau. e & \text{abstraction}\\
+          &|\quad e_1 e_2 & \text{application}\\
+          &|\quad \Lambda\alpha. e & \text{type abstraction}\\
+          &|\quad e_1[\tau] & \text{type application}
+      \end{align*}
+
+* Type Variables
+  - behave mostly like value-level variables
+  - type variables can be *free* or *bound*
+    - free variables are not defined inside expression
+  - *substitute* types for type variables:
+    - $[\sigma/\alpha]\tau$ means “replace \alpha with \sigma in type \tau”
+
+* Evaluation
+  - simply typed $\lamdba$-calculus---just like untyped:
+  $$ (\lambda x : \tau. e)s \Rightarrow [s/x]e $$
+  - one more rule, for type abstractions:
+  $$ (\Lambda\alpha. e)[\tau] \Rightarrow [\tau/\alpha]e $$
+  - *type-level* version of the first rule
+  - reduction is still *very simple*
+
+
+* Typing Rules
+  - $\Gamma$ now covers both type and term variables
+  - basic rules just like STLC
+  - new rules:
+  $$ \frac{\Gamma, \alpha \vdash x : \tau}{\Gamma \vdash \Lambda\alpha. x :
+  \forall\alpha. \tau} $$
+  $$ \frac{\Gamma \vdash x : \forall\alpha. \tau}{\Gamma \vdash
+  x[\sigma] : ([\sigma/\alpha]\tau)} $$
+  - compare to normal abstraction and application
+
+* Running Example: id
+  - function:
+     \begin{align*}
+       &id : \forall\alpha. \alpha \to \alpha \\
+       &id = \Lambda\alpha.\lambda (x:\alpha). x \\
+       \end{align*}
+  - reduction:
+     \begin{align*}
+                   & (\Lambda\alpha.\lambda (x:\alpha). x)[\ty{unit}] () \\
+       \Rightarrow & (\lambda (x:\ty{unit}). x) () \\
+       \Rightarrow & () \\
+       \end{align*}
+
+* Another Example: app
+  - Untyped term, impossible in STLC:
+    $$\lambda f. \lambda x. f x$$
+  - we can type function application:
+     \begin{align*}
+       &app : \forall\alpha. \forall\beta. (\alpha \to \beta) \to \alpha \to \beta\\
+       &app = \Lambda\alpha. \Lambda\beta.\lambda (f : \alpha \to \beta). \lambda (x : \alpha). f x
+     \end{align*} 
+   - Haskell =$=, OCaml =<|=: really just $id$ with restricted type
+
+* Interesting Example: self application
+  - We cannot even *express* self-application in STLC
+  $$ \lambda f. f f $$
+  - but we *can* with polymorphism:
+     \begin{align*}
+       & self : (\forall\alpha. \alpha \to \alpha) \to (\forall \beta. \beta \to \beta) \\
+       & self = \lambda (f : \forall\alpha. \alpha \to \alpha). f[\forall\beta. \beta \to \beta] f
+     \end{align*} 
+  - however, still no infinite loops
+
+* Data Structures
+  - consider untyped booeans:
+     \begin{align*}
+       true &= \lambda x. \lambda y. x \\
+       false &= \lambda x. \lambda y. y
+     \end{align*} 
+  - typed version:
+     \begin{align*}
+       true, false &: \forall \alpha. \alpha \to \alpha \to \alpha \\
+       true &= \Lambda\alpha. \lambda (x : \alpha). \lambda (y : \alpha). x \\
+       false &= \Lambda\alpha. \lambda (x : \alpha). \lambda (y : \alpha). y
+     \end{align*} 
+  - types prevent malformed “booleans”
+
+* Products
+  - easy in untyped $\lamdba$; added to STLC explicitly:
+    \begin{align*}
+      \sigma \times \tau &: \forall\alpha. (\sigma \to \tau \to \alpha) \to \alpha \\
+      \langle s, t\rangle &= \Lambda\alpha.\lambda (f : \sigma \to \tau \to \alpha). f s t \\
+      fst &: \sigma \times \tau \to \sigma \\
+      fst &= \lambda (p : \sigma \times \tau). p[\sigma](\lambda s : \sigma. \lambda t : \tau. s)
+    \end{align*} 
+  - we can do sum types similarly
+
+* Type Inference
+  - this is a handy system
+  - unfortunately, *type inference is undecideable*
+  - we can make type inferrable with a simple restriction:
+    - *prenex form*: all quantifiers at the front
+    - types where all foralls are left of parentheses
+  - Haskell, ML... etc do this
+
+* Hindley-Milner
+  - important insight: *most general type*
+  - every untyped term has a *unique* most general type
+  $$ \lambda x. x : \forall\alpha. \alpha \to \alpha $$
+  - we can easily model this with logic programming
+    - faster algorithms exist as well
+
+* Curry-Howard
+  - System F maps to 2nd-order logic
+    - quantifiers *only* over predicates
+  - predicate logic with $\forall$ but no “domains”
+    - no external sets to quantify over
+  - consider: $\Lambda$ defines a function from types to values
+    - but not vice-versa
+
+* Experimenting
+  - Standard Haskell, ML... etc: prenex form
+  - Haskell with =RankNTypes=: everything we've covered
+    - along with recursion and recursive types
+  - OCaml can also do the equivalent of =RankNTypes= but awkwardly

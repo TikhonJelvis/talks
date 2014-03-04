@@ -1,0 +1,194 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Dependent Types
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+$$ \newcommand{\ty}[1]{\mathbf{#1}} $$
+$$ \newcommand{\N}[0]{\mathbb{N}} $$
+$$ \newcommand{\kd}[0]{\ty{\star}} $$
+
+* Untyped λ-calculus
+  - terms: functions (λ), variables, application
+  $$\begin{align}
+       e ::&= x & \text{variable}\\
+           &|\quad \lambda x. e & \text{abstraction} \\
+           &|\quad e_1 e_2 & \text{application}
+      \end{align}$$
+  - evaluation via substitution:
+  $$
+  (\lambda x. e)s \Rightarrow [s/x]e
+  $$
+
+* Simply typed λ-calculus
+  - extend untyped λ-calculus with “simple” types
+  - simple: atomic “base” types + functions
+    - base: $\ty{unit}$, $\ty{int}, \ldots$
+    - function: $\ty{unit} \to \ty{unit}, \ldots$
+  - not Turing-complete any more
+    - safety at the expense of expressiveness
+
+* Simply typed λ-calculus
+  - new type-level syntax
+  $$\begin{align}
+       \tau ::&= \ty{unit} & \text{unit type}\\
+           &|\quad \tau_1 \to \tau_2 & \text{function types}\\
+      \newline
+
+      e ::&= () & \text{unit value}\\
+          &|\quad x & \text{variable}\\
+          &|\quad \lambda x:\tau. e & \text{abstraction}\\
+          &|\quad e_1 e_2 & \text{application}
+      \end{align}$$
+  - evaluation is unchanged
+
+* System F
+  - parametric polymorphism
+  - allow “families” of simply typed terms
+    - polymorphic $id$ is a family of $id_{\ty{unit}}, id_{\ty{int}},
+      id_{\ty{int \to int}}, \ldots$
+  - a “family” is a function from types to values
+
+* System F
+    $$\begin{align}
+       \tau ::&= \ty{unit} & \text{unit type}\\
+           &|\quad \alpha & \text{type variable}\\
+           &|\quad \tau_1 \to \tau_2 & \text{function types}\\
+           &|\quad \forall\alpha.\tau & \text{type quantification}\\
+      \newline
+
+      e ::&= () & \text{unit value}\\
+          &|\quad x & \text{variable}\\
+          &|\quad \lambda x:\tau. e & \text{abstraction}\\
+          &|\quad e_1 e_2 & \text{application}\\
+          &|\quad \Lambda\alpha. e & \text{type abstraction}\\
+          &|\quad e_1[\tau] & \text{type application}
+      \end{align}$$
+
+* Type abstractions
+  - type functions: $\Lambda\alpha. \tau$
+  - qualified types: $\forall\alpha. \tau$
+  - type application: $e_1[\tau]$
+  - example:
+    $$ \begin{align}
+       &id : \forall\alpha. \alpha \to \alpha \\
+       &id = \Lambda\alpha.\lambda (x:\alpha). x \\
+       \end{align}$$
+
+* Type abstractions
+  - hey, these are like normal λs, but *simpler*
+  - functions: $\lambda (x : \tau). e$
+  - function types: $\tau_1 \to \tau_2$
+  - function application: $e_1\ e_2$
+
+* Unifying types and terms
+  - let's combine these two *similar* constructs
+  - *everything is a term*
+    - values can appear in types
+    - no more clean type/value separation
+
+* Why?
+  - System F: repetition over different *types*
+    - $id_{\ty{unit}}, id_{\ty{int}}, id_{\ty{int \to int}}, \ldots$    
+  - consider other repetitive patterns:
+    - $\ty{int}, \ty{int \times int}, \ty{int \times int \times int},
+      \ldots$
+    - $\ty{vector}\ 1, \ty{vector}\  2, \ty{vector}\  3, \ldots$
+  - we would love to write 
+    $$ dot : \ty{vector}\ n \times \ty{vector}\ n \to int $$
+
+* Dependent types
+  - no type syntax: $e$ and $\tau$ are *expressions*
+  $$\begin{align}
+  e, \tau ::&= () & \text{unit value}\\
+   &|\quad \ty{unit} & \text{unit type}\\
+   &|\quad \ty{\star} & \text{type of types}\\
+   &|\quad x & \text{variable}\\
+   &|\quad \forall (x:\tau). \tau' & \text{dependent function}\\
+   &|\quad e_1\ e_2 & \text{application}\\
+   &|\quad \lambda (x:\tau). e & \text{abstraction}\\
+  \end{align}
+  $$
+  - $\forall (x:\tau). \tau'$ replaces function arrows ($\to$)
+
+* Typing rules: types of types
+  - What type does $\ty{\star}$ have?
+    - simple (but dubious) answer: $\ty{\star} : \ty{\star}$
+    - more interesting: infinite hierarchy $\ty{\star_1} :
+      \ty{\star_2} : \ty{\star_3} : \ldots$
+  - let's go with simplicity:
+    $$ \frac{}{\Gamma \vdash \ty{\star} : \ty{\star}} $$
+
+* Typing rules: dependent abstractions
+  - dependent abstractions are terms too:
+  $$ \frac{\Gamma \vdash \tau : \ty{\star}\quad \Gamma, x : \tau
+  \vdash \tau' : \ty{\star}}{\Gamma \vdash (\forall (x : \tau). \tau')
+  : \ty{\star}} $$
+  - key idea: $\tau'$ can *depend on* $x$
+  - $\forall (x : \tau). \tau'$ is like a function type $\tau \to
+    \tau'$ except also parametrized by a value $x$
+    - alternative syntax: $(x : \tau) \to \tau'$
+
+* Typing rules: application
+  - remember: the new function type is a $\forall$:
+  $$ \frac{\Gamma \vdash e_1 : \forall (x : \tau). \tau' \quad \Gamma
+  \vdash e_2 : \tau}{\Gamma \vdash e_1\ e_2 : [e_2/x]\tau'} $$
+  - substitution happening at the *type level*
+    - basically like enabling the type system with evaluation
+
+* Typing rules: type equivalence
+  - since types are terms, we need to evaluate them to check for
+    equivalence
+  - read $e_1 \Downarrow e_2$ as “$e_1$ evaluates to $e_2$ ”
+  $$ \frac{\Gamma \vdash e : \tau_1 \quad \tau_1 \Downarrow \tau \quad
+  \tau_2 \Downarrow \tau}{\Gamma \vdash e : \tau_2} $$
+  - consider: $\ty{vector}\ 5$ vs $\ty{vector}\ (2 + 3)$ vs $\ty{vector}\ (3 + 2)$
+  - again: evaluation in type checking
+
+* Typing rules: abstractions
+  - pretty straightforward: $\to$ just becomes $\forall$:
+  $$ \frac{\Gamma, x : \tau \vdash e : \tau'}{\Gamma \vdash (\lambda (x : \tau). e) : \forall (x : \tau). \tau'} $$
+  - note: $x$ can occur in body *and* type
+
+* Example: id
+  - from System F:
+    $$ \begin{align}
+       &id : \forall\alpha. \alpha \to \alpha \\
+       &id = \Lambda\alpha.\lambda (x:\alpha). x \\
+       \end{align}$$
+  - with dependent types:
+    $$ \begin{align}
+       &id : \forall(\alpha : \ty{\star}). (\forall (x : \alpha). \alpha) \\
+       &id = \lambda (\alpha : \ty{\star}). (\lambda (x : \alpha). x) \\
+       \end{align}$$
+  - the System F $\Lambda$ has become a normal $\lambda$ !
+
+* Nicer notation
+  - often, we just want normal functions
+    - *ignore* argument $x$
+  - special syntax: $\to$
+  - consider $id$: $\forall (\alpha : \kd). \alpha \to \alpha$
+  - no extra name ($x$) introduced
+
+* Example: vectors
+  - assume built-in numbers: $\N : \ty{\star}$ and $n : \N$
+  - vectors indexed by length: $$\forall (\alpha : \ty{\star}). \forall
+    (n : \N). \ty{vec}\ \alpha\ n$$
+  - constructors:
+  $$ \begin{align}
+  &Nil : \forall (\alpha : \kd). \ty{vec}\ \alpha\ 0\\
+  &Cons : \forall (\alpha : \kd). \forall (n : \N). \alpha \to\\
+  & \ty{vec}\ \alpha\ n \to \ty{vec}\ \alpha\ (n + 1) \\
+  \end{align}
+  $$
+
+* Example: zero vector
+  - we can have sized vectors in Haskell
+    - numbers at the type level—redundant
+  - however, Haskell can't do this:
+  $$ zero : \forall(n : \N). \ty{vec}\ \ty{int}\ n $$
+  - creates a vector of length $n$, full of $0$ s
+  - argument $n$ is part of result type!
