@@ -1,0 +1,272 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Analyzing Programs with SMT Solvers
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+* SAT, SMT, SBV... oh my
+  - acronyms are fun
+    - nested ones doubly so
+  - *SAT*: Boolean satisfiability problem
+    - classic NP-complete problem
+  - *SMT*: SAT modulo theories
+  - *SBV*: SMT-based verification
+    - Haskell library by Levent Erkok
+
+* I can't get no...
+  - SAT problem: find *satisfying assignment* for *Boolean formula*
+  - *Boolean formula*: a bunch of true/false variables with $\land$,
+    $\lor$ and $\lnot$:
+    $$ (a \lor \lnot b) \land (\lnot a \lor c \lor d \lor \lnot e)
+    \land (b \lor \lnot d) $$
+  - *satisfying assignment*: values for variables such that the
+    whole formula is true
+
+* It's not easy
+  - NP-complete
+  - naïve solution: backtracking
+  - best solution: backtracking
+  - huh?
+  - solvers are fast for *real world* instances
+    - recent improvements $\Rightarrow$ fast enough for /some/ practical purposes
+
+* A theory of everything
+  - SMT: extend SAT with *theories*
+  - *theory*: new type of variable---not Boolean
+    - bitvectors (0001010101)
+    - /unbounded/ integers (ℤ)
+    - /unbounded/ arrays
+    - algebraic numbers (almost like ℝ)
+    - floating-point numbers (not entirely unlike ℝ)
+
+* What can I do with...?
+  - formula still has to be a Boolean
+  - new types $\Rightarrow$ new constraints, operations
+  - pretty much what you'd expect:
+    $$ (x^2 + y^2 = 25) \land (3x + 4y = 0) $$
+  - solves to: $$x = 4, y = -3$$
+
+* Bit by bit
+  - not just arithmetic
+  - “flow” control:
+    - *ite*: if-then-else
+  - different theories have:
+    - bitwise operations
+    - signed /and/ unsigned operations
+    - array indexing
+
+* Still not satisfied
+  - sometimes, we cannot solve a formula
+  $$ (x^2 + y^2 = 42) \land (3x + 4y = 0) $$
+  - *unsatifiable*
+  - this works even over /unbounded integers/!
+  - however, the solver can also
+    - take too long
+    - return =Unknown=
+
+* Quantification
+  - more explicit equation from before:
+    $$ \exists x. \exists y. (x^2 + y^2 = 25) \land (3x + 4y = 0) $$
+  - compare to:
+    $$ \forall x. \forall y. (x^2 + y^2 = 25) \land (3x + 4y = 0) $$
+  - Unsatisfiable; can find *counterexample*:
+    $$x = 23, y = 0$$
+
+* Again but in +English+ Haskell
+  - SBV: Haskell DSL for specifying formulas
+  - mostly ASCII-ifies what we've seen before:
+  #+BEGIN_SRC Haskell
+    x^2 + y^2 .== 25 &&& 3 * x + 4 * y .== 0
+  #+END_SRC
+  - reuses =Num= and =Bits= but not =Eq= or =Ord= 
+  - has own class for Boolean-like things
+
+* Everything is better with types
+  - *symbolic* versions of normal Haskell types
+    - =SInteger= for =Integer=
+    - =SWord32= for =Word32=; unsigned bitvectors
+    - =SInt32= for =Int32=; signed bitvectors
+    - =SBool= for =Bool=
+    - =SArray= for /unbounded/ arrays
+
+* Running
+  - formulas as Haskell functions:
+    #+BEGIN_SRC Haskell
+      formula :: SInteger -> SInteger -> SBool
+      formula x y = 
+        x^2 + y^2 .== 25 &&& 3 * x + 4 * y .== 0
+    #+END_SRC 
+  - run with quantified variables:
+    #+BEGIN_SRC Haskell
+      λ> sat . forSome ["x", "y"] formula
+    #+END_SRC 
+    
+* Everything is better with +types+ monads
+  - handy monad for composing formulas
+  - better way to manage variables
+    #+BEGIN_SRC Haskell
+      formula = 
+        do x :: SInteger <- exists "x"
+           y :: SInteger <- exists "y"
+           constrain $ x^2 + y^2 .== 25
+           return $ 3 * x + 4 * y .== 0
+    #+END_SRC 
+  - note: =ScopedTypeVariables=
+
+* Modelling programs
+  - extend to three sets of variables:
+    $$ \phi(input, program, output) $$
+  - fix $input, program$: interpreter
+  - fix $program, output$: reverse interpreter
+  - fix $input, output$: synthesizer
+  - also: check arbitrary invariants
+
+* Step by step
+  - encode program state with *single static assignment* SSA
+  - transform =x = x + y= to:
+    #+BEGIN_SRC Haskell
+      constrain $ x_2 .== x_1 + y_1
+    #+END_SRC 
+  - =x_1=, =y_1=...etc: existentially quantified
+
+* Operational Semantics
+  - operational semantics $\Rightarrow$ constraints
+  - interpreter $\Rightarrow$ formula compiler
+  - let's consider very simple language: IMP
+    - all variables 32 bit ints
+    - small number of imperative constructs
+
+* Expressions
+  - arithmetic just gets encoded as arithmetic!
+  - =x + 1= becomes... =x_n + 1=
+    - keep track of the “current” step # =n=
+  - operations are /signed/, so we use =SInt32=
+  - remember: this is the theory of *bitvectors*
+
+* Assignment
+  - for assignment (=x = x + y=), we just use SSA
+    #+BEGIN_SRC Haskell
+      constrain $ x_<n + 1> .== x_n + y_n
+    #+END_SRC 
+  - note how expression =x + y= got compiled
+  
+* Conditions
+  - IMP just has if-then-else
+  - gets compiled to =ite=
+  - =if x > 5 then y = 1 else y = 2=:
+    #+BEGIN_SRC Haskell
+      constrain $ ite (x_n .> 5) 
+                      (y_<n + 1> .== 1)
+                      (y_<n + 1> .== 2)
+    #+END_SRC 
+
+* Sequencing
+  - one statement follows another
+  - only trick: remember to increment =n=
+  - =x = x + y; x = x * 2=
+    #+BEGIN_SRC Haskell
+      constrain $ x_2 .== x_1 + y_1
+      constrain $ x_3 .== x_2 * 2
+    #+END_SRC 
+  - basically works out to =>>= 
+    - but remember =n=!
+  
+* Loops
+  - this is the trickiest part
+  - SMT solver *cannot* handle recursion
+  - must *finitize* loops
+    - unroll some arbitrary number of times
+    - fail if that is not enough
+  - later: rerun formula multiple times, unrolling more and more
+
+* Loops
+  - =while x < 5 do x = x + 1= unrolls to:
+  - =if x < 5 then x = x + 1; <while> else skip=
+  - after we reach our max depth, =<while>= becomes =false=
+  - convert nested if-statements as before
+  - result: long, ugly formula full of =ite='s
+
+* Now what?
+  - we can run our code (slowly)
+  - we can run our code /backwards/
+  - we can check invariants over our program
+  - we can verify two functions are equivalent
+  - we can synthesize programs
+  - whatever else you can imagine
+
+* Running
+  - forwards; solve for outputs:
+    #+BEGIN_SRC Haskell
+      constrain $ x_0 .== 10
+      constrain $ y_0 .== 20
+    #+END_SRC 
+  - backwards; solve for inputs:
+    #+BEGIN_SRC Haskell
+      constrain $ x_20 .== 10
+      constrain $ y_20 .== 20
+    #+END_SRC 
+
+* Invariants
+  - easy to encode invariants
+  - for example "x is always positive":
+    #+BEGIN_SRC Haskell
+      constrain $ x_1 .> 0 
+              &&& x_2 .> 0 
+              &&& x_3 .> 0 ...
+    #+END_SRC 
+  - universally quantify inputs:
+    #+BEGIN_SRC Haskell
+      x :: SWord32 <- forall "x"
+    #+END_SRC 
+
+* Verification
+  - search for inputs where programs *disagree*
+  - assert outputs are /not/ equal
+    #+BEGIN_SRC Haskell
+      constrain $ p1_x_20 ./= p2_x_20
+      constrain $ p1_y_20 ./= p2_y_20
+    #+END_SRC 
+  - existentially quantify inputs
+  - unsatisfiable = verified
+  - satisfiable = counterexample
+
+* Synthesis
+  - add variables for each part of the program
+  - select what to do with =ite=
+  - fix inputs and outputs
+  - also solve for literals (=1=, =2=, =3=...)
+  - this gives you a program correct only over your fixed inputs and outputs
+    
+* CEGIS
+  - start with random input/output pair
+  - synthesize
+  - verify result
+    - if correct: we're done
+    - if wrong: verifier returns new input
+      - repeat
+  - each new input is a new corner case!
+
+* Sketching
+  - some things are easy for synthesizer
+  - some things are easy for humans
+  - programmer specifies code with *holes*:
+    #+BEGIN_SRC none
+      while ?? do
+        x = ??
+        y = ??
+        z = x + y
+      return z
+    #+END_SRC 
+
+* Fun ideas
+  - good fit for *low-level* code (ie assembly)
+  - use techniques to optimize Haskell
+    - maybe take advantage of algebraic laws?
+  - implement simple verified language
+    - check out ImProve on Hackage
+  - design interactive tools
+    - intelligent debugging
+    - maybe use for education?
