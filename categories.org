@@ -1,0 +1,40 @@
+
+* Definition of a category
+
+* Examples
+
+* Like λ-calculus
+  - an abstraction "zooming in" to a particular property of functions
+
+* Curry-Howard-Lambek
+
+* Constructions
+
+  - isomorphism
+  - initial/terminal object
+  - duality
+  - product/coproduct
+  - exponential?
+
+** Initial/terminal object
+  - intial
+    - empty set
+    - Void
+    - false
+  - terminal
+    - unit set
+    - ()
+    - true
+  - consider functions of type () → a
+
+** Product/coproduct
+  - algebraic data types
+  - duality
+  - and/or
+  - orders/lattices?
+  - sub-typing
+    - compare extensible records and polymorphic variants
+
+** Exponentials
+  - like currying
+  - concrete representation of a function type
