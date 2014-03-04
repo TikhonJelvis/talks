@@ -1,0 +1,155 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Untyped Lambda Calculus
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+* Why
+  - simple model of functions
+    - everything else stripped away
+  - makes it easier to *reason* about programs
+    - formal reasoning: proofs
+    - informal reasoning: debugging
+  - designing languages
+    - simple semantics---easy to extent
+    - ML, Haskell, Lisp, ... 
+
+* Introduction to theory
+  - basis for type theory
+  - introduction to concepts & notation
+  - "mathematical mindset"
+
+* Abstract Syntax
+  - $\lambda$-calculus—syntactic manipulation
+  - made up of expressions ($e$)
+    $$\begin{align}
+       e ::&= x & \text{variable}\\
+           &|\quad \lambda x. e & \text{abstraction} \\
+           &|\quad e_1 e_2 & \text{application}
+      \end{align}$$
+
+* Examples
+  - $\lambda x. x$ is the identity function 
+    - compare: $f(x) = x$
+  - $\lambda x. \lambda y. x$ constant function
+    - implicit parentheses: $\lambda x. (\lambda y. x)$
+    - compare: $f(x, y) = x$
+
+* Scoping
+  - static scope, just like most programming languages
+  - names do not matter ($\alpha$ equivalence):
+    $$\lambda x. x \equiv \lambda y. y$$
+  - variables can be shadowed:
+    $$\lambda x. \lambda x. x \equiv \lambda x. \lambda y. y$$
+
+* Free vs Bound
+  - *bound*: defined inside an expression:
+    $$\lambda x. x$$
+  - *free*: not defined inside an expression:
+    $$\lambda x. y$$
+  - free vs bound, $y$ vs $x$:
+    $$\lambda x. y x$$
+
+* Evaluation
+  - core idea: *substitution*
+    - replace name of argument with its value
+  - example: given $y x$, we can substitute $\lambda a. a$ for $x$:
+    $$ y (\lambda a. a) $$
+  - careful with scoping! 
+    - just rename everything
+
+* Evaluation Rules
+  - function application ($\beta$-reduction)
+  $$ \frac{(\lambda x. e_1)e_2}{[e_2/x]e_1} $$
+  - extension ($\eta$-reduction)
+  $$ \frac{\lambda x. F x}{F} $$
+  - as long as $x$ does not appear in $F$
+
+* Writing an interpreter
+  - this is all we need to write an interpreter
+  - any typed functional language:
+    - SML, F#, OCaml, Haskell, Scala
+  - I will use Haskell syntax
+
+* Type
+  $$\begin{align}
+     e ::&= x & \text{variable}\\
+         &|\quad \lambda x. e & \text{abstraction} \\
+         &|\quad e_1 e_2 & \text{application}
+    \end{align}$$
+
+  - translate to an algebraic data type:
+
+  #+BEGIN_SRC Haskell
+  type Name = Char
+
+  data Expr = Variable Name
+            | Lambda Name Expr
+            | App Expr Expr
+  #+END_SRC
+
+* Pattern Matching
+  - pattern matching: operate on ADT by cases
+
+  #+BEGIN_SRC Haskell
+  eval ∷ Expr → Expr
+  eval (Lambda x e) = Lambda x e
+  eval (Variable n) = Variable n
+  eval (App e₁ e₂)  = case eval e₁ of
+    Lambda x body → eval (subst x e₂ body)
+    result        → App result e₂
+  #+END_SRC
+
+* Substitution
+  #+BEGIN_SRC Haskell
+  subst ∷ Name → Expr → Expr → Expr
+  subst x newVal (Lambda y body) 
+    | x ≠ y     = Lambda y (subst x newVal body)
+    | otherwise = Lambda y body
+  subst x newVal (App e₁ e₂) =
+    App (subst x v e₁) (subst x v e₂)
+  subst x newVal (Variable y)
+    | x ≡ y     = newVal
+    | otherwise = Variable y
+  #+END_SRC
+
+* Evaluation Order
+  - How far to evaluate?
+  
+  #+BEGIN_SRC Haskell
+  eval (Lambda x e) = Lambda x (eval e)
+  #+END_SRC
+
+  - What order to evaluate in?
+    - when to evaluate arguments?
+
+  #+BEGIN_SRC Haskell
+  Lambda x body → eval (subst x (eval e₂) body)
+  #+END_SRC
+
+* Fun Stuff
+  - Write your own interpreter (< 1hr)
+  - Add parsing, pretty printing and a REPL
+  - Experiment with different evaluation orders
+  - Add features like numbers
+
+* Numbers
+  - $\lambda$-calculus only has functions
+  - can we represent data structures and numbers?
+  - idea: numbers as repeated application
+  - zero: $\lambda f.\lambda x. x$
+  - one: $\lambda f. \lambda x. f x$
+  - two: $\lambda f. \lambda x. f (f x)$
+  - implement addition and subtraction*
+
+* Data Structures
+  - Lisp-style pairs
+  - idea: function that applies another function to two arguments
+  - cons: $$\lambda x. \lambda y. \lambda f. f x y$$
+  - first: $$\lambda x. \lambda y. x$$
+  - second: $$\lambda x. \lambda y. y$$
+  - build up things like lists
+    
