@@ -2,3 +2,8 @@
 *.html
 *.tex
 *.pdf
+
+# Emacs backup files and junk:
+*~
+\#*\#
+.\#*
