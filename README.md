@@ -2,7 +2,7 @@
 
 This repository contains sources for slides of a few talks I've given at various meetups, namely San Francisco Theorems, Types and Programming Languages and Haskell Hackers at Hacker Dojo.
 
-You can get compiled HTML and PDF versions on [my site](jelv.is/talks).
+You can get compiled HTML and PDF versions on [my site](http://jelv.is/talks).
 
 The talks are all written with org-mode and can be compiled to either HTML or LaTeX.
 
