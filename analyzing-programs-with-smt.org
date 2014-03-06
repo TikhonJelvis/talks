@@ -270,3 +270,13 @@
   - design interactive tools
     - intelligent debugging
     - maybe use for education?
+
+* Credit
+  - [[http://hackage.haskell.org/package/sbv][sbv]] package by Levent Erkok
+  - synthesis ideas mostly from:
+    - [[http://www.cs.berkeley.edu/~bodik/][Ras Bodik]] at the Berkeley ParLab
+    - especially [[http://www.cs.berkeley.edu/~bodik/cs294/fa12/Lectures/L1/L1-overview-notes.pdf][slides]] from his class on synthesis
+  - [[http://z3.codeplex.com/][z3 SMT Solver]] from Microsoft Research
+    - most popular SMT solver
+    - very versatile
+    - commercially unfriendly license (*not* open source)
