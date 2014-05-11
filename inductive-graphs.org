@@ -1,0 +1,124 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Inductive Graphs (Functional Graph Library)
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+* Graphs
+  - graphs are tricky in functional programming
+  - but what's easy?
+    - lists
+    - trees
+
+* Pattern Matching
+  - why?
+  - we can pattern match on trees and lists!
+  #+BEGIN_SRC Haskell
+    foo []     = []
+    foo (x:xs) = bar x : foo xs
+  #+END_SRC
+  - computation follows the "shape" of the type
+
+* Inductive Data Types
+  - lists have *exactly one* decomposition at any given point
+  - reverse of how they are constructed
+  - "inductive data types":
+  #+BEGIN_SRC Haskell
+    data [a] = []      -- base case
+             | a : [a] -- recursive case
+  #+END_SRC
+
+* Inductive Graphs?
+  - can we do the same for graphs?
+  - *no*
+  - a graph does not have a *canonical* decomposition 
+  - multiple ways to construct the same graph
+
+* Inductive Graphs!
+  - we can give up on canonicity
+  - *view* graphs inductively
+    - multiple possible views
+    - graphs aren't actually built this way
+  - library: fgl
+
+* Type
+  - decompose graph into:
+    - a node
+    - its edges
+    - the rest of the graph
+  #+BEGIN_SRC Haskell
+    data Graph = 
+         Empty
+      | (Context [Edge] Node [Edge]) :& Graph
+  #+END_SRC
+  - ignoring node/edge labels
+
+* Demo
+  [[file:example.png]]
+
+* Demo
+  [[file:match1.png]]
+ 
+* Demo
+  [[file:match2.png]]
+
+* Demo
+  [[file:recurse2.png]]
+
+* DFS
+  - a depth-first search, producing a list of nodes:
+  #+BEGIN_SRC Haskell
+    dfs (x:xs) (match x -> (Just ctx, g)) =
+      x : dfs (neighbors' c ++ xs) g
+
+    dfs (_:xs) graph = dfs xs graph
+  #+END_SRC
+  - base cases: empty stack or empty graph
+
+* DFS
+  -stack: =[1]=
+  [[file:example.png]]
+
+* DFS
+  -stack: =[5, 4, 6]=
+  [[file:match1.png]]
+
+* DFS
+  -stack: =[2, 8, 9, 4, 6]=
+  [[file:match5.png]]
+
+* DFS
+  -stack: =[7, 6, 8, 9, 4, 6]=
+  [[file:match2-2.png]]
+
+* DFS
+  -stack: =[4, 3, 6, 8, 9, 4, 6]=
+  [[file:match7.png]]
+
+
+* DFS
+  -stack: =[10, 4, 3, 6, 8, 9, 4, 6]=
+  [[file:match4.png]]
+
+* DFS
+  -stack: =[8, 9, 4, 3, 6, 8, 9, 4, 6]=
+  [[file:match10.png]]
+
+* DFS
+  -stack: =[3, 9, 4, 3, 6, 8, 9, 4, 6]=
+  [[file:match8.png]]
+
+* DFS
+  -stack: =[6, 9, 4, 3, 6, 8, 9, 4, 6]=
+  [[file:match3.png]]
+
+* DFS
+  -stack: =[9, 9, 4, 3, 6, 8, 9, 4, 6]=
+  [[file:match6.png]]
+
+* DFS
+  -stack: =[9, 4, 3, 6, 8, 9, 4, 6]=
+  [[file:match9.png]]

@@ -1,0 +1,32 @@
+digraph fgl {
+	margin = "0"
+	page = "10,6"
+	size = "10,6"
+	ratio = "fill"
+        1 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+	2 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        3 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        4 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        5 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        6 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        7 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        8 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        9 [color="#0b4faa" style="filled" fillcolor="#90A9CB"]
+        10 [color="white" style="filled" fillcolor="white" fontcolor="white"]
+        6 -> 1 [color="white"]
+        5 -> 1 [color="white"]
+        4 -> 1 [color="white"]
+        5 -> 2 [color="white"]
+        6 -> 3 [color="white"]
+        6 -> 2 [color="white"]
+        7 -> 4 [color="white"]
+        7 -> 3 [color="white"]
+        7 -> 2 [color="white"]
+        8 -> 3 [color="white"]
+        8 -> 5 [color="white"]
+        8 -> 10 [color="white"] 
+        9 -> 5 [color="white"]
+        9 -> 6 [color="white"]
+        10 -> 4 [color="white"]
+        10 -> 9 [color="white"]
+}
