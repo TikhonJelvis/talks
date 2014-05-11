@@ -1,0 +1,18 @@
+* Ideas
+
+** Animations
+
+*** Unification
+    - describe unification as comparing "parts" of expressions
+    - line up the parts to compare
+    - then go through examples, case-by-case
+    - talk about occurs check at the very end?
+
+** Occurs Check
+   - Show relevant type error
+     - =let x = [x]=
+   - OCaml can do it!
+     - =ocaml -rectypes=
+     - =let rec x = [x]=
+     - usually useless
+     - =Fix=

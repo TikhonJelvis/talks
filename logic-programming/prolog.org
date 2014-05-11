@@ -1,0 +1,175 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Prolog in Haskell
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+* Logic Programming
+  - programming with queries
+  - execution model: backtracking search
+  - declarative
+
+* Basic Constructs
+  - atom: =x=
+    - like enum or constructor
+  - variable: =X=
+    - can hold different values
+  - predicate: =f(X)=
+    - over atoms
+    - either holds or doesn't
+
+* Facts
+  - fact: =f(x).=
+    - statement: =f= holds for =x=
+  - program:
+    #+BEGIN_SRC Prolog
+    f(a).
+    f(b).
+    g(b).
+    g(c).
+    #+END_SRC
+    
+* Query
+  - interact with database of facts
+    - =?- f(a).=: =yes=
+    - =?- f(a), f(b)=: =yes=
+    - =?- f(c).=: =no=
+  - solve
+    - =?- f(X).=: =X = a; X = b=
+    - =?- h(X).=: =no=
+
+* Rules
+  - predicates with conditions
+  - =h(X) :- f(X), g(X).=
+  - like logic: :- is implication (←)
+  - $\forall x. f(x) \land g(x) \Rightarrow h(x)$
+
+* Equality
+  - very simple rule: $\forall x. eq(x, x)$.
+  - =eq(X, X).=
+
+* Lists
+  - =head(X, cons(X, XS)).=
+  - =tail(XS, cons(X, XS)).=
+  - recursion!
+  #+BEGIN_SRC Prolog
+    list(nil).
+    list(cons(X, XS)) :- list(XS).
+  #+END_SRC
+
+* Implementation
+  - two interesting parts
+    - *unification*
+    - *resolution*
+
+* Data Types
+  - best place to start
+  - =a=, =X=, =head(X, cons(X, XS))=
+  #+BEGIN_SRC Haskell
+    data Term = Atom String
+              | Var Name
+              | Pred Predicate
+  #+END_SRC
+  - names: =data Name = Name Int String=
+
+* Rules, Predicates
+  - predicates: =head(X, cons(X, XS))=
+  #+BEGIN_SRC Haskell
+    data Predicate = Predicate String [Term]
+  #+END_SRC  
+
+  - rules: =h(X) :- f(X), g(X).=
+  #+BEGIN_SRC Haskell
+    data Rule = Rule Predicate [Predicate]
+  #+END_SRC  
+
+* Unification
+  - combine two terms
+  - assign variables to matching parts
+  - find *most general unifier* (MGU)
+    - map variables to terms
+    - =type MGU = [(Name, Term)]=
+
+* MGUs
+  - unify =f(X)= with =f(cons(a, nil))=
+    - ={ X = cons(a, nil) }=
+  - common operations:
+    - =subst :: MGU -> Term -> Term=
+    - =merge :: MGU -> MGU -> MGU=
+      - monoid                
+
+* Unification Algorithm
+  - =unify :: Predicate -> Predicate -> Maybe MGU=
+  - fail immediately:             
+    - =a(X)=, =b(Y)=: a ≠ b =Nothing=
+    - =a(X, Y)=, =a(X)=: =Nothing=
+  - otherwise: zip arguments together
+    - =a(X, Y, Z)=, =a(a, b, c)=: [(X, a), (Y, b), (Z, c)]
+  - build up =Maybe MGU=
+
+* Variables:
+  - just a variable with *anything*
+  #+BEGIN_SRC Haskell
+    go mgu (Var l) r = Just $ (l, r) : mgu
+    go mgu l (Var r) = Just $ (r, l) : mgu
+  #+END_SRC
+  - however! =X= with =cons(a, X)=
+  - need *occurs check*
+  - =go mgu (Var l) r | not (r `contains` Var l) = ...=
+
+* Predicates
+  - recurse: unify predicates
+  - merge resulting MGU with current MGU
+  #+BEGIN_SRC Haskell  
+    go mgu (Pred l) (Pred r) = 
+       merge <$> unify l r <*> Just mgu
+  #+END_SRC
+  - =<$>= and =<*>= handle failure
+
+* Atoms
+  - only unify if atoms are equal:
+  - =go mgu l r = if l ≡ r then Just mgu else Nothing=
+  - cute trick with Monad Comprehensions
+  - =go mgu l r = [mgu | l ≡ r]=
+  
+* Unification
+  - this is the whole unification algorithm
+  - used by Hindley-Milner!
+  #+BEGIN_SRC Haskell
+    Occurs check: cannot construct the infinite type: a ~ [a]
+      Relevant bindings include x :: [a] (bound at <interactive>:35:5)
+      In the first argument of ‘(:)’, namely ‘x’
+      In the expression: x : x
+  #+END_SRC
+
+* Resolution
+  - this is the actual search part
+  - trick: do backtracking with list monad!
+
+* List Monad
+  - compose *nondeterministic functions*
+  - =a -> [b]=: multiple results
+  - =(a -> [b]) -> (b -> [c]) -> (a -> [c])=
+    - apply first function, get =[b]=
+    - map over =[b]= to get =[[c]]=
+    - flatten to get =[c]=
+
+* Laziness
+  - with laziness, list monad = backtracking
+  - =a -> [b]=: branching factor
+  - whole computation: search tree
+  - only evaluate as much as you need
+
+* Resolution:
+  - take goal (query): =f(a)=
+  - compare with every rule/fact
+  - try to combine
+    - recurse on bodies *non-deterministically*
+  - trick: "freshen" rules each time
+
+* Code
+  - ~70 lines of code for an interpreter
+  - on GitHub: github.com/TikhonJelvis/Simple-Prolog
