@@ -1,3 +1,9 @@
+* Notes
+** explain predicates
+   - sometimes they're like predicates
+   - sometimes they work like constructors
+   - talk about compound statements and existing rather than
+     predicates per se
 * Ideas
 
 ** Animations
@@ -16,3 +22,5 @@
      - =let rec x = [x]=
      - usually useless
      - =Fix=
+** Nondeterminism
+   - "traingles" animation?
