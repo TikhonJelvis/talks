@@ -57,22 +57,22 @@
   - ignoring node/edge labels
 
 * Demo
-  [[file:example.png]]
+  [[file:img/example.png]]
 
 * Demo
-  [[file:match1.png]]
+  [[file:img/match1.png]]
  
 * Demo
-  [[file:match2.png]]
+  [[file:img/match2.png]]
 
 * Demo
-  [[file:recurse2.png]]
+  [[file:img/recurse2.png]]
 
 * DFS
   - a depth-first search, producing a list of nodes:
   #+BEGIN_SRC Haskell
     dfs (x:xs) (match x -> (Just ctx, g)) =
-      x : dfs (neighbors' c ++ xs) g
+      x : dfs (neighbors' ctx ++ xs) g
 
     dfs (_:xs) graph = dfs xs graph
   #+END_SRC
@@ -80,45 +80,45 @@
 
 * DFS
   -stack: =[1]=
-  [[file:example.png]]
+  [[file:img/example.png]]
 
 * DFS
   -stack: =[5, 4, 6]=
-  [[file:match1.png]]
+  [[file:img/match1.png]]
 
 * DFS
   -stack: =[2, 8, 9, 4, 6]=
-  [[file:match5.png]]
+  [[file:img/match5.png]]
 
 * DFS
   -stack: =[7, 6, 8, 9, 4, 6]=
-  [[file:match2-2.png]]
+  [[file:img/match2-2.png]]
 
 * DFS
   -stack: =[4, 3, 6, 8, 9, 4, 6]=
-  [[file:match7.png]]
+  [[file:img/match7.png]]
 
 
 * DFS
   -stack: =[10, 4, 3, 6, 8, 9, 4, 6]=
-  [[file:match4.png]]
+  [[file:img/match4.png]]
 
 * DFS
   -stack: =[8, 9, 4, 3, 6, 8, 9, 4, 6]=
-  [[file:match10.png]]
+  [[file:img/match10.png]]
 
 * DFS
   -stack: =[3, 9, 4, 3, 6, 8, 9, 4, 6]=
-  [[file:match8.png]]
+  [[file:img/match8.png]]
 
 * DFS
   -stack: =[6, 9, 4, 3, 6, 8, 9, 4, 6]=
-  [[file:match3.png]]
+  [[file:img/match3.png]]
 
 * DFS
   -stack: =[9, 9, 4, 3, 6, 8, 9, 4, 6]=
-  [[file:match6.png]]
+  [[file:img/match6.png]]
 
 * DFS
   -stack: =[9, 4, 3, 6, 8, 9, 4, 6]=
-  [[file:match9.png]]
+  [[file:img/match9.png]]
