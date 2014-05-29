@@ -1,0 +1,24 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Nondeterminism
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+* Function Composition
+  - =a → b=, =b → c=, =a → c=
+  - one function after another
+  - directly pass results in between
+
+* Monads
+  - **customize** function composition
+  - “different shape” of function
+  - =a → m b= vs =a → b=
+    - =m= is a “slot” to insert custom behavior
+
+* Lists
+  - consider =m= as =[]=
+  - =a → [b]=, =b → [c]=, =a → [c]=
+  - different shape: tree!
