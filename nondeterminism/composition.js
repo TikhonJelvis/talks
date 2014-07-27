@@ -9,15 +9,19 @@ Raphael(function () {
 
   currSlide.show();
   
-  document.body.onclick = function () {
-    if (currSlide) {
-      var res = currSlide.step();
+  document.body.onkeypress = function (e) {
+    if (e.keyCode == 13 || e.keyCode == 32) {
+      if (currSlide) {
+        var res = currSlide.step();
 
-      if (!res) {
-        currSlide.hide();
-        currSlide = slides.shift();
-        if (currSlide) currSlide.show();
+        if (!res) {
+          currSlide.hide();
+          currSlide = slides.shift();
+          if (currSlide) currSlide.show();
+        }
       }
+
+      return false;
     }
   };
 });
