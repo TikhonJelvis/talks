@@ -1,0 +1,14 @@
+\documentclass{article}
+
+\usepackage{synttree}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\newcommand{\f}[0]{\colorbox{SkyBlue}{a}}
+\newcommand{\g}[0]{\colorbox{IndianRed}{b}}
+\newcommand{\h}[0]{\colorbox{Chartreuse}{c}}
+
+\begin{document}
+
+\synttree[\f[\g[\h][\h]][\g[\h][\h][\h]][\g]]
+
+\end{document}

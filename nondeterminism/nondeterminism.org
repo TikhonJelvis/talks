@@ -8,12 +8,17 @@
 #+BEAMER_COLOR_THEME: spruce
 
 * Function Composition
+  - [[composition.html][function composition animation]]
   - =a → b=, =b → c=, =a → c=
   - one function after another
   - directly pass results in between
+  - =x ⇒ a=
+  - =f ⇒ b=
+  - =g ⇒ c=
 
 * Monads
-  - **customize** function composition
+  - [[list-composition.html][nondeterministic composition animation]]
+  - *customize* function composition
   - “different shape” of function
   - =a → m b= vs =a → b=
     - =m= is a “slot” to insert custom behavior
@@ -22,3 +27,47 @@
   - consider =m= as =[]=
   - =a → [b]=, =b → [c]=, =a → [c]=
   - different shape: tree!
+  - =a → [b]=
+    - *nondeterministic function* from =a= to =b=
+
+* List Composition
+  - =f <=< g=
+  #+BEGIN_SRC haskell
+    f      ⇒ [b]
+    x      ⇒ a
+    map g  ⇒ [[c]]
+    concat ⇒ [c]
+  #+END_SRC
+  - so for lists, =join = concat=
+
+* A Lazy Tree
+  [[file:img/tree.png]]
+  - result: =[c, c, c, c, c]=
+    - *lazy*
+
+* Map Coloring
+  [[file:img/Blank_US_Map.svg]]
+
+* Map Coloring
+  [[file:img/out.svg]]
+
+* Step
+  #+BEGIN_SRC haskell
+    step :: Coloring -> Vertex -> [Coloring]
+    step graph vertex =
+      map (color vertex) possible
+      where possible = 
+              colors \\ neighbors vertex coloring
+  #+END_SRC
+  - try every available color
+  - if none: returns =[]=
+    - branch terminated
+
+* foldM
+  #+BEGIN_SRC haskell
+    listToMaybe $ foldM step emptyColoring nodes
+  #+END_SRC
+  - =foldM= encapsulates backtracking logic
+    - like nested loops
+    - =listToMaybe= ≅ =safeHead=
+  - all works thanks to laziness
