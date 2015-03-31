@@ -1,0 +1,96 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: F-Algebras
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+* Abstract Algebra
+  - *great source of abstractions*
+  - common patterns, factored out
+    - simple
+    - broad
+    - expressive
+
+* Algebraic Structures
+  - set $S$ with certain operations
+    - functions *closed* over set
+    - any number of arguments
+    - special values: *identities*
+  - Haskell: set ⇒ type
+    - express as typeclass
+
+* Monoid
+  - type =m=
+    - =(<>) ∷ m → m → m=
+    - =mempty ∷ m=
+  - laws:
+    - =mempty <> x = x = x <> mempty=
+    - =(a <> b) <> c = a <> (b <> c)=
+
+* Others
+  - Group =g=
+    - =(<>) ∷ m → m → m=
+    - =mempty ∷ m=
+    - =inv ∷ m → m=
+  - rings, lattices...
+    - semirings, semilattices...
+
+* Patterns
+  - Group =g=
+   - =() → g=
+   - =(g) → g=
+   - =(g, g) → g=
+
+* Patterns
+  - Group =g=
+   - =g⁰ → g=
+   - =g¹ → g=
+   - =g² → g=
+
+* Algebra
+  - *algebra*
+    - universe: set/type =a=
+    - signature: =(x, y, z…)=
+  - operations assumed associative
+  - ignore other laws
+  - monoid: =(0, 2)=
+  - group: =(0, 1, 2)=
+  - ring: =(0, 0, 1, 2, 2)=
+
+* F-Algebras
+  - combine into one function:
+  #+BEGIN_SRC Haskell
+  op ∷ Monoid m ⇒ Either (m, m) () → m
+  op (Left (a, b)) = a <> b
+  op (Right ())    = mempty
+  #+END_SRC
+  - works for any number of operations!
+
+* Data Type
+  - semantic name
+  #+BEGIN_SRC Haskell
+  data MonoidArgument m = MAppend m m 
+                        | MEmpty
+  #+END_SRC
+  - similarly
+  #+BEGIN_SRC Haskell
+  data GroupArgument m = GAppend m m
+                       | GInverse m
+                       | GEmpty
+  #+END_SRC
+
+* Algebras
+  - new definition:
+  #+BEGIN_SRC Haskell
+  type Monoid m = MonoidArgument m → m
+
+  type Group g = GroupArgument g → g
+  #+END_SRC
+  - both types are *functors*
+
+* F-Algebras
+  - general definition
+  #+BEGIN_SRC Haskell
+  type Algebra f a = Functor f ⇒ f a → a
+
+  type Monoid m = Algebra MonoidArgument m
+  type Group g = Algebra GroupArgument g
+  #+END_SRC
