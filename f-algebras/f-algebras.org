@@ -89,8 +89,95 @@
 * F-Algebras
   - general definition
   #+BEGIN_SRC Haskell
-  type Algebra f a = Functor f ⇒ f a → a
+  type Algebra f a = f a → a
 
   type Monoid m = Algebra MonoidArgument m
   type Group g = Algebra GroupArgument g
   #+END_SRC
+
+  - allows other kinds of algebras
+    - =Num=
+
+* Review
+  - =type Algebra f a = f a → a=
+  - =f= is the *signature*
+  - =a= is the *universe*
+  - *existing typeclasses and structures*
+    - =Monoid=
+    - =Group=
+    - =Num=
+
+* Folds
+  - algebras are all about *deconstructing*
+    - produce =a= from richer =f a=
+  - generalizes *fold* to different types
+    - aka *catamorphism*
+
+* Fix
+  - recursive types in two parts
+  #+BEGIN_SRC Haskell
+  data List a = Cons a (List a) | Nil
+  #+END_SRC
+
+  #+BEGIN_SRC Haskell
+  data Fix f = Fix (f (Fix f))
+  data ListF a r = Cons a r | Nil
+  #+END_SRC
+
+  #+BEGIN_SRC Haskell
+  type List a = Fix (ListF a)
+  #+END_SRC
+
+* Fold
+  - unwrap layers of =Fix=
+  - apply F-algebra at each step
+  #+BEGIN_SRC Haskell
+  fold ∷ (f a → a) → (Fix f → a)
+  fold fa (Fix fs) = fa $ fmap (fold fa) fs
+  #+END_SRC
+
+* Example
+  - looks familiar?
+  #+BEGIN_SRC Haskell
+  data ListF a r = Cons a r | Nil
+    deriving (Functor)
+  type List a = Fix (ListF a)
+
+  sum' = fold fa
+    where fa (Cons a b) = a + b
+          fa Nil        = 0
+  #+END_SRC
+
+* Foldable
+  - list folds: monoids!
+  #+BEGIN_SRC Haskell
+  fa (Cons a b) = a + b
+  fa Nil        = 0
+
+  fa (Mappend a b) = a + b
+  fa Mempty        = 0
+  #+END_SRC
+  - =Data.Foldable=
+   - =fold ∷ (Foldable f, Monoid m) => f m → m=
+  
+
+* Tree Fold
+  - different shape
+  #+BEGIN_SRC Haskell
+  data TreeF a r = Node a [r]
+    deriving (Functor)
+  type Tree a = Fix (TreeF a)
+
+  treeSum ∷ Tree Int → Int
+  treeSum = fold fa
+    where fa (Node x ts) = x + sum ts
+  #+END_SRC
+
+* Review
+  - F-Algebras *generalize algebraic structures*
+  - =type Algebra f a = f a → a=
+    - functor =f= as *signature*
+  - lets us *destruct* data structures
+    - generic fold
+    - works for data structures with *different shapes*
+    - =fold ∷ (f a → a) → (Fix f → a)=
