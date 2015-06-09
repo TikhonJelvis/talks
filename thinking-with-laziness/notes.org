@@ -1,0 +1,126 @@
+* Scope
+  - fit into 40 minutes for intermediate audiencel
+  - convey general idea: laziness can be expressive!
+    - cover four core points
+  - include a few concrete takeaways
+    - specific ideas someone can use in their code *right away*
+
+* References
+  - "Why Functional Programming Matters" by John Hughes
+  - /Parallel and Concurrent Programming in Haskell/ by Simon Marlowe
+  - "Functional Programming and Quadtrees" by F. Warren Burton and
+    John (Yannis) G. Kollias
+
+* Modularity
+  - separate evaluation from definition
+  - producers don't have to care about consumers and vice-versa
+
+** Examples
+   - =take n . sort=
+     - with an appropriate sort algorithm, this is a O(n) 
+   - F18A interpreter
+     - interpreter produces a list of states
+     - consumer can run it as long as it wants
+       - forever interactively
+       - up to n steps
+       - until it hits some relevant state
+     - "executable program trace" as a first-class value
+       - all this with normal list functions and a *single*
+         interpreter!
+   - α-β pruning
+     - include illustration from Wikipedia
+       - greyed out bits aren't evaluated
+         - with a lazy tree, they're just thunks!
+     - produce large search tree
+     - traverse as much of it as you like
+       - pruning = not evaluating certain branches
+     - separate defining what moves are possible from consuming them
+       - same game tree can be used with multiple traversal/pruning
+         strategies
+       - simple, typed interface between the two: *just a normal tree*
+
+* Control Structures
+  - think of lazy data structures as reified control structures
+    - lists are linear loops
+      - that's why they're so common!
+  - consider previous examples:
+    - F18A: interpreter trace = step by step loop
+    - α-β: game tree = recursive moves in game
+  - control is *first class*
+    - we can manipulate control flow with normal functions
+      - skip loop iterations with =filter=
+      - terminate loop early with =takeWhile=
+      - all *outside* loop body!
+      - talk about Data.Parallel?
+        - shame my copy of Parconc is in Berkeley (I think)
+
+** Examples
+  - =fact n = product [1..n]=
+    - elegant way of implementing =fact=
+      - simple illustrative example
+    - =[1..n]= is generated lazily: it never has to exist in memory
+      completely
+    - elements are collected once they're multiplied into the
+      intermediate product
+    - like a loop-based implementation of =fact=
+    - common style: unfold into intermediate structure and fold to
+      get result
+      - intuitive, only possible with laziness
+      - doesn't have to be linear: internal structure can be
+        tree-like for more complex recursion (think =fib=)
+  - nondeterministic programming with the list monad
+    - simple example with do-notation
+    - backtracking search with =foldM=
+      - maybe map coloring?
+        - =state -> map -> [map]= intuitive step function
+          - like returning an unused loop through each possible state
+          - composes into backtracking—like nested loops!
+
+* Arbitrary Precision
+  - a different view on modularity
+  - we can defer how much *precision* we want to the call site!
+    - crucially: precision decided just *once*, at the very end
+    - no need to choose precision at each seam
+    - Conal Elliott: "approximations compose badly"
+
+** Examples
+   - constructive real numbers
+     - intuition: lazy interval arithmetic
+     - composed lazy operations
+       - result: a lazy series with each term depending correctly on
+         all the intermediate/input terms
+       - evaluate final list until we hit the desired precision we
+         want
+    - infinite quadtrees
+
+* Memoization
+  - a controlled effect *beneath your level of abstraction*
+    - compare to garbage collection
+  - useful for only performing computation *once*
+  - general pattern for dynamic programming
+  - pure memoization packages
+  - you *could* implement this with =unsafePerformIO=
+    - would be kosher—the IO is merely an implementation detail
+      - it's a *benign effect*
+    - however, *you* would be responsible to make sure it
+      works—in *all* cases!
+      - multiple instances, multiple threads…etc.
+    - in a sense, the RTS does this for you already
+
+** Examples
+   - Fibonacci
+     - with pictures!
+     - talk about garbage collection and constant(ish) memory usage
+   - dynamic programming
+     - array of thunks
+     - again: pictures
+   - pure memoization packages
+     - mention in passing
+     - Conal Elliott: [[http://conal.net/blog/posts/elegant-memoization-with-functional-memo-tries][elegant memoization with memo tries]]
+     - Luke Palmer: [[https://lukepalmer.wordpress.com/2008/10/14/data-memocombinators/][data-memocombinators]]
+
+* Conclusion
+  - repeat four core points
+  - talk about how they are *different perspectives*
+    - idea: abstract over evaluation
+  - unlock Haskell's expressive power with laziness
