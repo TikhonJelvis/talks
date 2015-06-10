@@ -1,0 +1,86 @@
+#+OPTIONS: f:nil toc:nil
+#+TITLE: Thinking with Laziness
+#+AUTHOR: Tikhon Jelvis (tikhon@jelv.is)
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+BEAMER_THEME: Rochester [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+* Perspectives
+  - *modularity* 
+    - evaluation vs definition
+  - *control* 
+    - lazy structures as control flow
+  - *precision* 
+    - arbitrary precision values
+  - *memoization* 
+    - laziness = built-in memoization
+    
+* Modularity
+  - separate *evaluation* from *definition*
+    - evaluate at use site
+    - not ahead of time
+    - different use sites—different evaluation
+  - new way of separating into components
+
+* Preserving Asymptotics
+  - select n top elements
+    - =select = take n . sort=
+  - *does not sort whole list*
+  - \(O(n)\)
+  - compose parts that
+    - need to run interleaved
+    - need to run partially
+
+* Control Execution
+  - F18A emulator:
+  #+BEGIN_SRC Haskell
+    step :: State → State
+
+    trace :: State → [State]
+    trace = iterate step
+  #+END_SRC
+  - infinite list of states
+
+* Different Uses
+  - repl: run until end state
+    - =takeWhile (≠ end) $ trace start=
+  - tests:
+    - =take limit $ trace start=
+  - limit based on spec program
+  - both:
+    - =take limit . takeWhile (≠ end)=
+
+* α-β pruning
+  [[http://upload.wikimedia.org/wikipedia/commons/thumb/9/91/AB_pruning.svg/1200px-AB_pruning.svg.png]]
+  - don't evaluate pruned branches
+
+* Control Structures
+  - lazy data structure ≡ control flow
+    - list ≡ for loop
+  - first-class
+    - *manipulate*
+      - pass into functions
+      - pattern match
+    - *composable* 
+      - combine into larger lazy structures
+
+* Examples
+  - F18a trace 
+    - interpreter loop
+  - game tree 
+    - recursive move function
+  - =take n . sort= 
+    - loop
+    - partially executed sort
+
+* Intermediate Structures
+  - lazy structures *need not fully exist*
+    - garbage collected on the fly
+  - =fact n = product [1..n]=
+    - internal list ⇒ for loop
+    - collected on the fly
+    - constant memory usage
+  - common style:
+    - =fold . unfold=
