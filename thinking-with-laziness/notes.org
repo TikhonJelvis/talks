@@ -8,8 +8,14 @@
 * References
   - "Why Functional Programming Matters" by John Hughes
   - /Parallel and Concurrent Programming in Haskell/ by Simon Marlowe
+  - "Lazy Algorithms for Exact Real Arithmetic" by Pietro Di
+    Gianantonio and Pier Luca Lanzi
   - "Functional Programming and Quadtrees" by F. Warren Burton and
     John (Yannis) G. Kollias
+
+* Acknowledgements
+  - Conal Elliott
+  - Edward Kmett
 
 * Modularity
   - separate evaluation from definition
@@ -76,12 +82,18 @@
           - like returning an unused loop through each possible state
           - composes into backtracking—like nested loops!
 
+** Conclusion
+   - we can think of lazy data structures as control structures
+   - makes control structures first-class
+   - makes it easy to pass around, inspect and type "control
+     structures" 
+     - increases modularity!
+
 * Arbitrary Precision
   - a different view on modularity
   - we can defer how much *precision* we want to the call site!
     - crucially: precision decided just *once*, at the very end
     - no need to choose precision at each seam
-    - Conal Elliott: "approximations compose badly"
 
 ** Examples
    - constructive real numbers
@@ -92,6 +104,13 @@
        - evaluate final list until we hit the desired precision we
          want
     - infinite quadtrees
+
+** Conclusion
+   - increases modularity
+    - Conal Elliott: "approximations compose badly"
+    - no loss of accuracy "at the seams" or between modules
+    - arbitrary precision: values are approximation loops
+      - lazy data structures as control flow!
 
 * Memoization
   - a controlled effect *beneath your level of abstraction*
@@ -118,6 +137,12 @@
      - mention in passing
      - Conal Elliott: [[http://conal.net/blog/posts/elegant-memoization-with-functional-memo-tries][elegant memoization with memo tries]]
      - Luke Palmer: [[https://lukepalmer.wordpress.com/2008/10/14/data-memocombinators/][data-memocombinators]]
+
+** Conclusion
+   - controlled effect for common patterns
+     - below level of abstraction
+   - data structure can capture whole function lazily
+     - similar to arbitrary precision
 
 * Conclusion
   - repeat four core points

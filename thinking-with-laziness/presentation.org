@@ -36,9 +36,9 @@
 * Control Execution
   - F18A emulator:
   #+BEGIN_SRC Haskell
-    step :: State → State
+    step ∷ State → State
 
-    trace :: State → [State]
+    trace ∷ State → [State]
     trace = iterate step
   #+END_SRC
   - infinite list of states
@@ -63,7 +63,7 @@
     - *manipulate*
       - pass into functions
       - pattern match
-    - *composable* 
+    - *compose* 
       - combine into larger lazy structures
 
 * Examples
@@ -84,3 +84,62 @@
     - constant memory usage
   - common style:
     - =fold . unfold=
+
+* Nondeterministic Programming
+  - lists ≡ loop
+  - nest list ≡ nested loop
+    - monad instance!
+  - *nondeterministic programming*
+  #+BEGIN_SRC Haskell
+    do a ← [1..10]
+       b ← [1..10]
+       guard (a ≠ b ∧ a + b == 7)
+       return (a, b)
+  #+END_SRC
+
+* Map Coloring
+  - [uncolored map]
+
+* Map Coloring
+  - [colored map]
+
+* Map Coloring
+   - =step ∷ Map → State → [Map]=
+  
+   - *first class*
+     #+BEGIN_SRC Haskell
+       solutions = foldM step blank states
+       
+       first = head solutions
+       some = find caBlue solution
+       all = filter caBlue solution
+     #+END_SRC
+
+* Arbitrary Precision
+  - lazy structures ⇒ precision on demand
+  - *only* and *as much* as you want
+  - different sort of modularity
+  - Conal Elliott:
+    #+BEGIN_QUOTE
+      approximations compose badly
+    #+END_QUOTE
+
+* Exact Real Arithmetic
+  - idea: lazy list of digits
+    - or continued fractions
+    - or any other representation
+  - operations are lazy
+    - take in two lazy lists
+    - produce lazy list
+
+* Advantages
+  - simple to implement
+  - not loss of precision *at seams*
+    - composes well!
+  - extract bits from result
+    - automatically compute intermediate values
+
+* Infinite Quadtrees
+  - multiple dimensions
+  - tree hard to do in control flow directly
+  - [quadtree picture]
