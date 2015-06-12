@@ -53,7 +53,7 @@
     - =take limit . takeWhile (≠ end)=
 
 * α-β pruning
-  [[http://upload.wikimedia.org/wikipedia/commons/thumb/9/91/AB_pruning.svg/1200px-AB_pruning.svg.png]]
+  [[file:img/ab-pruning.png]]
   - don't evaluate pruned branches
 
 * Control Structures
@@ -137,7 +137,7 @@
   - no loss of precision *at seams*
 
 * Infinite Quadtrees
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/QuadTree-small.png]]
+  - [[file:img/QuadTree-small.png]]
 
 * Memoization
   - built-in controlled side-effect
@@ -153,12 +153,12 @@
 fibs ∷ [Integer]
 fibs = 0 : 1 : zipWith (+) fibs (drop 1 fibs)
 #+END_SRC
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-0-large.png]]
+  - [[file:img/fibs-0-large.png]]
 
 * Fibonacci
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-1-large.png]]
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-2-large.png]]
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-3-large.png]]
+  - [[file:img/fibs-1-large.png]]
+  - [[file:img/fibs-2-large.png]]
+  - [[file:img/fibs-3-large.png]]
 
 * Intermediate Values
 #+BEGIN_SRC Haskell
@@ -167,12 +167,12 @@ fib n = fibs !! n
   where fibs =
      0 : 1 : zipWith (+) fibs (drop 1 fibs)
 #+END_SRC
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-0-large.png]]
+  -[[file:img/fibs-0-large.png]]
 
 * Intermediate Values
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-iv-1-large.png]]
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-iv-2-large.png]]
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-iv-3-large.png]]
+  - [[file:img/fibs-iv-1-large.png]]
+  - [[file:img/fibs-iv-2-large.png]]
+  - [[file:img/fibs-iv-3-large.png]]
 
 * Packages
   - Luke Palmer: =data-memocombinators=
@@ -192,7 +192,7 @@ fib n = fibs ! (n - 1) + fibs ! (n - 2)
 
 * Dynamic Programming
   - array with dependencies as thunks
-  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fib-array-large.png]]
+  - [[file:img/fib-array-large.png]]
   - interesting for harder problems!
 
 * Perspectives
