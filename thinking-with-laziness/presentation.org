@@ -20,18 +20,18 @@
 * Modularity
   - separate *evaluation* from *definition*
     - evaluate at use site
-    - not ahead of time
     - different use sites—different evaluation
   - new way of separating into components
+  - interleave or modify evaluation at use site
 
 * Preserving Asymptotics
   - select n top elements
-    - =select = take n . sort=
+#+BEGIN_SRC Haskell
+  select ∷ Ord o ⇒ [o] → [o]
+  select = take n . sort
+#+END_SRC
   - *does not sort whole list*
-  - \(O(n)\)
-  - compose parts that
-    - need to run interleaved
-    - need to run partially
+  - like adding =break= into /definition/ of =sort=
 
 * Control Execution
   - F18A emulator:
@@ -105,41 +105,118 @@
 
 * Map Coloring
    - =step ∷ Map → State → [Map]=
-  
-   - *first class*
-     #+BEGIN_SRC Haskell
-       solutions = foldM step blank states
-       
-       first = head solutions
-       some = find caBlue solution
-       all = filter caBlue solution
-     #+END_SRC
+
+   #+BEGIN_SRC Haskell
+     solutions ∷ [Map]
+     solutions = foldM step blank states
+     
+     first = head solutions
+
+     -- solution where California is blue
+     some = find caBlue solution
+     all = filter caBlue solution
+   #+END_SRC
 
 * Arbitrary Precision
-  - lazy structures ⇒ precision on demand
-  - *only* and *as much* as you want
-  - different sort of modularity
+  - lazy structures ⇒ *precision on demand*
   - Conal Elliott:
-    #+BEGIN_QUOTE
-      approximations compose badly
-    #+END_QUOTE
+  #+BEGIN_QUOTE
+    approximations compose badly
+  #+END_QUOTE
+  - modularity!
+  - *vector vs raster*
 
 * Exact Real Arithmetic
-  - idea: lazy list of digits
-    - or continued fractions
-    - or any other representation
-  - operations are lazy
-    - take in two lazy lists
-    - produce lazy list
-
-* Advantages
-  - simple to implement
-  - not loss of precision *at seams*
-    - composes well!
-  - extract bits from result
-    - automatically compute intermediate values
+  - lazy list of digits
+  - continued fractions
+  - any other series
+  #+BEGIN_SRC Haskell
+  N [3] [1, 4, 1, 5, 9, 2, 6...]
+  #+END_SRC
+  - simple implement
+  - no loss of precision *at seams*
 
 * Infinite Quadtrees
-  - multiple dimensions
-  - tree hard to do in control flow directly
-  - [quadtree picture]
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/QuadTree-small.png]]
+
+* Memoization
+  - built-in controlled side-effect
+  - *below level of abstraction*
+  - laziness:
+    - computes value *at most once*
+    - deterministic
+    - thread-safe
+
+* Fibonacci
+  - classic example
+#+BEGIN_SRC Haskell
+fibs ∷ [Integer]
+fibs = 0 : 1 : zipWith (+) fibs (drop 1 fibs)
+#+END_SRC
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-0-large.png]]
+
+* Fibonacci
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-1-large.png]]
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-2-large.png]]
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-3-large.png]]
+
+* Intermediate Values
+#+BEGIN_SRC Haskell
+fib ∷ Integer → Integer
+fib n = fibs !! n
+  where fibs =
+     0 : 1 : zipWith (+) fibs (drop 1 fibs)
+#+END_SRC
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-0-large.png]]
+
+* Intermediate Values
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-iv-1-large.png]]
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-iv-2-large.png]]
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fibs-iv-3-large.png]]
+
+* Packages
+  - Luke Palmer: =data-memocombinators=
+  - Conal Elliott: =MemoTrie=
+  - infinite lazy trees
+
+* Dynamic Programming
+  - array of lazy values
+#+BEGIN_SRC Haskell
+fib ∷ Integer → Integer
+fib 0 = 0
+fib 1 = 1
+fib n = fibs ! (n - 1) + fibs ! (n - 2)
+  where
+    fibs = Array (0, n) [go i | i ← [0..n]]
+#+END_SRC
+
+* Dynamic Programming
+  - array with dependencies as thunks
+  - [[/home/tikhon/Documents/talks/thinking-with-laziness/img/fib-array-large.png]]
+  - interesting for harder problems!
+
+* Perspectives
+  - *modularity* 
+    - evaluation vs definition
+  - *control* 
+    - lazy structures as control flow
+  - *precision* 
+    - arbitrary precision values
+  - *memoization* 
+    - laziness = built-in memoization
+
+* References
+  - “Why Functional Programming Matters” by John Hughes
+  - /Parallel and Concurrent Programming in Haskell/ by Simon Marlowe
+  - “Lazy Algorithms for Exact Real Arithmetic” by Pietro Di
+    Gianantonio and Pier Luca Lanzi
+  - “Functional Programming and Quadtrees” by F. Warren Burton and
+    John (Yannis) G. Kollias
+
+* References
+  - [[https://lukepalmer.wordpress.com/2008/10/14/data-memocombinators/][data-memocombinators]]
+  - [[http://conal.net/blog/posts/elegant-memoization-with-functional-memo-tries][elegant memoization with memo tries]]
+  - [[http://jelv.is/blog/Lazy-Dynamic-Programming][Lazy Dynamic Programming]]
+  - thanks:
+    - Conal Elliott
+    - Edward Kmett
