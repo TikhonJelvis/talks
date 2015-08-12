@@ -98,10 +98,10 @@
   #+END_SRC
 
 * Map Coloring
-  - [uncolored map]
+  [[file:img/Blank_US_Map.svg]]
 
 * Map Coloring
-  - [colored map]
+  [[file:img/out.svg]]
 
 * Map Coloring
    - =step ∷ Map → State → [Map]=
@@ -137,7 +137,7 @@
   - no loss of precision *at seams*
 
 * Infinite Quadtrees
-  - [[file:img/QuadTree-small.png]]
+  [[file:img/QuadTree.png]]
 
 * Memoization
   - built-in controlled side-effect
