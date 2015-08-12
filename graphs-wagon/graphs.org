@@ -1,0 +1,139 @@
+#+Title: Inductive Graphs
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:nil
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Introduction to inductive graphs and functional graph algorithms in Haskell.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* Graphs: Hard in Haskell?
+#+ATTR_REVEAL: :frag roll-in
+
+    Graph algorithms and data structures:
+    
+    *too imperative*
+
+* Pattern match on a graph?
+#+ATTR_REVEAL: :frag roll-in
+
+    How? Unlcear
+
+* What can we match on?
+#+ATTR_REVEAL: :frag roll-in
+  - lists
+#+ATTR_REVEAL: :frag roll-in
+  - trees
+#+ATTR_REVEAL: :frag roll-in
+  - algebraic data types
+
+* Why?
+  Algebraic data types are *inductive*:
+
+  there is exactly one way to construct them
+
+* 
+  Consider lists:
+
+#+BEGIN_SRC Haskell
+data List a = Nil | Cons a (List a)
+#+END_SRC
+
+#+ATTR_REVEAL: :frag roll-in
+  one way to construct
+
+#+ATTR_REVEAL: :frag roll-in
+#+BEGIN_SRC Haskell
+Nil
+Cons 1 (Cons 2 Nil)
+#+END_SRC
+
+#+ATTR_REVEAL: :frag roll-in
+  one way to deconstruct
+
+#+ATTR_REVEAL: :frag roll-in
+#+BEGIN_SRC Haskell
+case list of
+  Nil       -> ...
+  Cons x xs -> ...
+#+END_SRC
+
+* Graphs are *not* inductive
+
+  Graph construction — *implementation detail*
+
+  nodes are not ordered
+
+* Let's pretend!
+  *View* graphs as inductive
+
+  Decompose into:
+
+#+ATTR_REVEAL: :frag roll-in
+      - a node
+#+ATTR_REVEAL: :frag roll-in
+      - its edges
+#+ATTR_REVEAL: :frag roll-in
+      - the rest of the graph
+* View graphs as ADTs
+  #+BEGIN_SRC Haskell
+  data Context =
+    Context [Node] Node [Node]
+
+  data View =
+    Context :& Graph
+  #+END_SRC
+  (ignoring node and edge labels)
+* 
+ [[file:http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs/example.png]]
+
+* Decomposition
+ [[file:match1.png]]
+
+ =([4, 5, 6], 1, []) :& graph=
+
+* Another decomposition
+ [[file:http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs/match2.png]]
+
+ =([5, 6, 7], 2, []) :& graph=
+
+* matchAny
+  #+BEGIN_SRC Haskell
+  matchAny :: Graph -> View
+  #+END_SRC
+
+  #+BEGIN_SRC Haskell
+  foo :: Graph -> ...
+  foo graph | isEmpty graph     = ...
+  foo (matchAny -> ctx :& rest) = ...
+  #+END_SRC
+
+* match
+  #+BEGIN_SRC Haskell
+  match :: Node -> Graph -> Maybe View
+  #+END_SRC
+
+  - matches a *specific* node
+  - =Nothing= if not in graph
+  - directed graph traversal
+
+* depth-first traversal
+  #+BEGIN_SRC Haskell
+  dfs :: [Node] -> Graph -> [Node]
+  dfs [] _ = []
+
+  dfs (x:xs) (match x -> Just (ctx :& g)) =
+    x : dfs (neighbors ctx ++ xs) g
+
+  dfs (_:xs) graph = dfs xs graph
+  #+END_SRC
+
