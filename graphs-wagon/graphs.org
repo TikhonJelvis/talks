@@ -94,15 +94,20 @@ case list of
   #+END_SRC
   (ignoring node and edge labels)
 * 
- [[file:http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs/example.png]]
+ [[file:full.png]]
 
-* Decomposition
+* 
  [[file:match1.png]]
 
  =([4, 5, 6], 1, []) :& graph=
 
-* Another decomposition
- [[file:http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs/match2.png]]
+* 
+ [[file:recurse.png]]
+
+ the rest of the graph
+
+* 
+ [[file:match2.png]]
 
  =([5, 6, 7], 2, []) :& graph=
 
