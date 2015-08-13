@@ -1,0 +1,20 @@
+digraph fgl {
+	margin = "0"
+	page = "4"
+	size = "4"
+	ratio = "fill"
+        rankdir = "LR"
+	1 [fontname="Junction" shape="doublecircle" color="#0b4faa" style="filled" fillcolor="#90A9CB"]
+        2 [fontname="Junction" shape="circle"]
+        3 [fontname="Junction" shape="circle"]
+        4 [fontname="Junction" shape="circle"]
+        5 [fontname="Junction" shape="circle"]
+        6 [fontname="Junction" shape="circle"]
+        7 [fontname="Junction" shape="circle"] 
+        1 -> 2
+        2 -> 3
+        3 -> 4
+        4 -> 5
+        5 -> 6
+        6 -> 7
+}
