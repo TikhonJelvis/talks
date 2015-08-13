@@ -24,11 +24,8 @@
     *too imperative*
 
 * Pattern match on a graph?
-#+ATTR_REVEAL: :frag roll-in
 
-    How? Unlcear
-
-* What can we match on?
+* What /can/ we match on?
 #+ATTR_REVEAL: :frag roll-in
   - lists
 #+ATTR_REVEAL: :frag roll-in
@@ -220,8 +217,11 @@ case list of
   - higher-order graph functions
 
 * Further Reading
-  - [[http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs][Generating Mazes with Inductive Graphs]]
+  - Generating Mazes with Inductive Graphs
     - on jelv.is/blog
-  - [[https://web.engr.oregonstate.edu/~erwig/papers/InductiveGraphs_JFP01.pdf][“Inductive Graphs and Functional Graph Algorithms”]]
-    - Martin Erwig. /Journal of Functional Programming, Vol. 11/,
+  - “Inductive Graphs and Functional Graph Algorithms”
+    - Martin Erwig.
+
+      /Journal of Functional Programming, Vol. 11/,
+
       No. 5, 467-492, 2001
