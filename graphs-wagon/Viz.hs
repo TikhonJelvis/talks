@@ -84,9 +84,18 @@ digraph fgl {
 }                
 |]
 
--- vizDfs :: (Show a, Show b) => Gr a b -> [String]
--- vizDfs full = execWriter . foldM (flip go) full $ dfs (ghead full) full
---   where go node (match node -> (Just ctx, graph)) = do
---           tell [decomposition full ctx graph]
---           return graph
---         go _ graph = return graph
+dfs :: [Graph.Node] -> Gr a b -> [Graph.Node]
+dfs [] _ = []
+dfs (x:xs) (match x -> (Just ctx, g)) =
+  x : dfs (Graph.neighbors' ctx ++ xs) g
+dfs (_:xs) graph = dfs xs graph
+
+ghead g | Graph.isEmpty g = error "Can't take head of empty graph!"
+ghead (matchAny -> ((_, n, _, _), _)) = n
+
+vizDfs :: (Show a, Show b) => Gr a b -> [String]
+vizDfs full = execWriter . foldM (flip go) full $ dfs [ghead full] full
+  where go node (match node -> (Just ctx, graph)) = do
+          tell [decomposition full ctx graph]
+          return graph
+        go _ graph = return graph

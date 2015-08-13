@@ -106,7 +106,16 @@ case list of
 
  the rest of the graph
 
-* 
+* Like lists:
+  match
+
+  [[file:list-match-cropped.png]]
+
+  recurse
+
+  [[file:list-recurse-cropped.png]]
+* Another match
+
  [[file:match2.png]]
 
  =([5, 6, 7], 2, []) :& graph=
@@ -142,3 +151,77 @@ case list of
   dfs (_:xs) graph = dfs xs graph
   #+END_SRC
 
+* 
+  [[file:full.png]]
+
+  stack: =[]=
+
+  result: =[]=
+
+* 
+  [[file:step_0.png]]
+
+  stack: =[4, 5, 6]=
+
+  result: =[1]=
+
+* 
+  [[file:step_1.png]]
+
+  stack: =[7, 5, 6]=
+
+  result: =[1, 4]=
+
+* 
+  [[file:step_2.png]]
+
+  stack: =[2, 3, 5, 6]=
+
+  result: =[1, 4, 7]=
+
+* 
+  [[file:step_3.png]]
+
+  stack: =[5, 6, 5, 6]=
+
+  result: =[1, 4, 7, 2]=
+
+* 
+  [[file:step_4.png]]
+
+  stack: =[6, 5, 6]=
+
+  result: =[1, 4, 7, 2, 5]=
+
+* 
+  [[file:step_5.png]]
+
+  stack: =[3, 5, 6]=
+
+  result: =[1, 4, 7, 2, 5, 6]=
+
+* 
+  [[file:step_6.png]]
+
+  stack: =[5, 6]=
+
+  result: =[1, 4, 7, 2, 5, 6, 3]=
+
+* Pattern Matching on Graphs!
+  - see graphs as *inductive*
+  - use *directed* pattern matching
+  - write normal functional code
+
+* Real World Use
+  - =fgl= library
+    - labels
+    - directed edges
+    - slightly different API
+  - higher-order graph functions
+
+* Further Reading
+  - [[http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs][Generating Mazes with Inductive Graphs]]
+    - on jelv.is/blog
+  - [[https://web.engr.oregonstate.edu/~erwig/papers/InductiveGraphs_JFP01.pdf][“Inductive Graphs and Functional Graph Algorithms”]]
+    - Martin Erwig. /Journal of Functional Programming, Vol. 11/,
+      No. 5, 467-492, 2001
