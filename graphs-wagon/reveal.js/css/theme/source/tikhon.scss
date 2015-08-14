@@ -13,7 +13,7 @@
 
 
 // Include theme-specific fonts
-@import url(../../../../css/fonts.css);
+@import "tikhon-fonts.css";
 
 // Override theme settings (see ../template/settings.scss)
 $mainColor: #3f3f3f;
@@ -49,7 +49,7 @@ $selectionBackgroundColor: none;
 @import "../template/theme";
 // ---------------------------------------------
 
-.reveal a {
+.reveal h2 > a {
   font-size : 70%;
 }
 

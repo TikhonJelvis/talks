@@ -217,9 +217,9 @@ case list of
   - higher-order graph functions
 
 * Further Reading
-  - Generating Mazes with Inductive Graphs
+  - [[http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs][Generating Mazes with Inductive Graphs]]
     - on jelv.is/blog
-  - “Inductive Graphs and Functional Graph Algorithms”
+  - [[https://web.engr.oregonstate.edu/~erwig/papers/InductiveGraphs_JFP01.pdf][“Inductive Graphs and Functional Graph Algorithms”]]
     - Martin Erwig.
 
       /Journal of Functional Programming, Vol. 11/,
