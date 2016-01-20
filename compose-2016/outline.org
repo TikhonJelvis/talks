@@ -1,0 +1,65 @@
+* Satisfiability
+** SAT Solvers
+   - background on SAT solvers
+   - example SAT formula
+     - useful: modeling circuits... etc.
+** SMT
+   - extend SAT with other variables, constraints
+     - "theories"
+   - examples: formula with numeric constraints
+   - list a few example theories
+
+* Introduce Tools
+** Z3
+   - Z3—"best in class" general-purpose SMT solver
+   - fully open source! 
+     - MIT license?
+   - supports a lot of theories, usually fast
+** API
+   - Z3 has API bindings in multiple languages: C++, Python, C# (F#),
+     OCaml
+   - accepts SMT-lib: s-expression-based language for specifying
+     formulas
+     - easy to generate from Lisp
+     - works for different solvers
+** Haskell
+   - SBV: high-level DSL for SMT solvers
+     - example formula?
+     - good for experimenting yourself
+   - Z3 bindings: direct access to Z3 features
+     - incremental solving?
+     - useful for implementing tools backed by Z3
+
+* IMP Formula Compiler
+** IMP "language"
+** Bounded Verification
+** Compiler in detail
+
+* Use cases
+** DSLs
+   - full languages are tricky
+     - mention C projects?
+   - DSLs are smaller, bounded, more useful
+     - expressing classes of algorithms
+     - embedded/real time programming
+     - domain-specific details
+       - modeling financial contracts?
+     - Haskell examples?
+** Formula compiler/bounded verification
+   - run forwards/backwards
+     - cute
+   - verify
+     - against logical specification
+     - against other program
+   - check invariants
+     - "model checking"
+     - temporal logic?
+   - program synthesis
+   - automatic debugging/"angelic programming"
+** SMT Solvers in general
+   - typechecking
+     - GHC plugin
+     - "liquid types"
+     - easy checking/inference for DSLs
+   - other constraints
+     - package management

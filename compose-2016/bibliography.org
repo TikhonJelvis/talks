@@ -1,0 +1,20 @@
+* Papers
+** [[http://cis.upenn.edu/~alur/CIS673/smt11.pdf][Satisfiability Modulo Theories: Introduction and Applications]]
+    - wonderful introduction and overview of SMT solvers
+** [[http://www.cs.cmu.edu/~emc/papers/Papers%2520In%2520Refereed%2520Journals/Bounded%2520Model%2520Checking%2520Using%2520Satisfiablility%2520Solving.pdf][Bounded Model Checking Using Satisfiability Solving]]
+    - paper outlining general technique of bounded model checking,
+      compared to normal model checking
+** [[http://homes.cs.washington.edu/~emina/pubs/rosette.pldi14.pdf][A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages]]
+    - useful techniques
+    - interesting project in Racket
+** [[http://goto.ucsd.edu/~rjhala/liquid/liquid_types.pdf][Liquid Types]]
+    - refinement types for Haskell and friends with Z3
+** [[http://people.csail.mit.edu/asolar/papers/thesis.pdf][Program Synthesis by Sketching]]
+    - CEGIS, synthesis with SMT solvers
+** [[http://www.philipp.ruemmer.org/publications/smt-fpa.pdf][An SMT-LIB Theory of Binary Floating-Point Arithmetic]]
+* Needed:
+** IMP operational semantics
+** Automatic debugging
+   - angelic programming?
+** DSLs
+** Package Management?

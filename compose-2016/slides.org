@@ -1,0 +1,72 @@
+#+Title: Analyzing Programs with Z3
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:nil
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Introduction to analyzing programs with Z3 in Haskell.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* Boolean Satisfiability (SAT)
+ - constraint satisfaction with boolean variables
+  
+  
+  \[ (x_1 \lor \lnot x_2) \land (x_1 \lor x_3 \lor \lnot x_4) \land
+  \cdots \]
+
+
+ - solves for all variables *or* returns “unsat”
+
+* SMT
+ - Satsifiability Modulo Theories
+    
+  \[ 
+    x_1 \le 10 \land x_3 \le x_1 + x_2 \land \cdots 
+  \] 
+
+ - formulas with *different types* of variables
+
+* Different Theories
+  - unbounded integers
+  - real numbers
+  - fixed-size words (*bitvectors*)
+  - floating point numbers
+  - arrays
+  - more
+
+* Z3
+  - SMT solver from Microsoft Research
+  - Open source: MIT licensed
+  - API bindings in Haskell, OCaml, C♯…
+
+* Haskell
+  - SBV
+    - high-level DSL
+    - supports multiple solvers
+  - Haskell-Z3 
+    - Z3-specific bindings
+    - useful for tools backed by Z3
+
+* Analyzing Programs
+  - program ⇒ SMT formula
+  - variables:
+    - inputs
+    - outputs
+    - intermediate states
+  - *bounded*
+
+* Solving
+  - solve for outputs: interpreter
+  - solve for /inputs/: *reverse interpreter*
+  - intermediate variables: check invariants
+  - compare programs
+    - verify against specification
