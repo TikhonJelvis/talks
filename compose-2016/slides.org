@@ -18,8 +18,8 @@
 
 * Boolean Satisfiability (SAT)
  - constraint satisfaction with boolean variables
-  
-  
+
+
   \[ (x_1 \lor \lnot x_2) \land (x_1 \lor x_3 \lor \lnot x_4) \land
   \cdots \]
 
@@ -28,10 +28,10 @@
 
 * SMT
  - Satsifiability Modulo Theories
-    
-  \[ 
-    x_1 \le 10 \land x_3 \le x_1 + x_2 \land \cdots 
-  \] 
+
+  \[
+    x_1 \le 10 \land x_3 \le x_1 + x_2 \land \cdots
+  \]
 
  - formulas with *different types* of variables
 
@@ -45,14 +45,14 @@
 
 * Z3
   - SMT solver from Microsoft Research
-  - Open source: MIT licensed
+  - Open source: *MIT license*
   - API bindings in Haskell, OCaml, C♯…
 
 * Haskell
   - SBV
     - high-level DSL
     - supports multiple solvers
-  - Haskell-Z3 
+  - Haskell-Z3
     - Z3-specific bindings
     - useful for tools backed by Z3
 
@@ -70,3 +70,164 @@
   - intermediate variables: check invariants
   - compare programs
     - verify against specification
+
+* Inline ⇒ Unroll ⇒ SSA
+
+* Inline
+  #+BEGIN_SRC java
+    def foo(a, b) { <BODY> }
+    …
+    foo (1, 2);
+    stuff;
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    // fresh names
+    a := 1;
+    b := 2;
+    <BODY>
+    stuff;
+  #+END_SRC
+
+* Unroll
+  #+BEGIN_SRC java
+    while x < 5 { <BODY> }
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    if x < 5 {
+      <BODY>
+      if x < 5 {
+        … /* bound times */
+      } else {}
+    } else {}
+  #+END_SRC
+
+* SSA
+  - Single Static Assignment
+
+  #+BEGIN_SRC java
+    x := 10;
+    a := 11;
+    x := x + a;
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    x₀ := 10;
+    a₀ := 11;
+    x₁ := x₀ + a₀;
+  #+END_SRC
+
+* 
+  #+BEGIN_SRC java
+    if x < 5 {
+      x := x + 1;
+    } else {
+      x := x + 2;
+    }
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    if x < 5 {
+      x₁ := x₀ + 1;
+    } else {
+      x₂ := x₀ + 2;
+    }
+    x₃ := φ(x₁, x₂)
+  #+END_SRC
+
+* 
+  - Interpreter
+    #+BEGIN_SRC haskell
+      aexp :: Scope → AExp → Int
+      bexp :: Scope → BExp → Bool
+      cmd  :: Scope → Cmd  → Scope
+    #+END_SRC
+  - Compiler
+    #+BEGIN_SRC haskell
+      aexp :: Scope → AExp → Z3 AST
+      bexp :: Scope → BExp → Z3 AST
+      cmd  :: Scope → Cmd  → Z3 ()
+    #+END_SRC
+
+* 
+   #+BEGIN_SRC java
+   5 + x
+   #+END_SRC
+
+   \begin{align}
+     bvAdd(&bv(5, 32),\\ &bv(x_0, 32))
+   \end{align}
+
+* Expressions
+   #+BEGIN_SRC haskell
+   Lit n     → n
+   Var x     → lookup scope x
+   e₁ :+: e₂ → aexp scope e₁ +
+               aexp scope e₂
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   Lit n     → Z3.mkBv 32 n
+   Var x     → lookup x scope
+   e₁ :+: e₂ → do e₁ ← aexp scope e₁
+                  e₂ ← aexp scope e₂
+                  Z3.mkAdd e₁ e₂
+   #+END_SRC
+
+* 
+  #+BEGIN_SRC java
+  x = 5 + x
+  #+END_SRC
+
+  \begin{align}
+  \text{assert}(x_1 = bvAdd(&bv(5, 32), \\ &bv(x_0, 32)))
+  \end{align}
+
+* Assignment
+  #+BEGIN_SRC haskell
+  Set var val →
+    update var (aexp scope val) scope
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  Set var val →
+    do newVal ← aexp scope val
+       newVar ← Z3.mkFreshBvVar name 32
+       eq     ← Z3.mkEq newVar newVal
+       Z3.assert eq
+       return (update name newVar scope)
+  #+END_SRC
+
+* 
+  #+BEGIN_SRC java
+  if x < 5 {
+    x := x + 1
+  } else {
+    x := x + 2
+  }
+  #+END_SRC
+
+  \begin{align}
+    &\text{assert}(x_1 = x_0 + 1) \\
+    &\text{assert}(x_2 = x_0 + 2) \\
+    &\text{assert}(x_3 = \phi(x_0 < 5, x_1, x_2)) \\
+  \end{align}
+
+* If: φ-functions
+  #+BEGIN_SRC haskell
+  If cond c_1 c_2 ->
+    do cond'   <- bexp scope cond
+       scope'  <- compile scope c_1
+       scope'' <- compile scope c_2
+       makePhis cond' scope scope' scope''
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+    Z3.mkIte cond (lookup name scope₁)
+                  (lookup name scope₂)
+  #+END_SRC
