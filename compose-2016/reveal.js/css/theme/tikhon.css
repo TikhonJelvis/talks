@@ -158,7 +158,7 @@ body {
 
 .reveal pre code {
   display: block;
-  padding: 5px;
+  padding: 20px;
   overflow: auto;
   max-height: 400px;
   word-wrap: normal;
@@ -298,13 +298,13 @@ body {
 .reveal code, .reveal pre {
   font-family: "DejaVu Sans Mono";
   font-size: 42px;
-  background: rgba(100, 0, 150, 0.05);
   border-radius: 12px;
-  border: 2px solid rgba(100, 0, 150, 0.2); }
+  border: 2px solid rgba(100, 0, 150, 0.2);
+}
 
-.reveal pre {
-  padding: 15px 30px;
-  line-height: 125%; }
+// .reveal pre {
+//   padding: 15px 30px;
+//   line-height: 125%; }
 
 .reveal code {
   padding: 5px 10px; }
