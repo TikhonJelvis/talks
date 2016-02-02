@@ -12,6 +12,9 @@
 ** [[http://people.csail.mit.edu/asolar/papers/thesis.pdf][Program Synthesis by Sketching]]
     - CEGIS, synthesis with SMT solvers
 ** [[http://www.philipp.ruemmer.org/publications/smt-fpa.pdf][An SMT-LIB Theory of Binary Floating-Point Arithmetic]]
+** [[http://www.informatik.uni-bremen.de/agbs/jp/papers/peleska_et_al_nfm2011.pdf][Automated Test Case Generation with SMT-Solving and Abstract Interpretation]]
+** [[http://arxiv.org/pdf/1510.08419.pdf][Program Synthesis from Polymorphic Refinement Types]]
+  - demo: [[http://comcom.csail.mit.edu/comcom/#Synquid][Synquid]]
 * Needed:
 ** IMP operational semantics
 ** Automatic debugging

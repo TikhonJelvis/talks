@@ -15,13 +15,15 @@
 #+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Introduction to analyzing programs with Z3 in Haskell.">
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
+#+REVEAL_MATHJAX_URL: mathjax/MathJax.js?config=TeX-AMS_SVG
 
 * Boolean Satisfiability (SAT)
  - constraint satisfaction with boolean variables
 
 
-  \[ (x_1 \lor \lnot x_2) \land (x_1 \lor x_3 \lor \lnot x_4) \land
-  \cdots \]
+  \begin{equation}
+    (x_1 \lor \lnot x_2) \land (x_1 \lor x_3 \lor \lnot x_4) \land \cdots 
+  \end{equation}
 
 
  - solves for all variables *or* returns “unsat”
@@ -29,9 +31,9 @@
 * SMT
  - Satsifiability Modulo Theories
 
-  \[
+  \begin{equation}
     x_1 \le 10 \land x_3 \le x_1 + x_2 \land \cdots
-  \]
+  \end{equation}
 
  - formulas with *different types* of variables
 
@@ -70,6 +72,38 @@
   - intermediate variables: check invariants
   - compare programs
     - verify against specification
+
+* IMP
+  #+BEGIN_SRC java
+    1 + x * 2
+    (x <= 10) && (y == 5) 
+  #+END_SRC
+  #+BEGIN_SRC haskell
+    data AExp = Var Name
+              | Lit Int
+              | AExp :+: AExp
+              | AExp :-: AExp
+              | AExp :*: AExp
+              | AExp :/: AExp
+
+   data BExp = True' | False' | ⋯
+  #+END_SRC
+
+* IMP
+  #+BEGIN_SRC java
+    x := x + 1
+    ⋯ ; ⋯
+    while cond { ⋯ }
+    if cond { ⋯ } else { ⋯ }
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+    data Cmd = Skip
+             | Set Name AExp
+             | Seq Cmd Cmd
+             | If BExp Cmd Cmd
+             | While BExp Cmd
+  #+END_SRC
 
 * Inline ⇒ Unroll ⇒ SSA
 
@@ -143,15 +177,15 @@
 * 
   - Interpreter
     #+BEGIN_SRC haskell
-      aexp :: Scope → AExp → Int
-      bexp :: Scope → BExp → Bool
-      cmd  :: Scope → Cmd  → Scope
+      aexp :: (Scope Int) → AExp → Int
+      bexp :: (Scope Int) → BExp → Bool
+      cmd  :: (Scope Int) → Cmd  → Scope
     #+END_SRC
   - Compiler
     #+BEGIN_SRC haskell
-      aexp :: Scope → AExp → Z3 AST
-      bexp :: Scope → BExp → Z3 AST
-      cmd  :: Scope → Cmd  → Z3 ()
+      aexp :: (Scope AST) → AExp → Z3 AST
+      bexp :: (Scope AST) → BExp → Z3 AST
+      cmd  :: (Scope AST) → Cmd  → Z3 ()
     #+END_SRC
 
 * 
@@ -190,12 +224,13 @@
 
 * Assignment
   #+BEGIN_SRC haskell
-  Set var val →
-    update var (aexp scope val) scope
+  Set name val →
+    let newVal = aexp scope val in
+    update name newVal scope
   #+END_SRC
 
   #+BEGIN_SRC haskell
-  Set var val →
+  Set name val →
     do newVal ← aexp scope val
        newVar ← Z3.mkFreshBvVar name 32
        eq     ← Z3.mkEq newVar newVal
@@ -220,10 +255,10 @@
 
 * If: φ-functions
   #+BEGIN_SRC haskell
-  If cond c_1 c_2 ->
-    do cond'   <- bexp scope cond
-       scope'  <- compile scope c_1
-       scope'' <- compile scope c_2
+  If cond c_1 c_2 →
+    do cond'   ← bexp scope cond
+       scope'  ← compile scope c_1
+       scope'' ← compile scope c_2
        makePhis cond' scope scope' scope''
   #+END_SRC
 
@@ -231,3 +266,54 @@
     Z3.mkIte cond (lookup name scope₁)
                   (lookup name scope₂)
   #+END_SRC
+
+* Now What
+  - *interpret*: starting variables
+  - *reverse*: final variables
+  - *check invariants*: intermediate variables
+    - model checking
+    - invariants in temporal logic
+
+* Verification
+  - *verify*: compare two programs
+    - assert x1ₙ ≠ x2ₙ, y1ₙ ≠ y2ₙ…
+    - solve
+      - unsat: programs are equal
+      - sat: counterexample input
+
+* Synthesis
+  - set inputs /and/ outputs
+  - find program
+  - verify:
+    - unsat: done!
+    - sat: new input/output pair
+
+* Synthesis
+  - *CEGIS*
+    - counterexample guided inductive synthesis
+  - sketching
+  #+BEGIN_SRC java
+    while x <= ?? {
+      x += a * ??
+    }
+  #+END_SRC
+
+* Example: Synquid
+  - Haskell-like
+  - refinement types
+  - sketch-based synthesis
+  #+BEGIN_SRC Haskell
+    replicate :: n: Nat -> x: a -> 
+                 {List a | len _v == n}
+    replicate = ??
+  #+END_SRC
+
+* Interactive Tools
+  - nondeterministic execution
+    - model concurrency
+    - "angelic programming"
+  - evaluate assertions statically
+  - test case generation
+  - synthesis-powered code completion
+
+* Easier for DSLs!
