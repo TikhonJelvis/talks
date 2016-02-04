@@ -18,15 +18,13 @@
 #+REVEAL_MATHJAX_URL: mathjax/MathJax.js?config=TeX-AMS_SVG
 
 * Boolean Satisfiability (SAT)
- - constraint satisfaction with boolean variables
-
+ - boolean variables
 
   \begin{equation}
     (x_1 \lor \lnot x_2) \land (x_1 \lor x_3 \lor \lnot x_4) \land \cdots 
   \end{equation}
 
-
- - solves for all variables *or* returns “unsat”
+ - solves *or* returns “unsat”
 
 * SMT
  - Satsifiability Modulo Theories
@@ -78,18 +76,8 @@
     1 + x * 2
     (x <= 10) && (y == 5) 
   #+END_SRC
-  #+BEGIN_SRC haskell
-    data AExp = Var Name
-              | Lit Int
-              | AExp :+: AExp
-              | AExp :-: AExp
-              | AExp :*: AExp
-              | AExp :/: AExp
 
-   data BExp = True' | False' | ⋯
-  #+END_SRC
-
-* IMP
+  - side effects:
   #+BEGIN_SRC java
     x := x + 1
     ⋯ ; ⋯
@@ -97,6 +85,31 @@
     if cond { ⋯ } else { ⋯ }
   #+END_SRC
 
+* IMP
+  \begin{align}
+    A ::&= x & \text{variable}\\
+        &|\quad n & \text{literal} \\
+        &|\quad A + A & \\
+        &|\quad A - A & \\
+        &|\quad A * A & \\
+        &|\quad A / A &
+  \end{align}
+
+* IMP
+  #+BEGIN_SRC haskell
+    data AExp = Var Name
+              | Lit Int
+              | AExp :+: AExp
+              | AExp :-: AExp
+              | AExp :*: AExp
+              | AExp :/: AExp
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+   data BExp = True' | False' | ⋯
+  #+END_SRC
+
+* IMP
   #+BEGIN_SRC haskell
     data Cmd = Skip
              | Set Name AExp
@@ -281,17 +294,11 @@
       - unsat: programs are equal
       - sat: counterexample input
 
-* Synthesis
-  - set inputs /and/ outputs
-  - find program
-  - verify:
-    - unsat: done!
-    - sat: new input/output pair
+* CEGIS
+  *counterexample guided inductive synthesis*
+  [[/home/tikhon/Documents/talks/compose-2016/cegis.png]]
 
-* Synthesis
-  - *CEGIS*
-    - counterexample guided inductive synthesis
-  - sketching
+* Sketching
   #+BEGIN_SRC java
     while x <= ?? {
       x += a * ??
@@ -299,10 +306,13 @@
   #+END_SRC
 
 * Example: Synquid
-  - Haskell-like
-  - refinement types
-  - sketch-based synthesis
+  *refinement types*
   #+BEGIN_SRC Haskell
+    termination measure len
+      :: List a -> {Int | _v >= 0} where
+      Nil -> 0
+      Cons x xs -> 1 + len xs
+
     replicate :: n: Nat -> x: a -> 
                  {List a | len _v == n}
     replicate = ??
@@ -317,3 +327,5 @@
   - synthesis-powered code completion
 
 * Easier for DSLs!
+
+* Bibliography and stuff…

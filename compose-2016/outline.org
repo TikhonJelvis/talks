@@ -3,11 +3,13 @@
    - background on SAT solvers
    - example SAT formula
      - useful: modeling circuits... etc.
+   - general basis for "satisfiability solvers" (?)
 ** SMT
    - extend SAT with other variables, constraints
      - "theories"
    - examples: formula with numeric constraints
    - list a few example theories
+** General problem-solving tip: shove it into an SMT solver
 
 * Introduce Tools
 ** Z3
@@ -32,6 +34,9 @@
 
 * IMP Formula Compiler
 ** IMP "language"
+   - introduce abstract grammar
+   - compare to algebraic data type
+     - the computation's "shape" follows algebraic data type
 ** Bounded Verification
 ** Compiler in detail
 
@@ -63,3 +68,4 @@
      - easy checking/inference for DSLs
    - other constraints
      - package management
+** Unconference projects?
