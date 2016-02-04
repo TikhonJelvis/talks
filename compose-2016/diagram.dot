@@ -1,0 +1,14 @@
+digraph fgl {
+	margin = "0"
+	page = "4"
+	size = "4"
+	ratio = "fill"
+	rankdir = "LR"
+        splines = true
+        Synthesize [fontname="Junction" shape="square"]
+        Verify [fontname="Junction" shape="square" label="   Verify    "]
+        Synthesize -> Verify [label="candidate"]
+        Synthesize -> Verify [color="white"]
+        Synthesize -> Verify [color="white"]
+        Verify -> Synthesize [label="counterexample"]
+}
