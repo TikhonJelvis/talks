@@ -335,7 +335,7 @@
   - nondeterministic execution
     - model concurrency
     - "angelic programming"
-  - evaluate assertions statically
+  - debugging aides
   - test case generation
   - synthesis-powered code completion
 
