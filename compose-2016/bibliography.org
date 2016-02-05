@@ -21,6 +21,9 @@
 ** [[http://jelv.is/chlorophyll.pdf][Chlorophyll: Synthesis-Aided Compiler for Low-Power Spatial Architectures]]
    - Compiler for a weird (low-power, Forth-based) architecture using synthesis for optimization.
    - Phitchaya Mangpo Phothilimthana, Tikhon Jelvis, Rohin Shah, Nishant Totla, Sarah Chasins and Rastislav Bodík
+** [[http://www.csl.sri.com/users/tiwari/papers/pldi2011-bitvector.pdf][Synthesis of Loop-free Programs]]
+   - Component-based synthesis of loop-free programs.
+   - Sumit Gulwani, Susmit Jha, Ashish Tiwari and Ramarathnam Venkatesan
 ** [[http://www.philipp.ruemmer.org/publications/smt-fpa.pdf][An SMT-LIB Theory of Binary Floating-Point Arithmetic]]
    - Philipp Rümmer and Thomas Wahl
 ** [[http://www.informatik.uni-bremen.de/agbs/jp/papers/peleska_et_al_nfm2011.pdf][Automated Test Case Generation with SMT-Solving and Abstract Interpretation]]
