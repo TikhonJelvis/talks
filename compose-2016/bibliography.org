@@ -1,23 +1,33 @@
 * Papers
+** [[http://www.cs.cornell.edu/courses/cs6110/2013sp/lectures/lec05-sp13.pdf][Lecture notes for IMP operational semantics.]]
+   - Andrew Myers
 ** [[http://cis.upenn.edu/~alur/CIS673/smt11.pdf][Satisfiability Modulo Theories: Introduction and Applications]]
-    - wonderful introduction and overview of SMT solvers
+   - wonderful introduction and overview of SMT solvers
+   - Leonardo de Moura and Nikolaj Bjørner
 ** [[http://www.cs.cmu.edu/~emc/papers/Papers%2520In%2520Refereed%2520Journals/Bounded%2520Model%2520Checking%2520Using%2520Satisfiablility%2520Solving.pdf][Bounded Model Checking Using Satisfiability Solving]]
-    - paper outlining general technique of bounded model checking,
-      compared to normal model checking
+   - paper outlining general technique of bounded model checking,
+     compared to normal model checking
+   - Edmund Clarke, Armin Biere, Richard Raimi, and Yunshan Zhu 
 ** [[http://homes.cs.washington.edu/~emina/pubs/rosette.pldi14.pdf][A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages]]
-    - useful techniques
-    - interesting project in Racket
+   - useful techniques
+   - interesting project in Racket
+   - Emina Torlak and Rastislav Bodík
 ** [[http://goto.ucsd.edu/~rjhala/liquid/liquid_types.pdf][Liquid Types]]
-    - refinement types for Haskell and friends with Z3
+   - refinement types for Haskell and friends with Z3
+   - Patrick M. Rondon, Ming Kawaguchi and Ranjit Jhala
 ** [[http://people.csail.mit.edu/asolar/papers/thesis.pdf][Program Synthesis by Sketching]]
-    - CEGIS, synthesis with SMT solvers
+   - CEGIS, sketch-based program synthesis with SMT solvers
+   - Armando Solar-Lezama
 ** [[http://www.philipp.ruemmer.org/publications/smt-fpa.pdf][An SMT-LIB Theory of Binary Floating-Point Arithmetic]]
+   - Philipp Rümmer and Thomas Wahl
 ** [[http://www.informatik.uni-bremen.de/agbs/jp/papers/peleska_et_al_nfm2011.pdf][Automated Test Case Generation with SMT-Solving and Abstract Interpretation]]
+   - Jan Peleska, Elena Vorobev, and Florian Lapschies
 ** [[http://arxiv.org/pdf/1510.08419.pdf][Program Synthesis from Polymorphic Refinement Types]]
-  - demo: [[http://comcom.csail.mit.edu/comcom/#Synquid][Synquid]]
-* Needed:
-** IMP operational semantics
-** Automatic debugging
-   - angelic programming?
-** DSLs
-** Package Management?
+   - Haskell-like language with refinement types and sketch-based synthesis
+   - demo: [[http://comcom.csail.mit.edu/comcom/#Synquid][Synquid]]
+   - Nadia Polikarpova and Armando Solar-Lezama
+** [[http://www.cs.berkeley.edu/~bodik/Files/2010/popl-2010.pdf][Programming with Angelic Nondeterminism]]
+   - a technique for interactive programming which can be implemented
+     efficiently with an SMT solver
+   - Shaon Barman, Rastislav Bodík, Satish Chandra, Joel Galenson,
+     Doug Kimelman, Casey Rodarmor and Nicholas Tung
