@@ -305,6 +305,12 @@
   *counterexample guided inductive synthesis*
   [[/home/tikhon/Documents/talks/compose-2016/cegis.png]]
 
+* Optimization
+  - synthesize faster programs
+    - original program: spec
+    - optimize a sliding window of instructions
+  - /easier/ than classic compiler optimizations
+
 * Sketching
   #+BEGIN_SRC java
     while x <= ?? {
