@@ -33,7 +33,7 @@
     x_1 \le 10 \land x_3 \le x_1 + x_2 \land \cdots
   \end{equation}
 
- - formulas with *different types* of variables
+ - *different types* of variables
 
 * Different Theories
   - unbounded integers
@@ -334,7 +334,7 @@
 * Interactive Tools
   - nondeterministic execution
     - model concurrency
-    - "angelic programming"
+    - “angelic programming”
   - debugging aides
   - test case generation
   - synthesis-powered code completion
