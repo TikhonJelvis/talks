@@ -287,6 +287,13 @@
     - model checking
     - invariants in temporal logic
 
+* Temporal Logic
+  - quantified over *time*
+    - \(\square P(x)\): \(P(x)\) always holds
+    - \(\diamond P(x)\): \(P(x)\) eventually holds
+    - …
+  - safety and liveness
+
 * Verification
   - *verify*: compare two programs
     - assert x1ₙ ≠ x2ₙ, y1ₙ ≠ y2ₙ…
@@ -328,4 +335,6 @@
 
 * Easier for DSLs!
 
-* Bibliography and stuff…
+* Bibliography
+  - [[http://www.cs.berkeley.edu/~bodik/cs294fa12][program synthesis class]] with Ras Bodik
+  - papers, etc: jelv.is/talks/compose-2016
