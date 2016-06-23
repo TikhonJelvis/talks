@@ -341,6 +341,6 @@
 
 * Easier for DSLs!
 
-* Bibliography
+* Resources
   - [[http://www.cs.berkeley.edu/~bodik/cs294fa12][program synthesis class]] with Ras Bodik
-  - papers, etc: jelv.is/talks/compose-2016
+  - papers, slides, etc: jelv.is/talks/compose-2016

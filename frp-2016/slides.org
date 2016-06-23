@@ -1,0 +1,225 @@
+#+Title: Functional Reactive Programming
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:nil
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Overview of functional reactive programming as a beautiful abstraction.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+#+REVEAL_PLUGINS: (highlight markdown notes)
+#+REVEAL_MATHJAX_URL: mathjax/MathJax.js?config=TeX-AMS_SVG
+
+* What /is/ FRP?
+
+\(\newcommand{\lb}{\unicode{x27E6}}\)
+\(\newcommand{\rb}{\unicode{x27E7}}\)
+
+* 
+   [[./stackoverflow.png]]
+   [[./quora.png]]
+
+* FRP is an abstraction
+
+* FRP is abstract
+
+* Two answers:
+  - what it *is*
+    - definition
+  - why it's *interesting*
+    - synthesis
+
+* What /is/ it?
+  - *programming with time-varying values*
+  - time is an explicit part of the programming model
+  - composable, declarative
+
+* What it is
+  - *Behavior*: changes continuously
+    - mouse position: =Behavior (Int, Int)=
+  - *Event*: happens at a point in time
+    - keyboard press: =Event Char=
+
+* Behavior vs Event
+  [[./frp-behavior.png]]
+  [[./frp-event.png]]
+
+  (From =reactive-banana= documentation.)
+
+* Composable: Continuous Time
+
+    [[./VectorBitmapExample.svg]]
+
+* Declarative: Simple Semantics
+  - Time \(T\)
+  - \(\lb\text{Behavior}\ a\rb = T \to a\)
+  - \(\lb\text{Event}\ a\rb = (T, a)\)
+  - \(\text{Stream}\ a = \text{Event}(a, \text{Stream}\ a)\)
+  - first-class values
+
+* Temporal Logic
+
+  - \(\square P(x)\): \(P(x)\) always holds
+  - \(\Diamond P(x)\): \(P(x)\) eventually holds
+  #+ATTR_REVEAL: :frag roll-in
+  - Symmetrical:
+    - \(\square P(x) \Leftrightarrow \lnot\Diamond\lnot P(x)\)
+    - \(\Diamond P(x) \Leftrightarrow \lnot\square\lnot P(x)\)
+
+* Curry-Howard
+  - \(\text{Behavior}\ a : \square a\)
+  - \(\text{Event}\ a\hspace{1.3em}: \Diamond a\)
+  - *symmetrical!*
+
+* Generalities:
+  - *abstract* types:
+    - =Behavior a=
+    - =Event a=
+  - no literal “time” values
+
+* Input ⇒ Combinators ⇒ Output
+
+* Inputs
+  #+BEGIN_SRC haskell
+  mouse    :: Behavior (Int, Int)
+  keypress :: Event KeyCode
+  click    :: Event (Int, Int)
+
+  data TextWidget = {
+    text  :: Behavior String
+    typed :: Event ()
+  }
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  -- robotics
+  camera :: Behavior Image
+  bump   :: Event ()
+  #+END_SRC
+
+* Combinators
+  #+BEGIN_SRC haskell
+  when  :: B Bool -> E a -> E a
+  at    :: B a -> E b -> E a
+  union :: E a -> E a -> E a
+  steps :: E a -> B a
+  foldP :: (a -> b -> b) -> E a -> E b
+  #+END_SRC
+  
+  - Functor, Applicative, Monoid... etc
+
+* Output
+  #+BEGIN_SRC haskell
+  set :: Element -> Attribute a -> 
+         B a -> IO ()
+  handle :: E a -> (a -> IO ()) -> IO ()
+  #+END_SRC
+
+* Life
+  [[./life-screenshot-1.png]]
+  [[./life-wx.png]]
+
+* 
+  Game code:
+
+  #+BEGIN_SRC haskell
+  blank :: Int -> Int -> Grid
+  rPentonimo :: Grid
+  step :: Grid -> Grid
+  modify :: (Int, Int) -> Grid -> Grid
+  #+END_SRC
+
+  - Widgets:
+    - =canvas=: contains game of life
+    - =pauseButton=: pauses animation
+    - =timer=: sends an event every 200 milliseconds
+
+* Input
+  #+BEGIN_SRC haskell
+  -- every 200ms from timer
+  ticks :: Event ()
+
+  mouse :: Behavior Point
+  click :: Event ()
+
+  -- button presses
+  pauses :: Event ()
+  #+END_SRC
+
+* Operators:
+  #+BEGIN_SRC haskell
+  f $ x = f x
+
+  f <$> xs = fmap f xs
+
+  x' <$ xs = fmap (const x') xs
+
+  () <$ [1,2,3,4] = [(), (), (), ()]
+  #+END_SRC
+
+* Combinators
+  #+BEGIN_SRC haskell
+  active <- accumB False (not <$ pauses)
+
+  steps, modifies :: Event (Grid -> Grid)
+  steps    = whenE active (step <$ ticks)
+  modifies = modify . adjust <$> clicks
+
+  changes = updates `union` modifies
+  life <- accumE start changes
+  #+END_SRC
+
+* Output
+  - redraw canvas on change
+  - depends on II framework
+
+* Adding Features
+  #+BEGIN_SRC haskell
+  generation <- accumB 0 ((+ 1) <$ steps)
+  #+END_SRC
+
+  - no changing old code
+  - very modular
+
+* Libraries:
+  - =reactive-banana=
+    - fast, good semantics
+  - =threepenny-gui=: 
+    - lightweight UI framework
+    - prototyping, internal tools
+    - FRP layers based on =reactive-banana=
+
+* Libraries
+  - =reflex-frp=
+    - fast, good semantics
+    - integrates with GHCJS, DOM
+    - used in production at Skedge.me?
+  - easy install: =reflex-platform=
+    - builds GHCJS/reflex using Nix
+
+* Open Questions
+  - FRP is an active research field
+  - performance optimization
+  - correctness
+  - nested events/behaviors
+    - think TODO MVC
+  - organizing larger programs
+
+* Open Questions
+  - dependent typing
+  - reasoning about totality/productivity
+  - temporal logic operators:
+    - \(a \triangleright b\): \(a\) /until/ \(b\)
+    - FRP take on session types?
+
+* IO and Abstraction
+  - alternative to Haskell =IO= type
+  - I/O is /not/ inherently imperative
+  - a different way to handle effects

@@ -1,0 +1,81 @@
+/**
+ * Beige theme for reveal.js.
+ *
+ * Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ */
+
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+
+
+// Include theme-specific fonts
+@import "tikhon-fonts.css";
+
+// Override theme settings (see ../template/settings.scss)
+$mainColor: #3f3f3f;
+$mainFontSize: 50px;
+$mainFont: Junction, Helvetica, Arial, sans-serif;
+
+$headingColor: #052d69;
+$headingFont: Aller;
+$headingTextShadow: none;
+$headingTextTransform: none;
+
+$heading1TextShadow: none;
+$heading1Size: 120px;
+
+$heading2Size: 85px;
+
+$backgroundColor: #8099BB;
+
+$linkColor: lighten( #052d69, 20% );
+$linkColorHover: darken( $linkColor, 20% );
+
+$selectionBackgroundColor: none;
+
+
+// Background generator
+@mixin bodyBackground() {
+	@include radial-gradient( #C0D9FB, #FFF );
+}
+
+
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+.reveal h2 > a {
+  font-size : 70%;
+}
+
+.reveal code, .reveal pre {
+  font-family : "DejaVu Sans Mono";
+  font-size   : 42px;
+
+  background    : rgba(100, 0, 150, 0.05);
+  border-radius : 12px;
+  border        : 2px solid rgba(100, 0, 150, 0.2);
+}
+
+.reveal pre {
+  padding : 15px 30px;
+  line-height : 125%;
+}
+
+.reveal code {
+  padding : 5px 10px;
+}
+
+.reveal ul {
+  margin-top : 30px;
+}
+
+.reveal ul li {
+  width : 110%;
+  margin-bottom : 20px;
+}
