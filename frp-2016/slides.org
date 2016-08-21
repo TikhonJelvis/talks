@@ -2,7 +2,7 @@
 #+Author: Tikhon Jelvis
 #+Email: tikhon@jelv.is
 
-#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:nil
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:t
 #+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
 #+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
 #+OPTIONS: toc:nil
@@ -15,7 +15,6 @@
 #+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Overview of functional reactive programming as a beautiful abstraction.">
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
-#+REVEAL_MATHJAX_URL: mathjax/MathJax.js?config=TeX-AMS_SVG
 
 * What /is/ FRP?
 
