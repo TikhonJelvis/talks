@@ -1,0 +1,19 @@
+* Tries
+  - key-value map
+  - read key in part by part
+    - branch on part of each key
+  - can be simpler and more efficient than binary search trees
+** Basic Example
+   - definition
+   - lookup
+   - insert
+
+* Patricia Tries
+  - "Practical Algorithm to Retrieve Information Coded in
+    Alphanumeric"
+  - efficient for integer keys
+  - Data.IntMap
+** Core Idea
+   - read key bit-by-bit
+   - compress paths
+
