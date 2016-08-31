@@ -81,3 +81,18 @@ insert :: String → a → Trie a → Trie a
 
 * Okasaki and Gill, 1998
     [[./okasaki.png]]
+
+* Data.IntMap
+  - =Int= keys
+    - bit-by-bit
+  - persistent
+  - =ByteString= keys?
+
+* Structure
+  - branch on each bit
+  [[./binary.svg]]
+  - wastes space
+
+* Speed
+  - compress paths
+  [ diagram ? ]

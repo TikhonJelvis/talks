@@ -8,28 +8,28 @@ import qualified Data.Tree as Tree
 
 -- | A 'String' → a map implement as a trie that reads keys in
 -- character by character.
-data Trie a = Node (Maybe a) [(Char, Trie a)] deriving (Show, Eq)
+data Trie k a = Node (Maybe a) [(k, Trie k a)] deriving (Show, Eq)
 
-empty :: Trie a
+empty :: Trie k a
 empty = Node Nothing []
 
-get :: String -> Trie a -> Maybe a
-get "" (Node x _)            = x
+get :: Eq k => [k] -> Trie k a -> Maybe a
+get [] (Node x _)            = x
 get (c:cs) (Node _ children) = lookup c children >>= get cs
 
-insert :: String -> a -> Trie a -> Trie a
-insert "" x (Node _ children)       = Node (Just x) children
+insert :: Eq k => [k] -> a -> Trie k a -> Trie k a
+insert [] x (Node _ children)       = Node (Just x) children
 insert (c:cs) x (Node val children) = Node val $ on c (insert cs x) children
   where on c f [] = [(c, f $ Node Nothing [])]
         on c f ((c', x) : cs)
           | c == c'   = (c, f x) : cs
           | otherwise = (c', x) : on c f cs
 
-fromList :: [(String, a)] -> Trie a
+fromList :: Eq k => [([k], a)] -> Trie k a
 fromList = foldl (flip $ uncurry insert) empty
 
-toTree :: Trie a -> Tree (String, Maybe a)
-toTree (Node val children) = Tree.Node ("", val) $ go "" <$> children
+toTree :: Trie k a -> Tree ([k], Maybe a)
+toTree (Node val children) = Tree.Node ([], val) $ go [] <$> children
   where go soFar (char, Node val children') = Tree.Node (soFar', val) $ go soFar' <$> children'
           where soFar' = soFar ++ [char]
 
@@ -49,3 +49,7 @@ words = sort [ "cat"
              ]
 
 t₃ = fromList $ zip words [0..]
+
+bits = [[0,0,0], [0,0,1], [0,1,0], [0,1,1], [1,0,0], [1,0,1], [1,1,0], [1,1,1]]
+
+t₆ = fromList $ zip bits [0..]
