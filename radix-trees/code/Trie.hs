@@ -63,3 +63,4 @@ instance Show Compressed where
   show (V i) = show i
 
 t₈ = fromList [([[0,0,0,0], [1, 1]], 1), ([[0,0,0,0], [0, 1]], 2)]
+

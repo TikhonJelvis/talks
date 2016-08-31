@@ -6,6 +6,7 @@
 #+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
 #+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
 #+OPTIONS: toc:nil
+#+OPTIONS: timestamp:nil email:t
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.5
