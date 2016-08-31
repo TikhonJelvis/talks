@@ -15,7 +15,6 @@
 #+REVEAL_HEAD_PREAMBLE: <meta name="description" content="An overview of tries (or radix trees) in Haskell, focusing on the PATRICIA trie used by Data.IntMap.">
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
-#+REVEAL_MATHJAX_URL: mathjax/MathJax.js?config=TeX-AMS_SVG
 
 * Tries
   - key-value map
@@ -93,6 +92,76 @@ insert :: String → a → Trie a → Trie a
   [[./binary.svg]]
   - wastes space
 
-* Speed
-  - compress paths
-  [ diagram ? ]
+* Paths
+  - two keys: 00011, 00001
+  [[./paths-waste.svg]]
+
+* Compressed Paths
+  [[./compressed.svg]]
+
+* Compressed Paths
+  [[./compressed2.svg]]
+
+* Compressed Paths
+  [[./compressed-leaves.svg]]
+
+* PATRICIA Tries
+  - binary keys
+  - store prefixes at nodes
+
+* Data.IntMap
+  #+BEGIN_SRC haskell
+  type Prefix = Int
+  type Mask = Int
+
+  data IntMap a = Branch !Prefix !Mask !(IntMap a) !(IntMap a)
+                | Leaf !Prefix a
+                | Empty
+  #+END_SRC
+
+* Performance Considerations
+  - unboxed as much as possible
+  - *spine strict*
+
+  - =highestBitSet= ~ bitwise trick
+
+* Performance
+  - much faster than `Data.Map`
+    - fast lookup/insert
+    - fast scans and merges
+  - slower than mutable hash map
+
+* Branching Factor
+  [[./small-tree.svg]]
+  [[./large-tree.svg]]
+
+* Branching Factor
+  [[./branching-tradeoff.png]]
+  - from ART paper
+  - benchmark with /mutable/ tries
+
+* Adaptive Radix Trees
+  [[./art.png]]
+
+* Adaptive Radix Trees
+  - branching factor: 256
+  - byte at a time
+  [[./art-nodes.png]]
+
+* Four Types of Nodes
+  [[./art-nodes-details.png]]
+
+* /Persistent/ Adaptive Radix Trees?
+  - Java version with promising benchmarks
+  - good fit for Haskell?
+
+* Functional Graph Library
+  [[./graph.png]]
+  - (See [[http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs][Generating Mazes with Inductive Graphs]])
+
+* Data Structures
+  - IntMap: /binary/ radix tree
+  - different branching factors
+    - time/memory tradeoff
+  - (persistent) adaptive radix trees
+  - optimize for Haskell?

@@ -2,7 +2,7 @@ module Trie where
 
 import           Prelude hiding (words)
 
-import           Data.List (sort)
+import           Data.List (intercalate, sort)
 import           Data.Tree (Tree)
 import qualified Data.Tree as Tree
 
@@ -53,3 +53,13 @@ t₃ = fromList $ zip words [0..]
 bits = [[0,0,0], [0,0,1], [0,1,0], [0,1,1], [1,0,0], [1,0,1], [1,1,0], [1,1,1]]
 
 t₆ = fromList $ zip bits [0..]
+
+t₇ = fromList $ [([0, 0, 0, 1, 1], 1), ([0, 0, 0, 0, 1], 2)]
+
+data Compressed = C [Int] | V Int deriving Eq
+
+instance Show Compressed where
+  show (C is) = intercalate "" $ show <$> is
+  show (V i) = show i
+
+t₈ = fromList [([[0,0,0,0], [1, 1]], 1), ([[0,0,0,0], [0, 1]], 2)]
