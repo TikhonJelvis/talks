@@ -18,3 +18,5 @@
 #+REVEAL_MATHJAX_URL: mathjax/MathJax.js?config=TeX-AMS_SVG
 
 * Tries
+  - key-value map
+  - read key piece by piece

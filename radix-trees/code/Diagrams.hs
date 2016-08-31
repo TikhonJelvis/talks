@@ -1,6 +1,11 @@
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 module Diagrams where
+
+import           Control.Monad.State
+
+import           Data.Function                (on)
 
 import           Data.Tree                    (Tree)
 import qualified Data.Tree                    as Tree
@@ -11,19 +16,37 @@ import           Diagrams.TwoD.Layout.Tree
 
 import qualified Trie
 
-toLabel (c, Nothing) = text c <> circle 1 # fc white
-toLabel (c, Just n)  = text (c ++ " " ++ show n) <> (circle 1 # fc white)
+circleLabel (_, Nothing) = circle 0.25 # fc white
+circleLabel (c, Just n)  = text (show n) <> (circle 0.75 # fc white)
 
 nodeSpacing, charWidth :: (Floating n, Ord n) => n
 nodeSpacing = 4
 charWidth   = 0.25
 
-toLabel' (c, _) = text c <> ellipseXY (w c / 2) 1 # fc white
+ellipseLabel (c, _) = text c <> ellipseXY (w c / 2) 1 # fc white
   where w label = fromIntegral (length label) * charWidth + nodeSpacing - 1
 
-tree = renderTree toLabel' (~~) . symmLayout' settings
-  where settings = with & slHSep .~ 7 & slVSep .~ 4
+tree :: [String] -> Tree (String, Maybe Integer) -> Diagram B
+tree highlights = renderTree' circleLabel edge . symmLayout' settings
+  where settings = with & slHSep .~ 2.5 & slVSep .~ 4
+        edge ((k₁, _), p₁) ((k₂, _), p₂) = label <> line
+          where line = strokeLocTrail $ fromVertices [p₁, p₂]
+                letter = take 1 $ drop (length k₁) k₂
+                label = text letter # moveTo fudged
+                                    # if (k₁ ++ letter) `elem` highlights
+                                         then fc blue
+                                         else id
+                ((x₁, y₁), (x₂, y₂)) = (unp2 p₁, unp2 p₂)
+                mid = (p₂ + p₁) / 2
+                slope' = (x₂ - x₁) / (y₂ - y₁)
+                fudged | x₁ /= x₂  = mid - p2 (signum slope' * sqrt (abs slope'), 0.2)
+                       | otherwise = mid + p2 (0.4, -0.2)
 
-main = mainWith treeDiagram
+hl s = treeDiagram
   where treeDiagram :: Diagram B
-        treeDiagram = tree (Trie.toTree Trie.t₆) # translateY 10 # pad 1.1 # bg white
+        treeDiagram = diagram # translateY 10
+                              # pad 1.1
+                              # bg white
+                              # font "DejaVu Sans Mono"
+        diagram = tree highlights $ Trie.toTree Trie.t₂
+        highlights = s

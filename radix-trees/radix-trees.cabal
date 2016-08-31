@@ -21,5 +21,6 @@ library
                      , diagrams-contrib
                      , diagrams-lib
                      , diagrams-svg
+                     , mtl
   hs-source-dirs:      code
   default-language:    Haskell2010

@@ -1,5 +1,8 @@
 module Trie where
 
+import           Prelude hiding (words)
+
+import           Data.List (sort)
 import           Data.Tree (Tree)
 import qualified Data.Tree as Tree
 
@@ -22,15 +25,25 @@ insert (c:cs) x (Node val children) = Node val $ on c (insert cs x) children
           | c == c'   = (c, f x) : cs
           | otherwise = (c', x) : on c f cs
 
+fromList :: [(String, a)] -> Trie a
+fromList = foldl (flip $ uncurry insert) empty
+
 toTree :: Trie a -> Tree (String, Maybe a)
 toTree (Node val children) = Tree.Node ("", val) $ go "" <$> children
   where go soFar (char, Node val children') = Tree.Node (soFar', val) $ go soFar' <$> children'
           where soFar' = soFar ++ [char]
 
-t₁, t₂, t₃, t₄, t₅ :: Trie Integer
-t₁ = insert "abc" 1 empty
-t₂ = insert "def" 2 t₁
-t₃ = insert "abcd" 3 t₂
-t₄ = insert "acde" 4 t₃
-t₅ = insert "acef" 5 t₄
-t₆ = insert "acfe" 5 t₅
+t₁ = fromList [("abc", 1), ("def", 2), ("abcd", 3), ("acde", 4), ("acef", 5), ("acfe", 6)]
+
+t₂ = fromList $ zip ["a", "b", "ab", "abc", "ac", "baa", "bb", "bab", "bac", "bbb", "bbc"] [0..]
+
+words = sort [ "cat"
+             , "bat"
+             , "cats"
+             , "at"
+             , "ate"
+             , "sate"
+             , "bate"
+             ]
+
+t₃ = fromList $ zip words [0..]
