@@ -42,11 +42,11 @@ tree highlights = renderTree' circleLabel edge . symmLayout' settings
                 fudged | x₁ /= x₂  = mid - p2 (signum slope' * sqrt (abs slope'), 0.2)
                        | otherwise = mid + p2 (0.4, -0.2)
 
-hl s = treeDiagram
+hl t s = treeDiagram
   where treeDiagram :: Diagram B
         treeDiagram = diagram # translateY 10
-                              # pad 1.1
+                              # pad 1
                               # bg white
                               # font "DejaVu Sans Mono"
-        diagram = tree highlights $ Trie.toTree Trie.t₂
+        diagram = tree highlights $ Trie.toTree t
         highlights = s

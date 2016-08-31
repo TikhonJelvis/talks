@@ -19,4 +19,65 @@
 
 * Tries
   - key-value map
-  - read key piece by piece
+    - simple
+    - persistent
+    - fast
+
+* Re/*trie*/val
+
+* Also Called
+  - digital trees
+  - prefix trees
+  - radix trees
+
+* Tries
+  - basic trie
+  - PATRICIA trie: =Data.IntMap=
+  - variations
+    - branching factor
+    - (Persistent) Adaptive Radix Tree
+
+* Example
+  [[./tree.svg]]
+
+* lookup “b”
+  [[./b.svg]]
+  - b = 1
+
+* lookup “bab”
+  [[./b.svg]]
+  - b
+
+* lookup “bab”
+  [[./b→ba.svg]]
+  - b → a
+
+* lookup “bab”
+  [[./b→ba→bab.svg]]
+  - b → a → b = 7
+
+* 
+#+BEGIN_SRC haskell
+data Trie a = 
+  Node (Maybe a) [(Char, Trie a)]
+
+lookup :: String → Trie a → Maybe a
+
+insert :: String → a → Trie a → Trie a
+#+END_SRC
+
+* Prefixes
+  - every key starting with “ba”
+  [[./b→ba.svg]]
+
+* Prefixes
+  [[./prefix-ba.svg]]
+
+* PATRICIA
+  #+ATTR_REVEAL: :frag roll-in
+  Practical Algorithm to Retrieve Information Coded in Alphanumeric
+
+  - developed in /1968/
+
+* Okasaki and Gill, 1998
+    [[./okasaki.png]]

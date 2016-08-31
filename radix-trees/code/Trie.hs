@@ -37,6 +37,8 @@ t₁ = fromList [("abc", 1), ("def", 2), ("abcd", 3), ("acde", 4), ("acef", 5), 
 
 t₂ = fromList $ zip ["a", "b", "ab", "abc", "ac", "baa", "bb", "bab", "bac", "bbb", "bbc"] [0..]
 
+t₄ = fromList $ zip ["a", "b", "c"] [5, 6, 7]
+
 words = sort [ "cat"
              , "bat"
              , "cats"
