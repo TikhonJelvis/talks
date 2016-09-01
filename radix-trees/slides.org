@@ -69,12 +69,9 @@ insert :: String → a → Trie a → Trie a
 * Prefixes
   - every key starting with “ba”
   [[./b→ba.svg]]
-
-* Prefixes
   [[./prefix-ba.svg]]
 
 * PATRICIA
-  #+ATTR_REVEAL: :frag roll-in
   Practical Algorithm to Retrieve Information Coded in Alphanumeric
 
   - developed in /1968/
@@ -91,11 +88,11 @@ insert :: String → a → Trie a → Trie a
 * Structure
   - branch on each bit
   [[./binary.svg]]
-  - wastes space
 
 * Paths
-  - two keys: 00011, 00001
-  [[./paths-waste.svg]]
+   [[./paths-waste.svg]]
+
+  two keys: 00011, 00001 
 
 * Compressed Paths
   [[./compressed.svg]]
@@ -106,37 +103,35 @@ insert :: String → a → Trie a → Trie a
 * Compressed Paths
   [[./compressed-leaves.svg]]
 
-* PATRICIA Tries
-  - binary keys
-  - store prefixes at nodes
-
 * Data.IntMap
   #+BEGIN_SRC haskell
   type Prefix = Int
   type Mask = Int
 
-  data IntMap a = Branch !Prefix !Mask !(IntMap a) !(IntMap a)
-                | Leaf !Prefix a
-                | Empty
+  data IntMap a = 
+      Branch !Prefix !Mask 
+             !(IntMap a) !(IntMap a)
+    | Leaf !Prefix a
+    | Empty
   #+END_SRC
 
 * Performance Considerations
-  - unboxed as much as possible
+  - unbox as much as possible
   - *spine strict*
 
   - =highestBitSet= ~ bitwise trick
 
 * Performance
-  - much faster than `Data.Map`
+  - much faster than =Data.Map=
     - fast lookup/insert
     - fast scans and merges
   - slower than mutable hash map
 
 * Branching Factor
-  [[./small-tree.svg]]
-  [[./large-tree.svg]]
+  [[./wtrees.svg]]
+  n bits of key = 2ⁿ children per node
 
-* Branching Factor
+* 
   [[./branching-tradeoff.png]]
   - from ART paper
   - benchmark with /mutable/ tries
@@ -154,13 +149,14 @@ insert :: String → a → Trie a → Trie a
 
 * /Persistent/ Adaptive Radix Trees?
   - Java version with promising benchmarks
+    - [[https://github.com/ankurdave/part][By Ankur Dave, available on GitHub]]
   - good fit for Haskell?
 
 * Functional Graph Library
   [[./graph.png]]
   - (See [[http://jelv.is/blog/Generating-Mazes-with-Inductive-Graphs][Generating Mazes with Inductive Graphs]])
 
-* Data Structures
+* Summary
   - IntMap: /binary/ radix tree
   - different branching factors
     - time/memory tradeoff

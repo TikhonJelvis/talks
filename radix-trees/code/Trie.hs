@@ -6,6 +6,14 @@ import           Data.List (intercalate, sort)
 import           Data.Tree (Tree)
 import qualified Data.Tree as Tree
 
+type Prefix = Int
+type Mask = Int
+
+data IntMap a = Branch !Prefix !Mask
+                  !(IntMap a) !(IntMap a)
+              | Leaf !Prefix a
+              | Empty
+
 -- | A 'String' → a map implement as a trie that reads keys in
 -- character by character.
 data Trie k a = Node (Maybe a) [(k, Trie k a)] deriving (Show, Eq)
