@@ -121,6 +121,20 @@ insert :: String → a → Trie a → Trie a
 
   - =highestBitSet= ~ bitwise trick
 
+*** highestBitSet
+   #+BEGIN_SRC haskell
+   -- Borrowed from Haskell's Data.IntMap
+highestBitSet :: Int -> Int
+highestBitSet n =
+  case (n .|. shiftR n 1) of
+    n -> case (n .|. shiftR n 2) of
+      n -> case (n .|. shiftR n 4) of
+        n -> case (n .|. shiftR n 8) of
+          n -> case (n .|. shiftR n 16) of
+            n -> case (n .|. shiftR n 32) of   -- for 64 bit platforms
+              n -> (n `xor` (shiftR n 1))
+   #+END_SRC
+
 * Performance
   - much faster than =Data.Map=
     - fast lookup/insert
