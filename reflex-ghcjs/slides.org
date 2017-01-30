@@ -1,0 +1,22 @@
+#+Title: GHCJS and Reflex FRP
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Overview of functional reactive programming as a beautiful abstraction.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* GHCJS
+  - Haskell ⇒ JavaScript
+  - supports most GHC extensions
+  [[./haskell-in-browser.png]]
