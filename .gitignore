@@ -19,3 +19,6 @@ shell.nix
 *~
 \#*\#
 .\#*
+
+# macOS nonsense
+.DS_Store
