@@ -334,7 +334,6 @@
 * Interactive Tools
   - nondeterministic execution
     - model concurrency
-    - “angelic programming”
   - debugging aides
   - test case generation
   - synthesis-powered code completion
