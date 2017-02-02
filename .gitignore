@@ -12,9 +12,6 @@ out.*
 # Build artifacts
 dist
 
-# I'm currently generating shell.nix files with cabal2nix
-shell.nix
-
 # Emacs backup files and junk:
 *~
 \#*\#
