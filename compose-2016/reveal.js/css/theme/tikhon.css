@@ -7,6 +7,9 @@
 /*********************************************
  * GLOBAL STYLES
  *********************************************/
+/* Hack for stupid date */
+.date { display : none; }
+
 body {
   background: #C0D9FB;
   background: -moz-radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);

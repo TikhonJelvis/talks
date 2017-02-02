@@ -16,3 +16,6 @@ dist
 *~
 \#*\#
 .\#*
+
+# macOS nonsense
+.DS_Store
