@@ -1,11 +1,11 @@
-#+Title: GHCJS and Reflex FRP
+#+Title: Reflex FRP
 #+Author: Tikhon Jelvis
 #+Email: tikhon@jelv.is
 
-#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:t
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:nil
 #+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
 #+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
-#+OPTIONS: toc:nil
+#+OPTIONS: toc:nil timestamp:nil email:t
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.5
@@ -16,7 +16,46 @@
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
+* Internal Tools
+
+* Internal Tools
+  [[./img/haskell-ekg.png]]
+
+* Internal Tools
+  - dashboards, monitoring
+  - admin consoles
+  - simulations, visualizations
+  - code analysis, benchmarking
+
+* What do we care about?
+
+* Easy to write.
+
+* Easy to maintain.
+
+* Performance? Size?
+  Less important.
+
+* Code reuse /is crucial/.
+
+* No Code Reuse
+  [[./img/no-share.png]]
+
+* Reuse Types
+  [[./img/share-types.png]]
+
+* Reuse Types & API
+  [[./img/share-interface.png]]
+
 * GHCJS
   - Haskell ⇒ JavaScript
   - supports most GHC extensions
-  [[./haskell-in-browser.png]]
+  [[./img/haskell-in-browser.png]]
+
+* Reflex
+  - FRP framework
+  - virtual DOM
+  - [[https://github.com/imalsogreg/servant-reflex][servant-reflex]] (work in progress?)
+
+* Picture Credits
+  - Haskell EKG screenshot by [[http://maxgabriel.github.io/ekg-yesod/][Max Tegher]]

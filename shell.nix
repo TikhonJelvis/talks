@@ -6,7 +6,7 @@ let
 
   f = { mkDerivation, base, Chart, Chart-diagrams, containers
       , diagrams, diagrams-contrib, diagrams-lib, diagrams-svg, fgl
-      , interpolate, mtl, stdenv
+      , interpolate, mtl, stdenv, SVGFonts
       }:
       mkDerivation {
         pname = "talks";
@@ -14,7 +14,7 @@ let
         src = ./.;
         libraryHaskellDepends = [
           base Chart Chart-diagrams containers diagrams diagrams-contrib
-          diagrams-lib diagrams-svg fgl interpolate mtl
+          diagrams-lib diagrams-svg fgl interpolate mtl SVGFonts
         ];
         license = stdenv.lib.licenses.unfree;
       };

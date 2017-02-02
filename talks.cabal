@@ -14,7 +14,7 @@ extra-source-files:  ChangeLog.md, README.md
 cabal-version:       >=1.10
 
 library
-  hs-source-dirs:      radix-trees/code
+  hs-source-dirs:      radix-trees/code, reflex-ghcjs/code
   exposed-modules:     Figures, Trie, Diagrams
   -- other-modules:
   other-extensions:    FlexibleContexts
@@ -30,6 +30,7 @@ library
 
                      , Chart
                      , Chart-diagrams
+                     , SVGFonts
                      , containers
                      , diagrams
                      , diagrams-contrib
