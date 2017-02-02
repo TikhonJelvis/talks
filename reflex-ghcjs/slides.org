@@ -86,7 +86,7 @@
   - user input widgets
 
   #+BEGIN_SRC haskell
-  text <- textInput inputConfig
+  text ← textInput inputConfig
 
   text ^. value :: Dynamic t Text
   #+END_SRC
@@ -119,6 +119,63 @@
   dyn :: MonadWidget t m ⇒
          Dynamci t (m a) → m (Event t a)
   #+END_SRC
+
+* Example
+  
+  [ screenshot ]
+
+* 
+    1. user types query
+    2. call HTTP API
+    3. parse JSON response
+    4. render results
+
+* Types
+  #+BEGIN_SRC javascript
+  #+END_SRC
+
+* Types
+  #+BEGIN_SRC haskell
+  #+END_SRC
+
+* API
+  - input event determines *when* request fires
+  #+BEGIN_SRC haskell
+  getAndDecode = ...
+  #+END_SRC
+
+* Input
+  - fire whenever input updates
+
+* Render Results
+  - dyn widget and so on
+
+* Pros
+  - expressive
+  - short (< 40 lines of code!)
+  - extensible
+  - maintainable
+  - *in Haskell!*
+
+* Cons
+  - documentation
+  - CSS and HTML
+  - intermediate Haskell experience
+    - bad type errors: turn off MMR
+  - GHCJS infrastructure
+    - [[https://github.com/reflex-frp/reflex-platform][reflex-platform]]: turnkey solution using Nix
+
+* Vs Elm
+  - cons:
+    - *not Haskell!*
+    - 2x code, more boilerplate
+    - Elm architecture: verbose and non-modular
+
+  - pros:
+    - good documentation
+    - easy for non-Haskellers and beginners
+
+* Questions?
 
 * Picture Credits
   - Haskell EKG screenshot by [[http://maxgabriel.github.io/ekg-yesod/][Max Tegher]]
