@@ -1,0 +1,117 @@
+* Structure
+  - motivate: internal tools
+  - overview
+  - example
+  - evaluation
+    - compare with Elm
+
+* Internal Tools
+  - common task
+  - real force-multiplier
+
+** Examples
+   - admin panels/dashboards
+   - visualizations, interactive simulations
+
+   - code analysis, benchmarking...
+
+   [ picture of internal dashboard/visualization ]
+
+** Goals
+   - easy to write
+     - low activation energy to build
+   - easy to maintain
+     - will actually be maintained/updated
+
+   - performance, size—unimportant
+
+* Code Reuse
+  - [ backend ⇔ frontend diagram ] (redundant vs shared)
+  - less repetition
+  - less boilerplate
+
+* Tools
+  - GHCJS
+  - reflex-frp
+  - reflex-dom
+
+** GHCJS
+  - Haskell to JavaScript
+  [ GHCJS "Hello, World!" screenshot ]
+  - supports many extensions
+    - reuse *real* Haskell code!
+    - develop with normal toolchain
+
+** Reflex
+  - virtual DOM
+  - FRP framework
+
+* FRP
+  - see earlier talk
+
+** Definition
+   - work with time-varying events
+   - time is *explicit*, not implicit
+
+** Events and Behaviors
+   [ Event graph ]
+   [ Behavior graph ]
+
+   - 〚Behavior〛: Time → value
+     - example: mouse position
+   - 〚Event〛: Steam (Time, value)
+     - example: mouse click
+
+** Dynamic
+   - Dynamic: event + behavior
+     - performance reasons
+     - core part of reflex-dom API
+   [ Dynamic graph ]
+
+** Organization
+   - Input ⇒ Combinators ⇒ Output
+   - Inputs:
+     - widgets, timers, network
+   - Combinators:
+     - example combinators from reflex-frp
+   - Outputs:
+     - dynamic widgets
+
+* Example
+  - wrap simple JSON API
+  - API call
+  - user text input
+  - render results
+  [ screenshot or two ]
+
+** Types
+   - normal Haskell types
+   [ JSON code ⇒ Haskell type ]
+
+** API call
+   - events as inputs
+   - getAndDecode sample
+
+** Text Input
+   - text input: event stream of text
+
+** Render Results
+   - DOM example: elements, dynamic elements, text
+
+* Evaluation
+  - expressive
+  - convenient
+    - massive code reuse!
+    - compatible with servant APIs
+      - servant-reflex package (in development?)
+
+** Vs Elm
+   - talk about same example in Elm
+   - pros:
+     - less boilerplate
+     - more expressive, flexible organization
+     - code reuse!
+   - cons:
+     - less documentation
+     - harder to set up
+     - harder for non-Haskellers
