@@ -57,5 +57,68 @@
   - virtual DOM
   - [[https://github.com/imalsogreg/servant-reflex][servant-reflex]] (work in progress?)
 
+* Functional Reactive Programming
+
+* Time-Varying Values
+
+* Time-Varying Values
+  - time is *explicit*
+  - changing values are *first-class citizens*
+  - composable
+  - declarative
+
+* Behaviors and Events
+  - *Behavior*: continuously changing value
+    - mouse position: =Behavior (Int, Int)=
+  - *Events*: values /at discrete times/
+    - mouse click: =Event (Int, Int)=
+
+* 〚Behavior a〛 = Time → a
+
+* 〚Event a〛 = Stream (Time, a)
+  
+* Dynamic
+  Event ⇒ Event + Behavior
+
+* Input ⇒ Combinators ⇒ Output
+
+* Input
+  - user input widgets
+
+  #+BEGIN_SRC haskell
+  text <- textInput inputConfig
+
+  text ^. value :: Dynamic t Text
+  #+END_SRC
+
+  - timers
+
+  #+BEGIN_SRC haskell
+  tick :: NominalDiffTime 
+        → UTCTime → m (Event t ())
+  #+END_SRC
+
+* Combinators
+
+  #+BEGIN_SRC haskell
+  gate :: B t Bool → E t a → E t a
+  hold :: a → E t a → m (B t a)
+  tag  :: B t b → E t a → E t b
+
+  -- typeclasses:
+  fmap  :: (a → b) → E t a → E t b
+  (<*>) :: B (a → b) → B a → B b
+  #+END_SRC
+
+* Output
+
+  #+BEGIN_SRC haskell
+  dynText :: MonadWidget t m ⇒ 
+             Dynamic t Text → m ()
+
+  dyn :: MonadWidget t m ⇒
+         Dynamci t (m a) → m (Event t a)
+  #+END_SRC
+
 * Picture Credits
   - Haskell EKG screenshot by [[http://maxgabriel.github.io/ekg-yesod/][Max Tegher]]
