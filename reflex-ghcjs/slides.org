@@ -134,7 +134,9 @@
          Dynamci t (m a) → m (Event t a)
   #+END_SRC
 
-* Example
+* Example: Simple Search App
+
+* 
 
   [[./img/example-screenshot.png]]
 
@@ -144,29 +146,62 @@
     3. parse JSON response
     4. render results
 
-* Types
+* 
   #+BEGIN_SRC javascript
+  { 
+    "id" : "abcdefgh",
+    "url" : "http://...",
+    "name" : "Some Item"
+  }
   #+END_SRC
 
-* Types
   #+BEGIN_SRC haskell
+  data Product = Product
+    { id   :: Text
+    , url  :: Text
+    , name :: Text
+    }
+    deriving (..., Generic, FromJSON)
   #+END_SRC
 
 * API
   - input event determines *when* request fires
   #+BEGIN_SRC haskell
-  getAndDecode = ...
+  search query = do
+    urls = fmap url query
+    products <- getAndDecode urls
+    holdDyn Nothing products
+    where url param = "..." <> param
   #+END_SRC
 
 * Input
   - fire whenever input updates
+  #+BEGIN_SRC haskell
+  do text     <- textInput def
+     queries  <- updated $ t ^. value
+     products <- search queries
+  #+END_SRC
+  
+  #+BEGIN_SRC haskell
+  products :: Event t (Maybe [Product])
+  #+END_SRC
 
 * Render Results
-  - dyn widget and so on
+  #+BEGIN_SRC haskell
+  productEntry Product {..} =
+    elClass "li" "product" $ do
+      elAttr "img" [...] (return ())
+      el "div" $ text name
+  #+END_SRC
+
+  - Embed widgets that change over time:
+  #+BEGIN_SRC haskell
+  dyn $ productWidget products
+  #+END_SRC
 
 * Pros
   - expressive
-  - short (< 40 lines of code!)
+  - short (< 80 lines of code!)
   - extensible
   - maintainable
   - *in Haskell!*
