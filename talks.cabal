@@ -26,18 +26,21 @@ library
                      , UndecidableInstances
                      , ViewPatterns
 
-  build-depends:       base
-
-                     , Chart
-                     , Chart-diagrams
-                     , SVGFonts
-                     , containers
-                     , diagrams
-                     , diagrams-contrib
-                     , diagrams-lib
-                     , diagrams-svg
-                     , fgl
-                     , interpolate
-                     , mtl
+  build-depends:       
+                           Chart
+                       , Chart-diagrams
+                       , SVGFonts
+                       , base
+                       , colour
+                       , containers
+                       , data-default-class
+                       , diagrams
+                       , diagrams-contrib
+                       , diagrams-lib
+                       , diagrams-svg
+                       , fgl
+                       , interpolate
+                       , lens
+                       , mtl
   -- hs-source-dirs:
   default-language:    Haskell2010

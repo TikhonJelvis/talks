@@ -25,7 +25,7 @@ noShare = centerXY boxes `atop` background
   where boxes = arrows <> backend <> frontend
 
         backend = textBox "Backend"   # translate (r2 (0, 0))
-               <> textBox "HTTP API" # translate (r2 (2, -3.5))
+               <> textBox "HTTP API"  # translate (r2 (2, -3.5))
                <> textBox "Types"     # translate (r2 (4, -7))
 
         frontend = textBox "UI"       # translate (r2 (16, 0))

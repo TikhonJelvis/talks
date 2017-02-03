@@ -47,9 +47,12 @@
 * Reuse Types & API
   [[./img/share-interface.png]]
 
-* GHCJS
-  - Haskell ⇒ JavaScript
-  - supports most GHC extensions
+* GHCJS :: Haskell → JavaScript
+  #+BEGIN_SRC haskell
+  main = mainWith 
+          (text "Compiled With Haskell")
+  #+END_SRC
+
   [[./img/haskell-in-browser.png]]
 
 * Reflex
@@ -75,10 +78,21 @@
 
 * 〚Behavior a〛 = Time → a
 
-* 〚Event a〛 = Stream (Time, a)
-  
+* Behavior
+  Behavior = Time → a
+
+  [[./img/behavior.png]]
+
+* 〚Event a〛 = [(Time, a)]
+
+* Event
+  Event = [(Time, a)]
+
+  [[./img/event.png]]
+
 * Dynamic
-  Event ⇒ Event + Behavior
+  Dynamic = Event + Behavior
+  [[./img/dynamic.png]]
 
 * Input ⇒ Combinators ⇒ Output
 
@@ -94,7 +108,7 @@
   - timers
 
   #+BEGIN_SRC haskell
-  tick :: NominalDiffTime 
+  tick :: NominalDiffTime
         → UTCTime → m (Event t ())
   #+END_SRC
 
@@ -113,7 +127,7 @@
 * Output
 
   #+BEGIN_SRC haskell
-  dynText :: MonadWidget t m ⇒ 
+  dynText :: MonadWidget t m ⇒
              Dynamic t Text → m ()
 
   dyn :: MonadWidget t m ⇒
@@ -121,8 +135,8 @@
   #+END_SRC
 
 * Example
-  
-  [ screenshot ]
+
+  [[./img/example-screenshot.png]]
 
 * 
     1. user types query
