@@ -1,0 +1,58 @@
+* The Future of Version Control
+  - "Diff and merge tools will understand code as well as syntax
+    highlighters."
+    - happy medium between text-based tools (svn, git... etc) and
+      "semantic" tools (Semantic Merge, research projects... etc)
+
+** understand code
+   - take advantage of structure in files
+   - more intuitive grouping
+     - combine related changes
+     - *don't* combine unrelated changes
+
+** not too tied to language
+
+*** polyglot
+   - real-life projects are *very* polyglot
+     - work code: Haskell, Bash, Python, JSON, YAML, SQL, CPLEX, CSS,
+       plain text
+     - custom formats? s-expressions? SMT-lib? internal DSLs?
+   - need to easily support obscure languages
+     - when have you last seen a CPLEX file?
+   - *extending language-aware diff should be as easy as extending
+     Emacs*
+     - I've written basic highlighting/indentation modes in Emacs in
+       <1 day (Gosu, CS 164, Sketch)
+
+*** simplicity
+   - parse as well as syntax highlighting
+   - just parse tree:
+     - no deep semantic understanding needed
+     - doesn't have to be perfect
+   - works for natural language!
+
+** existing system (Cow)
+   - takes parse trees
+     - algorithm is *language-agnostic*: give me a parse tree and I'm
+       happy
+   - groups changes together based on structure
+     - heuristic for consolidating blocks of code
+     - better grouping of changes vs normal text diff
+   - finds moved blocks
+     - even if slightly modified
+   - better diff, better merge
+
+** layer on functionality
+   - language-specific plugins on top of base structural diff
+   - spot more complex refactorings
+     - richer history: create timeline of "added function Foo, moved
+       function Bar, renamed variable X..."
+
+*** example: scope analysis
+    - identify which variables are related
+    - consolidate variable renaming into a single action
+
+*** example: order agnostic
+    - reference paper
+    - idea: understand import statements, method definitons... etc
+      - better merge and conflict resolution
