@@ -1,21 +1,29 @@
 #+Title: Analyzing Programs with Z3
 #+Author: Tikhon Jelvis
 #+Email: tikhon@jelv.is
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Introduction to analyzing programs with Z3 in Haskell.">
 
-#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:nil
+# Options I change before uploading to jelv.is
+#+OPTIONS: reveal_control:t
+#+OPTIONS: reveal_mathjax:t
+#+REVEAL_ROOT: /talks/reveal.js
+#+REVEAL_MATHJAX_URL: /talks/mathjax/MathJax.js?config=TeX-AMS_SVG
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t
 #+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
 #+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
-#+OPTIONS: toc:nil
+#+OPTIONS: toc:nil timestamp:nil email:t
+
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.5
 #+REVEAL_TRANS: slide
 #+REVEAL_THEME: tikhon
 #+REVEAL_HLEVEL: 2
-#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Introduction to analyzing programs with Z3 in Haskell.">
+
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
-#+REVEAL_MATHJAX_URL: mathjax/MathJax.js?config=TeX-AMS_SVG
+
 
 * Boolean Satisfiability (SAT)
  - boolean variables
