@@ -13,23 +13,32 @@
 ** not too tied to language
 
 *** polyglot
-   - real-life projects are *very* polyglot
-     - work code: Haskell, Bash, Python, JSON, YAML, SQL, CPLEX, CSS,
-       plain text
-     - custom formats? s-expressions? SMT-lib? internal DSLs?
-   - need to easily support obscure languages
-     - when have you last seen a CPLEX file?
-   - *extending language-aware diff should be as easy as extending
+    - real-life projects are *very* polyglot
+      - work code: Haskell, Bash, Python, JSON, YAML, SQL, CPLEX, CSS,
+        plain text
+      - custom formats? s-expressions? SMT-lib? internal DSLs?
+    - need to easily support obscure languages
+      - when have you last seen a CPLEX file?
+    - *extending language-aware diff should be as easy as extending
      Emacs*
      - I've written basic highlighting/indentation modes in Emacs in
        <1 day (Gosu, CS 164, Sketch)
 
 *** simplicity
-   - parse as well as syntax highlighting
-   - just parse tree:
-     - no deep semantic understanding needed
-     - doesn't have to be perfect
-   - works for natural language!
+    - parse as well as syntax highlighting
+    - just parse tree:
+      - no deep semantic understanding needed
+      - doesn't have to be perfect
+    - works for natural language!
+
+*** spectrum
+    - from text-only (git, hg, darcs...) to deeply language-aware
+      (Semantic Merge, find more examples...)
+    - optimal point: parse trees
+      - close to text-only in simplicity and generality
+      - gets mileage out of structure in files
+    - more optimal (optimal-er?) point: start with parse trees and ratchet up
+      - more language-specific extensions
 
 ** existing system (Cow)
    - takes parse trees
