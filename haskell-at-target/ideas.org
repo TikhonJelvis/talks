@@ -1,0 +1,10 @@
+
+* Simple Abstractions /scale/
+  - Dist monad
+  - memo tries
+
+* Surprising Type Benefits 
+  - config files
+  - different id types
+    - DCPI, TCIN, MDSE
+    - two types of store ids
