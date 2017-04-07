@@ -1,0 +1,114 @@
+* Overview
+  - ground-up supply chain optimization for all of Target
+    - 1806 stores, 37 distribution centers
+  - two focuses:
+    - models to deploy
+    - framework for optimization models
+      - types
+      - modularity
+      - composability
+        - different solution methods
+
+* Stochastic Optimization
+  - randomness from demand
+    - crucial: for many items, variance is more important than
+      expected demand!
+  - techniques similar to robotics
+
+** Markov Decision Problems
+   - define MDP, Markov chains, policies
+   - quickly 
+   - two approaches:
+     - approximate in model
+   - simulation
+   - talk about solution methods:
+     - specific: algorithms with nice solutions
+     - exact: DP, LP, backwards induction
+     - approximate: simulation-based reinforcement learning
+
+** Randomness in Haskell
+   - probability distribution monad
+     - interpreted in different ways
+     - future: full-on probabilistic programming?
+   - MDPs and Markov chains as types
+
+** Example
+   - simple single-node system definition
+
+* Why Haskell?
+
+** DSLs
+   - Haskell is expressive
+   - great host for DSLs
+   - our remit: apply ideas from programming language research and
+     theory to supply chain optimization
+
+** Types
+   - goal: simple, composable abstractions for stochastic optimization
+     - easy to write
+     - easy to reason about
+     - with tools for correctness
+
+** History
+   - Composing Contracts paper
+   - Ashwin came from finance, saw ideas in practice
+   - same idea applied to optimization
+     - helps align and unify large organizations
+     - apply high-level software engineering practices to new fields
+       - the world is run on Excel
+       - this is scary
+
+* Haskell Lessons
+
+** Simple Abstractions Scale
+   - start simple
+   - it might work better than you think!
+   - easy to extend
+   - examples:
+     - discrete probability monad
+       - doesn't scale for more than a handful of random variables!
+       - worked *well enough* for us
+     - memo tries
+       - easy way to do dynamic programming and memoization
+         - no thinking: just memo-trie it!
+       - bad constant factors?
+         - works *well enough* in practice
+
+** Types: Good for the Little Things
+   - biggest benefit from types?
+     - abstraction design?
+     - modularity?
+     - different id types
+       - items: *three* types of ids!
+       - locations: *two* similar-looking, overlapping kinds of ids
+     - config files
+
+*** Type System Extensions
+    - powerful but risky
+    - type inference is *crucial*
+      - I can refactor code following simple syntactic rules
+      - no mental overhead to extracting/reorgranizing code: a big deal!
+    - injudicious use of type system extensions breaks this
+      - example: API exposing higher-rank types in lambda
+        - hard to use
+        - required ~8 line type signature for /one-line lambda/
+        - made refactoring a pain
+        - *not worth it!*
+      - existential types can be really awkward
+ 
+** Lenses
+   - really useful throughout codebase
+   - either go all-in on lens or don't
+   - all internal records have lenses for fields
+   - most modules import and use =Control.Lens=
+
+** Difficulties
+   - building and deployment
+     - Nix is great
+     - still early adopter status
+     - lacks documentation
+   - Haskell system libraries: very hit or miss
+     - issues with HDBC, http-client, TLS, Hadoop/HDFS...
+     - limited documentation
+   - Linux > OS X
+   - compile times :(
