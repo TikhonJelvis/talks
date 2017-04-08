@@ -1,0 +1,186 @@
+#+Title: Haskell at Target
+#+Author: Tikhon Jelvis
+#+Email: tikhon.jelvis@target.com
+
+# Options I change before uploading to jelv.is
+#+OPTIONS: reveal_control:nil
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t 
+#+OPTIONS: reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
+#+OPTIONS: toc:nil timestamp:nil email:t
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: tikhon-target
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* What is Target?
+  - 1806 stores
+  - 37 distribution centers
+  - Target.com
+
+* Stores
+  [[./img/target-store-small.jpg]] 
+  [[./img/target-store-interior-small.jpg]]
+
+* Distribution Centers
+  [[./img/dc-map.png]]
+
+* Distribution Centers
+
+  #+BEGIN_EXPORT html
+    <video src="./img/dc-broll.mp4#t=82" autoplay loop width="100%">
+    </video>
+  #+END_EXPORT
+
+* Maximize Experience; Minimize Cost
+
+* Demand Uncertainty
+  [[./img/dist-small.png]]
+
+* Other Random Variables
+  - supply
+  - lead times
+  - spoilage
+  - ...
+
+* Stochastic Optimization
+
+* Markov Decision Processes
+  - \(S\): set of states
+  - \(A\): set of actions
+  - \(P(s, a, s^\prime)\): transition probability
+  - \(R(s, s^\prime)\): reward function
+
+* Policy
+  - result of optimization
+    - function \(S \to A\)
+    - maximizes expected reward
+
+* Techniques
+  - dynamic programming (policy iteration)
+  - linear programming
+  - reinforcement learning
+    - features
+    - neural nets
+  - domain-specific algorithms
+
+* In Haskell
+  #+BEGIN_SRC haskell
+    data MDP m s a r = 
+      MDP { step :: s -> a -> m (r, s) }
+
+    type Policy s a = s -> a
+  #+END_SRC
+
+  - =m=: *probability monad*
+
+* Simulation
+  #+BEGIN_SRC haskell
+  data Markov m s r = 
+    Markov { step :: s -> m (s, r) }
+
+  apply :: MDP m s a r 
+        -> Policy s a 
+        -> Markov m s r
+  #+END_SRC
+
+* Probability Monad
+  - return: constant probability
+  - join: flatten distribution /of distributions/
+    - sample sample
+    - flatten and multiply
+
+* Probability Monad
+  #+BEGIN_SRC haskell
+  coin :: Double -> m Bool
+
+  biased :: m Bool
+  biased = do 
+    a <- coin 0.5
+    if a then coin 0.1 else coin 0.5
+  #+END_SRC
+
+* Interpretations
+  #+BEGIN_SRC haskell
+  newtype Dist p a = Dist [(p, a)]
+  newtype Random a = Random {
+    run :: StateT Gen a
+  }
+  #+END_SRC
+
+  - future: free probability monad
+
+* 
+  #+BEGIN_SRC haskell
+  step :: Qty -> Qty -> m (Qty, Money)
+  step inventory order = do
+    let stocked = inventory + order
+        cost    = price * order
+
+    buyers <- demand
+
+    let after  = max (stocked - buyers) 0
+        sold   = inventory - after
+        profit = salePrice * sold
+
+    return (remaining, profit - cost)
+  #+END_SRC
+
+* Why Haskell?
+
+* Types
+
+* Embedded Domain-Specific Languages
+
+* Composing Contracts
+
+* Haskell Lessons
+
+* Simple Abstractions Scale
+  - discrete distribution monad
+  - memo-tries
+  - functional graph library (fgl)
+  - simple optimization algorithms
+
+* Types: Good for the Little Things
+
+* Types
+  - /three/ kinds of item identifiers
+  - two kinds of location identifiers
+  - config files
+  - data transformation inputs/outputs
+
+* Type System Extensions
+  - powerful
+  - risky
+  - *type inference is crucial*
+  - simple types, simple APIs
+
+* Lenses
+  Consistency is all I ask!
+
+* Difficulties
+  - building and deployment
+    - Nix: awesome but early adopter
+  - compile times
+  - network libraries
+  - Linux > OS X
+
+* Hiring
+  - our team is growing!
+  - scaling, robustness, performance
+    - databases, servers, distributed systems
+  - optimization/machine learning
+
+* Credits
+  - DC map: [[https://corporate.target.com/careers/global-locations/distribution-center-locations][Target corporate website]]
+  - DC B roll video: [[https://corporate.target.com/press/multimedia/2013/11/target-distribution-b-roll][Target press website]]
+  - Target store: [[https://commons.wikimedia.org/wiki/File:Illinois_Target_Store.jpg][Kelly Martin at Wikimedia (CC-BY-SA)]]
+  - Target store interior: [[https://commons.wikimedia.org/wiki/File:Target_interior.JPG][Peter J.Romano at Wikimedia (public domain)]]
