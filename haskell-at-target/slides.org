@@ -21,6 +21,7 @@
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
 * 
+  [[./img/target.png]]
 
 * What is Target?
   - 1806 stores
