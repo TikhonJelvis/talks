@@ -20,6 +20,8 @@
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
+* 
+
 * What is Target?
   - 1806 stores
   - 37 distribution centers
@@ -108,14 +110,20 @@
   #+END_SRC
 
 * Interpretations
+  - exhaustive
   #+BEGIN_SRC haskell
   newtype Dist p a = Dist [(p, a)]
+  #+END_SRC
+
+  - sampling (PRNG)
+  #+BEGIN_SRC haskell
   newtype Random a = Random {
     run :: StateT Gen a
   }
   #+END_SRC
 
-  - future: free probability monad
+* Free Monads
+  [[./img/prac-prob.png]]
 
 * 
   #+BEGIN_SRC haskell
@@ -140,6 +148,7 @@
 * Embedded Domain-Specific Languages
 
 * Composing Contracts
+  [[./img/composing-contracts.png]]
 
 * Haskell Lessons
 
