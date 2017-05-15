@@ -151,6 +151,13 @@
 * Composing Contracts
   [[./img/composing-contracts.png]]
 
+* A Haskell Framework
+  - *modular* and *typed* models
+  - separate out solution methods and approximations
+    - approximations in /solution/
+    - approximations in /model/
+    - simulate without approximations
+
 * Haskell Lessons
 
 * Simple Abstractions Scale
