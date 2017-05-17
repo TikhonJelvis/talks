@@ -18,6 +18,8 @@
 
 ** Exhaustive
    - Erwig paper
+   - issues: performance
+     - binomial example
 
 ** Realigned (Codensity)
 

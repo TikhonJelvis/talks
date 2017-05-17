@@ -14,8 +14,14 @@ extra-source-files:  ChangeLog.md, README.md
 cabal-version:       >=1.10
 
 library
-  hs-source-dirs:      radix-trees/code, reflex-ghcjs/code
-  exposed-modules:     Figures, Trie, Diagrams
+  hs-source-dirs:      radix-trees/code, reflex-ghcjs/code, programming-with-probability/code
+  exposed-modules:     Figures
+                     , Trie
+                     , Diagrams
+
+                     , Dist
+                     , Visualization
+                     , DistExamples
   -- other-modules:
   other-extensions:    FlexibleContexts
                      , FlexibleInstances
