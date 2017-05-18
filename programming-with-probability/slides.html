@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Probability Monad</title>
+<meta name="author" content="(Tikhon Jelvis)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="./reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="./reveal.js/css/theme/tikhon.css" id="theme"/>
+
+<link rel="stylesheet" href="./reveal.js/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<meta name="description" content="Probability distributions form a monad. I'll talk about how we can use this monad in different ways to work with probability distributions in our code.">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Probability Monad</h1><h2 class="author">Tikhon Jelvis</h2><h2 class="email"><a href="mailto:tikhon@jelv.is">tikhon@jelv.is</a></h2>
+</section>
+
+<section>
+<section id="slide-org1293d8c">
+<h2 id="org1293d8c"></h2>
+<ol>
+<li>Probability Distributions</li>
+<li>Interpretations</li>
+<li>Supply Chain Optimization</li>
+<li>Probabilistic Programming</li>
+
+</ol>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbf5f41a">
+<h2 id="orgbf5f41a"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >dice = uniform [1..6]
+</code></pre>
+</div>
+
+<div class="figure">
+<p><img src="./img/dice.png" alt="dice.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org886bdb5">
+<h2 id="org886bdb5"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >dice2 = dice + dice
+</code></pre>
+</div>
+
+<div class="figure">
+<p><img src="./img/dice2.png" alt="dice2.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org533f182">
+<h2 id="org533f182">Abstract Type</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >data Dist a = ...
+
+dice ∷ Dist Int
+dice = uniform [1..6]
+
+coin ∷ Double → Dist Coin
+coin p = 
+  weighted [(T, p), (H, 1 - p)]
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd64f14d">
+<h2 id="orgd64f14d">Monad</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >pure ∷ a → Dist a
+fmap ∷ (a → b) → (Dist a → Dist b)
+join ∷ Dist (Dist a) → Dist a
+</code></pre>
+</div>
+
+<ul>
+<li>remember <code>flatMap</code> or <code>bind</code>:</li>
+
+</ul>
+<div class="org-src-container">
+
+<pre><code class="haskell" >x &gt;&gt;= f = join (fmap f x)
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc0c3be6">
+<h2 id="orgc0c3be6">pure</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >pure x = uniform [x]
+</code></pre>
+</div>
+
+<div class="figure">
+<p><img src="./img/constant.png" alt="constant.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org9df364c">
+<h2 id="org9df364c">fmap</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >fmap (`mod` 5) dice2
+</code></pre>
+</div>
+<img src="./img/dice2-small.png" />
+<span style="position: relative; bottom: 175px; font-size: 60pt"> ⇒ </span>
+<img src="./img/divisible.png" />
+
+</section>
+</section>
+<section>
+<section id="slide-org4de12a1">
+<h2 id="org4de12a1">join</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >join ∷ Dist (Dist a) → Dist a
+</code></pre>
+</div>
+
+<p>
+Two different interpretations.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org9d0c3c9">
+<h2 id="org9d0c3c9"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >data Coin = H | T
+
+coin ∷ Double → Dist Coin
+coin p = weighted [(T, p), (H, 1 - p)]
+
+fair   = coin 0.5
+unfair = coin 0.9
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd74550e">
+<h2 id="orgd74550e"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >randomCoin ∷ Dist (Dist Coin)
+randomCoin = 
+  weighted [ (fair,   0.5)
+           , (unfair, 0.5)
+           ]
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="fragment roll-in"><code class="haskell" >join randomCoin ∷ Dist Coin
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org265bac2">
+<h2 id="org265bac2">Sampling</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >randomCoin ∷ Dist (Dist Coin)
+randomCoin = …
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >flattened ∷ Dist Coin
+flattened = do
+  coinDist ← randomCoin
+  result   ← coinDist
+  return result
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org9901a0f">
+<h2 id="org9901a0f">Exhaustive</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >fair, unfair ∷ Dist Coin
+fair   = coin 0.5
+unfair = coin 0.9
+</code></pre>
+</div>
+
+
+<p>
+<img src="./img/flipTree.png" alt="flipTree.png" /> <img src="./img/flipTree'.png" alt="flipTree'.png" />
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orga5e8b29">
+<h2 id="orga5e8b29"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >randomCoin ∷ Dist (Dist Coin)
+randomCoin = weighted [ (0.5, coin 0.5)
+                      , (0.5, coin 0.9) 
+                      ]
+</code></pre>
+</div>
+
+
+<div class="figure">
+<p><img src="./img/nested.png" alt="nested.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org0ad0c07">
+<h2 id="org0ad0c07">flattened</h2>
+
+<div class="figure">
+<p><img src="./img/flattened.png" alt="flattened.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >[ (H, 0.25), (T, 0.25)
+, (H, 0.05), (T, 0.45) ]
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org895f879">
+<h2 id="org895f879"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >result = join randomCoin
+</code></pre>
+</div>
+
+
+<div class="figure">
+<p><img src="./img/final.png" alt="final.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org78ccd09">
+<h2 id="org78ccd09">Implementations</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd28b36b">
+<h2 id="orgd28b36b">Sampling</h2>
+<p>
+pseudorandom number generators
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >sample ∷ Gen → (Double, Gen)
+
+type Random a = State Gen a 
+
+run   ∷ Seed → Random a → a
+runIO ∷ Random a → IO a
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org0216e39">
+<h2 id="org0216e39">Exhaustive</h2>
+
+<div class="figure">
+<p><img src="./img/erwig-fpf.png" alt="erwig-fpf.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org017992e">
+<h2 id="org017992e">Exhaustive</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >type Probability = Double 
+  -- or Rational or...
+
+newtype Dist a = Dist 
+  { probabilities ∷ [(a, Probability)] }
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga1645df">
+<h2 id="orga1645df">Exhaustive</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >weighted ∷ [(a, Probability)] → Dist a
+weighted = Dist
+
+uniform ∷ [a] → Dist a
+uniform xs = Dist (zip xs [1..])
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc5dde5d">
+<h2 id="orgc5dde5d">Monad</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >pure ∷ a → Dist a
+pure x = Dist [(x, 1)]
+
+join ∷ Dist (Dist a) → Dist a
+join dists = Dist 
+  [ (x, p₁ * p₂) | (d, p₁) ← dists
+                 , (x, p₂) ← d ]
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org77afb8a">
+<h2 id="org77afb8a">Monad</h2>
+
+<div class="figure">
+<p><img src="./img/nested.png" alt="nested.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge5e719b">
+<h2 id="orge5e719b">Unnormalized</h2>
+
+<div class="figure">
+<p><img src="./img/flattened.png" alt="flattened.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org57e3335">
+<h2 id="org57e3335"></h2>
+<img src="./img/flattened.png" />
+<div>
+⇓ 
+</div>
+<img src="./img/final.png" />
+
+</section>
+</section>
+<section>
+<section id="slide-org530aa7e">
+<h2 id="org530aa7e">Normalizing</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >normalize ∷ Ord a ⇒ Dist a → Dist a
+normalize = ...
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf9fe759">
+<h2 id="orgf9fe759">Normalize automatically?</h2>
+<div class="org-src-container">
+
+<pre class="fragment roll-in"><code class="haskell" >fmap (+) dice ∷ Dist (a → b)
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="fragment roll-in"><code class="haskell" >(+) &lt;$&gt; dice &lt;*&gt; dice
+
+((+) &lt;$&gt; dice) ∷ Dist (a → b)
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org0706b35">
+<h2 id="org0706b35">Upsides</h2>
+<ul>
+<li>expressive</li>
+<li>intuitive</li>
+<li>fits well into Haskell</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc0189ae">
+<h2 id="orgc0189ae">Downsides</h2>
+<ul>
+<li>sloooooow</li>
+<li>normalization</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge2ef1d7">
+<h2 id="orge2ef1d7">Simple Abstractions Scale</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgec6a9ca">
+<h2 id="orgec6a9ca">Supply Chain Optimization</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgdc458af">
+<h2 id="orgdc458af"></h2>
+<img src="./img/target.png" style="background:white" />
+
+</section>
+</section>
+<section>
+<section id="slide-orge235ee9">
+<h2 id="orge235ee9">What is Target?</h2>
+<ul>
+<li>1806 stores</li>
+<li>37 distribution centers</li>
+<li>Target.com</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org246fbcf">
+<h2 id="org246fbcf">Distribution Centers</h2>
+
+<div class="figure">
+<p><img src="./img/dc-map.png" alt="dc-map.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga93ae60">
+<h2 id="orga93ae60">Distribution Centers</h2>
+<video src="./img/dc-broll.mp4#t=82" loop width="100%">
+</video>
+
+</section>
+</section>
+<section>
+<section id="slide-org1508699">
+<h2 id="org1508699">Maximize Experience; Minimize Cost</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-org9012cdf">
+<h2 id="org9012cdf">Demand Uncertainty</h2>
+
+<div class="figure">
+<p><img src="./img/binomial-demand.png" alt="binomial-demand.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf663e3c">
+<h2 id="orgf663e3c">Demand Uncertainty</h2>
+
+<div class="figure">
+<p><img src="./img/item-demand.png" alt="item-demand.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgeb76c53">
+<h2 id="orgeb76c53"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >class Monad m ⇒ MonadDist m where
+  weighted ∷ [(a, Probability)] → m a
+
+  uniform  ∷ [a] → m a
+  binomial ∷ Double → Int → m Int
+  {- etc -}
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >instance MonadDist Dist
+instance MonadDist Random
+…
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org8c1f1c3">
+<h2 id="org8c1f1c3">Models</h2>
+<ul>
+<li>sampling:
+<ul>
+<li>simulation</li>
+<li>simulation-based optimization</li>
+
+</ul></li>
+<li>exhaustive:
+<ul>
+<li>linear programming</li>
+<li>dynamic programming</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4fa0ff0">
+<h2 id="org4fa0ff0">Random</h2>
+<p>
+easy(ish) to try different generators
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >newtype Random a = Random {
+  runRandom ∷ ∀ m. PrimMonad m 
+            ⇒ Gen (PrimState m) → m a
+} deriving Functor
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org4a667fa">
+<h2 id="org4a667fa">Markov Decision Processes</h2>
+<ul>
+<li>S: set of states</li>
+<li>A: set of actions</li>
+<li>P(s, a, s'): transition probability</li>
+<li>R(s, s'): reward</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4019e2d">
+<h2 id="org4019e2d">Policy</h2>
+<ul>
+<li>result of optimization
+<ul>
+<li>function S → A</li>
+<li>maximizes expected reward</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org209a5e1">
+<h2 id="org209a5e1">In Haskell</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >data MDP m s a r = 
+  MDP { step ∷ s → a → m (r, s) }
+
+type Policy s a = s → a
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3ec1e3c">
+<h2 id="org3ec1e3c">Simulation</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >data Markov m s r = 
+  Markov { step ∷ s → m (s, r) }
+
+apply ∷ MDP m s a r 
+      → Policy s a 
+      → Markov m s r
+</code></pre>
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgca6dd77">
+<h2 id="orgca6dd77">Example</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orga51d801">
+<h2 id="orga51d801"></h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >step ∷ Qty → Qty → m (Qty, Money)
+step inv order = do
+  let stocked = inv + order
+      cost    = price * order
+
+  buyers ← demand
+
+  let after  = max (stocked - buyers) 0
+      profit = price * (inv - after)
+
+  return (remaining, profit - cost)
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga2c5b6e">
+<h2 id="orga2c5b6e">Optimization Techniques</h2>
+<ul>
+<li>dynamic programming (policy iteration)</li>
+<li>linear programming</li>
+<li>reinforcement learning
+<ul>
+<li>features</li>
+<li>neural nets</li>
+
+</ul></li>
+<li>domain-specific algorithms</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org93a2f66">
+<h2 id="org93a2f66">Free Monads</h2>
+
+<div class="figure">
+<p><img src="./img/prac-prob.png" alt="prac-prob.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2ec81b9">
+<h2 id="org2ec81b9">Free Monad</h2>
+<div class="org-src-container">
+
+<pre><code class="haskell" >data D a where
+  Return      ∷ a → D a
+  Bind        ∷ D b → (b → D a) → D a
+  Primitive   ∷ Sampleable d ⇒ d a → D a
+  Conditional ∷ (a → Prob) → D a → D a
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >instance Monad Dist where
+  return = Pure
+  (&gt;&gt;=)  = Bind
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd83bb1f">
+<h2 id="orgd83bb1f">Future?</h2>
+<ul>
+<li>full-on probabilistic programming</li>
+<li>interactive Haskell-based tools</li>
+<li>distributions optimized for optimization?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org0f706a2">
+<h2 id="org0f706a2">We're Hiring!</h2>
+<p>
+Sounds interesting? 
+</p>
+
+<p>
+Email me: tikhon.jelvis@target.com
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org861e565">
+<h2 id="org861e565">Questions?</h2>
+</section>
+</section>
+</div>
+</div>
+<p> Created by Tikhon Jelvis. </p>
+<script src="./reveal.js/lib/js/head.min.js"></script>
+<script src="./reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: false,
+progress: false,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.10,
+minScale: 0.50,
+maxScale: 2.50,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'slide', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: './reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: './reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>
