@@ -160,7 +160,7 @@ body {
   display: block;
   padding: 20px;
   overflow: auto;
-  max-height: 400px;
+  max-height: 600px;
   word-wrap: normal;
   background: #3F3F3F;
   color: #DCDCDC; }

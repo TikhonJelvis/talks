@@ -30,30 +30,34 @@
   5. Probabilistic Programming
 
 * 
-  =dice = uniform [1..6]=
+  #+BEGIN_SRC haskell
+  dice = uniform [1..6]
+  #+END_SRC
   [[./img/dice.png]]
 
 * 
-  =dice2 = dice + dice=
+  #+BEGIN_SRC haskell
+  dice2 = dice + dice
+  #+END_SRC
   [[./img/dice2.png]]
 
 * Abstract Type
   #+BEGIN_SRC haskell
   data Dist a = ...
 
-  dice :: Dist Int
+  dice ∷ Dist Int
   dice = uniform [1..6]
 
-  coin :: Double -> Dist Coin
+  coin ∷ Double → Dist Coin
   coin p = 
     weighted [(T, p), (H, 1 - p)]
   #+END_SRC
 
 * Monad
   #+BEGIN_SRC haskell
-  pure :: a → Dist a
-  fmap :: (a → b) → (Dist a → Dist b)
-  join :: Dist (Dist a) → Dist a
+  pure ∷ a → Dist a
+  fmap ∷ (a → b) → (Dist a → Dist b)
+  join ∷ Dist (Dist a) → Dist a
   #+END_SRC
 
   - remember =flatMap= or =bind=:
@@ -79,20 +83,54 @@
 
 * join
   #+BEGIN_SRC haskell
-  join :: Dist (Dist a) → Dist a
+  join ∷ Dist (Dist a) → Dist a
+  #+END_SRC
+
+  Two different interpretations.
+
+* 
+  #+BEGIN_SRC haskell
+  data Coin = H | T
+  
+  coin ∷ Double → Dist Coin
+  coin p = weighted [(T, p), (H, 1 - p)]
+
+  fair   = coin 0.5
+  unfair = coin 0.9
   #+END_SRC
 
 * 
   #+BEGIN_SRC haskell
-  coin :: Double -> Dist Coin
-  coin p = 
-    weighted [(T, p), (H, 1 - p)]
+  randomCoin ∷ Dist (Dist Coin)
+  randomCoin = 
+    weighted [ (fair,   0.5)
+             , (unfair, 0.5)
+             ]
   #+END_SRC
 
-* 
+  #+ATTR_REVEAL: :frag roll-in
   #+BEGIN_SRC haskell
-  fair, unfair :: Dist Coin
-  fair = coin 0.5
+  join randomCoin ∷ Dist Coin
+  #+END_SRC
+
+* Sampling
+  #+BEGIN_SRC haskell
+  randomCoin ∷ Dist (Dist Coin)
+  randomCoin = …
+  #+END_SRC
+  
+  #+BEGIN_SRC haskell
+  flattened ∷ Dist Coin
+  flattened = do
+    coinDist ← randomCoin
+    result   ← coinDist
+    return result
+  #+END_SRC
+
+* Exhaustive
+  #+BEGIN_SRC haskell
+  fair, unfair ∷ Dist Coin
+  fair   = coin 0.5
   unfair = coin 0.9
   #+END_SRC
 
@@ -102,7 +140,7 @@
 * 
 
   #+BEGIN_SRC haskell
-  randomCoin :: Dist (Dist Coin)
+  randomCoin ∷ Dist (Dist Coin)
   randomCoin = weighted [ (0.5, coin 0.5)
                         , (0.5, coin 0.9) 
                         ]
@@ -125,3 +163,243 @@
   #+END_SRC
   
   [[./img/final.png]]
+
+* Implementations
+
+* Sampling
+  pseudorandom number generators
+  
+  #+BEGIN_SRC haskell
+  sample ∷ Gen → (Double, Gen)
+
+  type Random a = State Gen a 
+
+  run   ∷ Seed → Random a → a
+  runIO ∷ Random a → IO a
+  #+END_SRC
+
+* Exhaustive
+  [[./img/erwig-fpf.png]]
+
+* Exhaustive
+  #+BEGIN_SRC haskell
+  type Probability = Double 
+    -- or Rational or...
+  
+  newtype Dist a = Dist 
+    { probabilities ∷ [(a, Probability)] }
+  #+END_SRC
+
+* Exhaustive
+  #+BEGIN_SRC haskell
+  weighted ∷ [(a, Probability)] → Dist a
+  weighted = Dist
+
+  uniform ∷ [a] → Dist a
+  uniform xs = Dist (zip xs [1..])
+  #+END_SRC
+
+* Monad
+  #+BEGIN_SRC haskell
+  pure ∷ a → Dist a
+  pure x = Dist [(x, 1)]
+  
+  join ∷ Dist (Dist a) → Dist a
+  join dists = Dist 
+    [ (x, p₁ * p₂) | (d, p₁) ← dists
+                   , (x, p₂) ← d ]
+  #+END_SRC
+
+* Monad
+  [[./img/nested.png]]
+
+* Unnormalized
+  [[./img/flattened.png]]
+
+* 
+  #+BEGIN_EXPORT html
+  <img src="./img/flattened.png" />
+  <div>
+  ⇓ 
+  </div>
+  <img src="./img/final.png" />
+  #+END_EXPORT
+  
+* Normalizing
+  #+BEGIN_SRC haskell
+  normalize ∷ Ord a ⇒ Dist a → Dist a
+  normalize = ...
+  #+END_SRC
+
+* Normalize automatically?
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC haskell
+  fmap (+) dice ∷ Dist (a → b)
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC haskell
+  (+) <$> dice <*> dice
+
+  ((+) <$> dice) ∷ Dist (a → b)
+  #+END_SRC
+
+* Upsides
+  - expressive
+  - intuitive
+  - fits well into Haskell
+
+* Downsides
+  - sloooooow
+  - normalization
+
+* Simple Abstractions Scale
+
+* Supply Chain Optimization
+
+* 
+  #+BEGIN_EXPORT html
+  <img src="./img/target.png" style="background:white" />
+  #+END_EXPORT
+
+* What is Target?
+  - 1806 stores
+  - 37 distribution centers
+  - Target.com
+
+* Distribution Centers
+  [[./img/dc-map.png]]
+
+* Distribution Centers
+  #+BEGIN_EXPORT html
+    <video src="./img/dc-broll.mp4#t=82" loop width="100%">
+    </video>
+  #+END_EXPORT
+
+* Maximize Experience; Minimize Cost
+
+* Demand Uncertainty
+  [[./img/binomial-demand.png]]
+
+* Demand Uncertainty
+  [[./img/item-demand.png]]
+
+* 
+  #+BEGIN_SRC haskell
+  class Monad m ⇒ MonadDist m where
+    weighted ∷ [(a, Probability)] → m a
+    
+    uniform  ∷ [a] → m a
+    binomial ∷ Double → Int → m Int
+    {- etc -}
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  instance MonadDist Dist
+  instance MonadDist Random
+  …
+  #+END_SRC
+
+* Models
+  - sampling:
+    - simulation
+    - simulation-based optimization
+  - exhaustive:
+    - linear programming
+    - dynamic programming
+
+* Random
+  easy(ish) to try different generators
+
+  #+BEGIN_SRC haskell
+  newtype Random a = Random {
+    runRandom ∷ ∀ m. PrimMonad m 
+              ⇒ Gen (PrimState m) → m a
+  } deriving Functor
+  #+END_SRC
+
+* Markov Decision Processes
+  - S: set of states
+  - A: set of actions
+  - P(s, a, s'): transition probability
+  - R(s, s'): reward
+
+* Policy
+  - result of optimization
+    - function S → A
+    - maximizes expected reward
+
+* In Haskell
+  #+BEGIN_SRC haskell
+    data MDP m s a r = 
+      MDP { step ∷ s → a → m (r, s) }
+
+    type Policy s a = s → a
+  #+END_SRC
+
+* Simulation
+  #+BEGIN_SRC haskell
+  data Markov m s r = 
+    Markov { step ∷ s → m (s, r) }
+
+  apply ∷ MDP m s a r 
+        → Policy s a 
+        → Markov m s r
+  #+END_SRC
+
+
+* Example
+
+* 
+ 
+  #+BEGIN_SRC haskell
+  step ∷ Qty → Qty → m (Qty, Money)
+  step inv order = do
+    let stocked = inv + order
+        cost    = price * order
+
+    buyers ← demand
+
+    let after  = max (stocked - buyers) 0
+        profit = price * (inv - after)
+
+    return (remaining, profit - cost)
+  #+END_SRC
+
+* Optimization Techniques
+  - dynamic programming (policy iteration)
+  - linear programming
+  - reinforcement learning
+    - features
+    - neural nets
+  - domain-specific algorithms
+
+* Free Monads
+  [[./img/prac-prob.png]]
+
+* Free Monad
+  #+BEGIN_SRC haskell
+  data D a where
+    Return      ∷ a → D a
+    Bind        ∷ D b → (b → D a) → D a
+    Primitive   ∷ Sampleable d ⇒ d a → D a
+    Conditional ∷ (a → Prob) → D a → D a
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  instance Monad Dist where
+    return = Pure
+    (>>=)  = Bind
+  #+END_SRC
+
+* Future?
+  - full-on probabilistic programming
+  - interactive Haskell-based tools
+  - distributions optimized for optimization?
+
+* We're Hiring!
+  Sounds interesting? 
+
+  Email me: tikhon.jelvis@target.com
+
+* Questions?
