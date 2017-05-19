@@ -270,11 +270,11 @@
 * Distribution Centers
   [[./img/dc-map.png]]
 
-* Distribution Centers
-  #+BEGIN_EXPORT html
-    <video src="./img/dc-broll.mp4#t=82" loop width="100%">
-    </video>
-  #+END_EXPORT
+# * Distribution Centers
+#   #+BEGIN_EXPORT html
+#     <video src="./img/dc-broll.mp4#t=82" loop width="100%">
+#     </video>
+#   #+END_EXPORT
 
 * Maximize Experience; Minimize Cost
 
