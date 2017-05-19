@@ -6,7 +6,7 @@ module Visualization where
 import Control.Lens
 import Control.Monad (void)
 
-import Data.Colour (AlphaColour, opaque)
+import Data.Colour (AlphaColour, opaque, transparent)
 import Data.Colour.SRGB
 import Data.Colour.Names
 import Data.Default.Class (Default, def)
@@ -53,11 +53,13 @@ plotPDF Titles {..} dist@(Dist ps) = toRenderable layout
                    & layout_x_axis . laxis_generate .~ autoIndexAxis xLabels
                    & layout_x_axis . laxis_title .~ xAxis
                    & layout_x_axis . laxis_title_style . font_size .~ 32
+                   & layout_x_axis . laxis_style . axis_label_style . font_color .~ transparent
                    & layout_y_axis . laxis_generate .~ minimal (0, maxP)
                    & layout_y_axis . laxis_title .~ yAxis
                    & layout_y_axis . laxis_title_style . font_size .~ 32
                    & layout_plots .~ [ plotBars bars ]
         bars = def & plot_bars_values .~ addIndexes (map toVal $ dist ^.. probabilities)
+                   & plot_bars_item_styles .~ repeat (FillStyleSolid $ opaque textColor, Nothing)
         toVal p = [fromRational $ toRational p]
 
         xLabels = show <$> dist ^.. events
