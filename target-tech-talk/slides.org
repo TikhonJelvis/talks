@@ -370,9 +370,6 @@
   #+END_EXPORT
 
 * Stochastic Optimization
-    :PROPERTIES:
-    :reveal_background: white
-    :END:
   - optimization: 
     - exact distributions
   - simulation:
