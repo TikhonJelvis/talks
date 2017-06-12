@@ -7,18 +7,18 @@
 <style type="text/css">
 .underline { text-decoration: underline; }
 </style>
-<link rel="stylesheet" href="./reveal.js/css/reveal.css"/>
+<link rel="stylesheet" href="/talks/reveal.js/css/reveal.css"/>
 
-<link rel="stylesheet" href="./reveal.js/css/theme/tikhon.css" id="theme"/>
+<link rel="stylesheet" href="/talks/reveal.js/css/theme/tikhon.css" id="theme"/>
 
-<link rel="stylesheet" href="./reveal.js/lib/css/zenburn.css"/>
+<link rel="stylesheet" href="/talks/reveal.js/lib/css/zenburn.css"/>
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
 <script>
     if( window.location.search.match( /print-pdf/gi ) ) {
         var link = document.createElement( 'link' );
         link.rel = 'stylesheet';
         link.type = 'text/css';
-        link.href = './reveal.js/css/print/pdf.css';
+        link.href = '/talks/reveal.js/css/print/pdf.css';
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
@@ -31,8 +31,8 @@
 </section>
 
 <section>
-<section id="slide-org223575c">
-<h2 id="org223575c"></h2>
+<section id="slide-org91ca15e">
+<h2 id="org91ca15e"></h2>
 <ol>
 <li>Probability Distributions</li>
 <li>Interpretations</li>
@@ -44,8 +44,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org1ef44e6">
-<h2 id="org1ef44e6"></h2>
+<section id="slide-org7a14d00">
+<h2 id="org7a14d00"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >dice = uniform [1..6]
@@ -60,8 +60,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org979bfb4">
-<h2 id="org979bfb4"></h2>
+<section id="slide-org0745d14">
+<h2 id="org0745d14"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >dice2 = dice + dice
@@ -76,8 +76,8 @@
 </section>
 </section>
 <section>
-<section id="slide-orgfb487a9">
-<h2 id="orgfb487a9">Abstract Type</h2>
+<section id="slide-org6454ee9">
+<h2 id="org6454ee9">Abstract Type</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >data Dist a = ...
@@ -94,8 +94,8 @@ coin p =
 </section>
 </section>
 <section>
-<section id="slide-org0fee190">
-<h2 id="org0fee190">Monad</h2>
+<section id="slide-org5aff20c">
+<h2 id="org5aff20c">Monad</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >pure ∷ a → Dist a
@@ -117,8 +117,8 @@ join ∷ Dist (Dist a) → Dist a
 </section>
 </section>
 <section>
-<section id="slide-org19dc558">
-<h2 id="org19dc558">pure</h2>
+<section id="slide-orge77763b">
+<h2 id="orge77763b">pure</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >pure x = uniform [x]
@@ -133,8 +133,8 @@ join ∷ Dist (Dist a) → Dist a
 </section>
 </section>
 <section>
-<section id="slide-orgd295807">
-<h2 id="orgd295807">fmap</h2>
+<section id="slide-orgba98e61">
+<h2 id="orgba98e61">fmap</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >fmap (`mod` 5) dice2
@@ -147,8 +147,8 @@ join ∷ Dist (Dist a) → Dist a
 </section>
 </section>
 <section>
-<section id="slide-org511aef2">
-<h2 id="org511aef2">join</h2>
+<section id="slide-org9865d7b">
+<h2 id="org9865d7b">join</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >join ∷ Dist (Dist a) → Dist a
@@ -162,8 +162,8 @@ Two different interpretations.
 </section>
 </section>
 <section>
-<section id="slide-org8b38b50">
-<h2 id="org8b38b50"></h2>
+<section id="slide-orge53b583">
+<h2 id="orge53b583"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >data Coin = H | T
@@ -179,8 +179,8 @@ unfair = coin 0.9
 </section>
 </section>
 <section>
-<section id="slide-org8269836">
-<h2 id="org8269836"></h2>
+<section id="slide-orge74305c">
+<h2 id="orge74305c"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >randomCoin ∷ Dist (Dist Coin)
@@ -200,8 +200,8 @@ randomCoin =
 </section>
 </section>
 <section>
-<section id="slide-org2edcfdf">
-<h2 id="org2edcfdf">Sampling</h2>
+<section id="slide-org1787d21">
+<h2 id="org1787d21">Sampling</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >randomCoin ∷ Dist (Dist Coin)
@@ -222,8 +222,8 @@ flattened = do
 </section>
 </section>
 <section>
-<section id="slide-orgbbe6198">
-<h2 id="orgbbe6198">Exhaustive</h2>
+<section id="slide-org06e2446">
+<h2 id="org06e2446">Exhaustive</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >fair, unfair ∷ Dist Coin
@@ -240,8 +240,8 @@ unfair = coin 0.9
 </section>
 </section>
 <section>
-<section id="slide-org0e7766f">
-<h2 id="org0e7766f"></h2>
+<section id="slide-orgce846ce">
+<h2 id="orgce846ce"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >randomCoin ∷ Dist (Dist Coin)
@@ -260,8 +260,8 @@ randomCoin = weighted [ (0.5, coin 0.5)
 </section>
 </section>
 <section>
-<section id="slide-org6e3c04c">
-<h2 id="org6e3c04c">flattened</h2>
+<section id="slide-org27d9b02">
+<h2 id="org27d9b02">flattened</h2>
 
 <div class="figure">
 <p><img src="./img/flattened.png" alt="flattened.png" />
@@ -278,8 +278,8 @@ randomCoin = weighted [ (0.5, coin 0.5)
 </section>
 </section>
 <section>
-<section id="slide-org84b19c8">
-<h2 id="org84b19c8"></h2>
+<section id="slide-orgaaa3be6">
+<h2 id="orgaaa3be6"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >result = join randomCoin
@@ -295,14 +295,14 @@ randomCoin = weighted [ (0.5, coin 0.5)
 </section>
 </section>
 <section>
-<section id="slide-orgac92c03">
-<h2 id="orgac92c03">Implementations</h2>
+<section id="slide-org63702ec">
+<h2 id="org63702ec">Implementations</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org7287a91">
-<h2 id="org7287a91">Sampling</h2>
+<section id="slide-orge325f0d">
+<h2 id="orge325f0d">Sampling</h2>
 <p>
 pseudorandom number generators
 </p>
@@ -321,8 +321,8 @@ runIO ∷ Random a → IO a
 </section>
 </section>
 <section>
-<section id="slide-org6fcc308">
-<h2 id="org6fcc308">Exhaustive</h2>
+<section id="slide-org674fd4c">
+<h2 id="org674fd4c">Exhaustive</h2>
 
 <div class="figure">
 <p><img src="./img/erwig-fpf.png" alt="erwig-fpf.png" />
@@ -332,8 +332,8 @@ runIO ∷ Random a → IO a
 </section>
 </section>
 <section>
-<section id="slide-org8c23644">
-<h2 id="org8c23644">Exhaustive</h2>
+<section id="slide-orgc7b6607">
+<h2 id="orgc7b6607">Exhaustive</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >type Probability = Double 
@@ -347,8 +347,8 @@ newtype Dist a = Dist
 </section>
 </section>
 <section>
-<section id="slide-org56e4a4f">
-<h2 id="org56e4a4f">Exhaustive</h2>
+<section id="slide-orga17ef8a">
+<h2 id="orga17ef8a">Exhaustive</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >weighted ∷ [(a, Probability)] → Dist a
@@ -362,8 +362,8 @@ uniform xs = Dist (zip xs [1..])
 </section>
 </section>
 <section>
-<section id="slide-orga942ae3">
-<h2 id="orga942ae3">Monad</h2>
+<section id="slide-org6672b1a">
+<h2 id="org6672b1a">Monad</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >pure ∷ a → Dist a
@@ -379,8 +379,8 @@ join dists = Dist
 </section>
 </section>
 <section>
-<section id="slide-org5f2fd0e">
-<h2 id="org5f2fd0e">Monad</h2>
+<section id="slide-org225f95e">
+<h2 id="org225f95e">Monad</h2>
 
 <div class="figure">
 <p><img src="./img/nested.png" alt="nested.png" />
@@ -390,8 +390,8 @@ join dists = Dist
 </section>
 </section>
 <section>
-<section id="slide-org93d346c">
-<h2 id="org93d346c">Unnormalized</h2>
+<section id="slide-org24b3be7">
+<h2 id="org24b3be7">Unnormalized</h2>
 
 <div class="figure">
 <p><img src="./img/flattened.png" alt="flattened.png" />
@@ -401,8 +401,8 @@ join dists = Dist
 </section>
 </section>
 <section>
-<section id="slide-orgede08a3">
-<h2 id="orgede08a3"></h2>
+<section id="slide-org4e0ca25">
+<h2 id="org4e0ca25"></h2>
 <img src="./img/flattened.png" />
 <div>
 ⇓ 
@@ -412,8 +412,8 @@ join dists = Dist
 </section>
 </section>
 <section>
-<section id="slide-org1cb6d07">
-<h2 id="org1cb6d07">Normalizing</h2>
+<section id="slide-org0024f3e">
+<h2 id="org0024f3e">Normalizing</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >normalize ∷ Ord a ⇒ Dist a → Dist a
@@ -424,8 +424,8 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-org3d47326">
-<h2 id="org3d47326">Normalize automatically?</h2>
+<section id="slide-org8ee14c7">
+<h2 id="org8ee14c7">Normalize automatically?</h2>
 <div class="org-src-container">
 
 <pre class="fragment roll-in"><code class="haskell" >fmap (+) dice ∷ Dist (a → b)
@@ -443,8 +443,8 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-org827451b">
-<h2 id="org827451b">Upsides</h2>
+<section id="slide-orgbad1b0b">
+<h2 id="orgbad1b0b">Upsides</h2>
 <ul>
 <li>expressive</li>
 <li>intuitive</li>
@@ -455,8 +455,8 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-orgb865c06">
-<h2 id="orgb865c06">Downsides</h2>
+<section id="slide-org1d36c4c">
+<h2 id="org1d36c4c">Downsides</h2>
 <ul>
 <li>sloooooow</li>
 <li>normalization</li>
@@ -466,27 +466,27 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-orga1e87c1">
-<h2 id="orga1e87c1">Simple Abstractions Scale</h2>
+<section id="slide-orgd333d23">
+<h2 id="orgd333d23">Simple Abstractions Scale</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-orgf394a46">
-<h2 id="orgf394a46">Supply Chain Optimization</h2>
+<section id="slide-orgdd6dd17">
+<h2 id="orgdd6dd17">Supply Chain Optimization</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org002a355">
-<h2 id="org002a355"></h2>
+<section id="slide-orgd0cd007">
+<h2 id="orgd0cd007"></h2>
 <img src="./img/target.png" style="background:white" />
 
 </section>
 </section>
 <section>
-<section id="slide-org9778375">
-<h2 id="org9778375">What is Target?</h2>
+<section id="slide-orgb3b0400">
+<h2 id="orgb3b0400">What is Target?</h2>
 <ul>
 <li>1806 stores</li>
 <li>37 distribution centers</li>
@@ -497,8 +497,8 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-org323d6a8">
-<h2 id="org323d6a8">Distribution Centers</h2>
+<section id="slide-org40f0f43">
+<h2 id="org40f0f43">Distribution Centers</h2>
 
 <div class="figure">
 <p><img src="./img/dc-map.png" alt="dc-map.png" />
@@ -508,14 +508,14 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-org5df4147">
-<h2 id="org5df4147">Maximize Experience; Minimize Cost</h2>
+<section id="slide-org11c35e1">
+<h2 id="org11c35e1">Maximize Experience; Minimize Cost</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-orge3d8add">
-<h2 id="orge3d8add">Demand Uncertainty</h2>
+<section id="slide-orge4b8f10">
+<h2 id="orge4b8f10">Demand Uncertainty</h2>
 
 <div class="figure">
 <p><img src="./img/binomial-demand.png" alt="binomial-demand.png" />
@@ -525,8 +525,8 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-org0a94fe3">
-<h2 id="org0a94fe3">Demand Uncertainty</h2>
+<section id="slide-orga0480df">
+<h2 id="orga0480df">Demand Uncertainty</h2>
 
 <div class="figure">
 <p><img src="./img/item-demand.png" alt="item-demand.png" />
@@ -536,8 +536,8 @@ normalize = ...
 </section>
 </section>
 <section>
-<section id="slide-orgb61331c">
-<h2 id="orgb61331c"></h2>
+<section id="slide-org1662e0d">
+<h2 id="org1662e0d"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >class Monad m ⇒ MonadDist m where
@@ -560,8 +560,8 @@ instance MonadDist Random
 </section>
 </section>
 <section>
-<section id="slide-org814bbbb">
-<h2 id="org814bbbb">Models</h2>
+<section id="slide-org92747e3">
+<h2 id="org92747e3">Models</h2>
 <ul>
 <li>sampling:
 <ul>
@@ -581,8 +581,8 @@ instance MonadDist Random
 </section>
 </section>
 <section>
-<section id="slide-org53b0258">
-<h2 id="org53b0258">Random</h2>
+<section id="slide-orge7ae45a">
+<h2 id="orge7ae45a">Random</h2>
 <p>
 easy(ish) to try different generators
 </p>
@@ -599,8 +599,8 @@ easy(ish) to try different generators
 </section>
 </section>
 <section>
-<section id="slide-org048f28c">
-<h2 id="org048f28c">Markov Decision Processes</h2>
+<section id="slide-orged76434">
+<h2 id="orged76434">Markov Decision Processes</h2>
 <ul>
 <li>S: set of states</li>
 <li>A: set of actions</li>
@@ -612,8 +612,8 @@ easy(ish) to try different generators
 </section>
 </section>
 <section>
-<section id="slide-orgd4b52ab">
-<h2 id="orgd4b52ab">Policy</h2>
+<section id="slide-orge32e1b5">
+<h2 id="orge32e1b5">Policy</h2>
 <ul>
 <li>result of optimization
 <ul>
@@ -627,8 +627,8 @@ easy(ish) to try different generators
 </section>
 </section>
 <section>
-<section id="slide-org2b38d88">
-<h2 id="org2b38d88">In Haskell</h2>
+<section id="slide-org2aea750">
+<h2 id="org2aea750">In Haskell</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >data MDP m s a r = 
@@ -641,8 +641,8 @@ type Policy s a = s → a
 </section>
 </section>
 <section>
-<section id="slide-org509945e">
-<h2 id="org509945e">Simulation</h2>
+<section id="slide-orgc2d2370">
+<h2 id="orgc2d2370">Simulation</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >data Markov m s r = 
@@ -658,14 +658,14 @@ apply ∷ MDP m s a r
 </section>
 </section>
 <section>
-<section id="slide-org429aa79">
-<h2 id="org429aa79">Example</h2>
+<section id="slide-orgbe1ca8f">
+<h2 id="orgbe1ca8f">Example</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-orgd972fc8">
-<h2 id="orgd972fc8"></h2>
+<section id="slide-org39c3379">
+<h2 id="org39c3379"></h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >step ∷ Qty → Qty → m (Qty, Money)
@@ -685,8 +685,8 @@ step inv order = do
 </section>
 </section>
 <section>
-<section id="slide-orgad9b583">
-<h2 id="orgad9b583">Optimization Techniques</h2>
+<section id="slide-orgda0e208">
+<h2 id="orgda0e208">Optimization Techniques</h2>
 <ul>
 <li>dynamic programming (policy iteration)</li>
 <li>linear programming</li>
@@ -703,8 +703,8 @@ step inv order = do
 </section>
 </section>
 <section>
-<section id="slide-org8a40aad">
-<h2 id="org8a40aad">Free Monads</h2>
+<section id="slide-org5eac271">
+<h2 id="org5eac271">Free Monads</h2>
 
 <div class="figure">
 <p><img src="./img/prac-prob.png" alt="prac-prob.png" />
@@ -714,8 +714,8 @@ step inv order = do
 </section>
 </section>
 <section>
-<section id="slide-org18a49a1">
-<h2 id="org18a49a1">Free Monad</h2>
+<section id="slide-orgee3b4c0">
+<h2 id="orgee3b4c0">Free Monad</h2>
 <div class="org-src-container">
 
 <pre><code class="haskell" >data D a where
@@ -737,8 +737,8 @@ step inv order = do
 </section>
 </section>
 <section>
-<section id="slide-org0289dd0">
-<h2 id="org0289dd0">Future?</h2>
+<section id="slide-orgd60c75c">
+<h2 id="orgd60c75c">Future?</h2>
 <ul>
 <li>full-on probabilistic programming</li>
 <li>interactive Haskell-based tools</li>
@@ -749,8 +749,8 @@ step inv order = do
 </section>
 </section>
 <section>
-<section id="slide-org1638f38">
-<h2 id="org1638f38">We're Hiring!</h2>
+<section id="slide-orgfb8faf1">
+<h2 id="orgfb8faf1">We're Hiring!</h2>
 <p>
 Sounds interesting? 
 </p>
@@ -762,22 +762,22 @@ Email me: tikhon.jelvis@target.com
 </section>
 </section>
 <section>
-<section id="slide-org7fa8ce1">
-<h2 id="org7fa8ce1">Questions?</h2>
+<section id="slide-org6c63a85">
+<h2 id="org6c63a85">Questions?</h2>
 </section>
 </section>
 </div>
 </div>
 <p> Created by Tikhon Jelvis. </p>
-<script src="./reveal.js/lib/js/head.min.js"></script>
-<script src="./reveal.js/js/reveal.js"></script>
+<script src="/talks/reveal.js/lib/js/head.min.js"></script>
+<script src="/talks/reveal.js/js/reveal.js"></script>
 
 <script>
 // Full list of configuration options available here:
 // https://github.com/hakimel/reveal.js#configuration
 Reveal.initialize({
 
-controls: false,
+controls: true,
 progress: false,
 history: true,
 center: true,
@@ -802,10 +802,10 @@ multiplex: {
 
 // Optional libraries used to extend on reveal.js
 dependencies: [
- { src: './reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
- { src: './reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: './reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+ { src: '/talks/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: '/talks/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '/talks/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '/talks/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
 });
 </script>
 </body>
