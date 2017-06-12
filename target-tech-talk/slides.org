@@ -1,6 +1,6 @@
 #+Title: Programming with Probability
 #+Author: Tikhon Jelvis
-#+Email: tikhon@jelv.is
+#+Email: tikhon.jelvis@target.com
 #+REVEAL_HEAD_PREAMBLE: <meta name="description" content="How we work with probability distributions in Haskell.">
 
 # Options I change before uploading to jelv.is
@@ -31,15 +31,15 @@
 * Distribution Centers
   [[./img/dc-map.png]]
 
+* Maximize Experience; Minimize Cost
+
+* Keep Items on Shelves; Minimize Inventory
+
 * 
   1. Why probability distributions?
   2. Programming with distributions (in Haskell)
   3. Stochastic optimization
   4. Probabilistic programming
-
-* Maximize Experience; Minimize Cost
-
-* Keep Items on Shelves; Minimize Inventory
 
 * Demand Uncertainty
   [[./img/binomial-demand.png]]
@@ -61,7 +61,7 @@
 
 * Abstraction
 
-* Probability Distribution Type
+* Probability Distribution Abstraction
     :PROPERTIES:
     :reveal_background: white
     :END:
@@ -110,7 +110,7 @@
   weighted ∷ [(a, Probability)] → Dist a
 
   uniform  ∷ [a] → Dist a
-  binomial ∷ [a] → Dist a
+  binomial ∷ Probability → Int → Dist Int
 
   pure ∷ a → Dist a
   pure = weighted [(a, 1)]
@@ -240,7 +240,7 @@
   flattened = do
     coinDist ← randomCoin
     result   ← coinDist
-    pure resultn
+    pure result
   #+END_SRC
 
 * Exhaustive
