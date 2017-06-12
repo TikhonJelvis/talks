@@ -1,0 +1,20 @@
+* Programming with Probability
+
+* Outline
+  - introduce work
+  - why probability distributions matter
+  - why Haskell?
+  - abstraction for probability distributions
+  - examples and motivation for map and >>=
+    - do notation
+  - two interpretations
+    - examples
+  - a bit about optimization
+    - different optimization methods use different interpretations
+  - looking forward: probabilistic programming
+
+* Work
+  - supply chain optimization
+  - maximize experience; minimize cost
+    - minimize inventory without going out-of-stock
+  - demand uncertainty

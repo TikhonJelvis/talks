@@ -1,0 +1,10 @@
+* Image Credits and Licenses
+
+** coin-toss.jpg
+   [[https://www.flickr.com/photos/icma/3635981474][ICMA Photos]] (flikr: CC-BY-SA 2.0)
+
+** Dice-1-1.png
+   [[https://upload.wikimedia.org/wikipedia/commons/7/79/Dices1-1.png][Alexander Dreyer]] (Wikimedia: CC-BY-SA 3.0)
+
+** single-die.png
+   [[https://upload.wikimedia.org/wikipedia/commons/7/79/Dices1-1.png][Alexander Dreyer]] (Wikimedia: CC-BY-SA 3.0), modified by me
