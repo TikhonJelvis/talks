@@ -389,7 +389,7 @@
     let after  = max (stocked - buyers) 0
         profit = price * (inv - after)
 
-    return (remaining, profit - cost)
+    pure (remaining, profit - cost)
   #+END_SRC
 
 * Probabilistic Programming
