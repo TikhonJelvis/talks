@@ -315,7 +315,7 @@
   weighted = Dist
 
   uniform ∷ [a] → Dist a
-  uniform xs = Dist (zip xs [1..])
+  uniform xs = Dist (zip xs [1, 1..])
   #+END_SRC
 
 * Monad
@@ -325,7 +325,7 @@
   
   map ∷ (a → b) → Dist a → Dist b
   map f (Dist ps) = Dist 
-    [ (p, f x) | (x, p) ← ps ]
+    [ (f x, p) | (x, p) ← ps ]
   
   join ∷ Dist (Dist a) → Dist a
   join dists = Dist 
