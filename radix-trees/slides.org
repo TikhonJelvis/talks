@@ -1,20 +1,27 @@
-#+Title: Different Tries
+#+Title: Radix Trees
 #+Author: Tikhon Jelvis
 #+Email: tikhon@jelv.is
 
-#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t reveal_control:nil
-#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="An overview of tries (or radix trees) in Haskell, focusing on the PATRICIA trie used by Data.IntMap.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
+# Options I change before uploading to jelv.is
+#+OPTIONS: reveal_control:nil
+#+OPTIONS: reveal_mathjax:t
+#+REVEAL_ROOT: ../reveal.js
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t
+#+OPTIONS: reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
 #+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
-#+OPTIONS: toc:nil
-#+OPTIONS: timestamp:nil email:t
+#+OPTIONS: toc:nil timestamp:nil email:t
+
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.5
 #+REVEAL_TRANS: slide
 #+REVEAL_THEME: tikhon
 #+REVEAL_HLEVEL: 2
-#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="An overview of tries (or radix trees) in Haskell, focusing on the PATRICIA trie used by Data.IntMap.">
-#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
 * Tries
