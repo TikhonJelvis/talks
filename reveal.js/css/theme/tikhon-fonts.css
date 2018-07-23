@@ -61,3 +61,10 @@
     font-weight : normal;
     font-style : normal;
 }
+
+@font-face {
+    font-family : "Kaushan Script";
+    src : url("fonts/Kaushan-Script/KaushanScript-Regular.otf");
+    font-weight : normal;
+    font-style : normal;
+}

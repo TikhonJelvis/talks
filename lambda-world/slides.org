@@ -1,0 +1,39 @@
+# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2>" -*-
+#+Title: Radix Trees
+#+Subtitle: How IntMap Works
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="An overview of tries (or radix trees) in Haskell, focusing on the PATRICIA trie used by Data.IntMap.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
+# Options I change before uploading to jelv.is
+#+OPTIONS: reveal_control:nil
+#+OPTIONS: reveal_mathjax:t
+#+REVEAL_ROOT: ../reveal.js
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t
+#+OPTIONS: reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
+#+OPTIONS: toc:nil timestamp:nil email:t
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* Data.IntMap
+
+   #+ATTR_HTML: :class window-screenshot
+   [[./img/intmap-haddock.png]]
+
+* Tries
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :END:

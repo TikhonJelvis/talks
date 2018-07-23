@@ -1,7 +1,10 @@
+# -*- org-reveal-title-slide: "<h1 class='title'>Programming <i>with</i> Probability</h1> <h2 class='subtitle'>%s</h2>" -*-
 #+Title: Programming with Probability
 #+Author: Tikhon Jelvis
 #+Email: tikhon.jelvis@target.com
 #+REVEAL_HEAD_PREAMBLE: <meta name="description" content="How we work with probability distributions in Haskell.">
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
 
 # Options I change before uploading to jelv.is
 #+OPTIONS: reveal_control:nil
@@ -25,7 +28,8 @@
 
 * Supply Chain Optimization
     :PROPERTIES:
-    :reveal_background: white
+    :reveal_background: #052d69
+    :reveal_extra_attr: class="section-slide"
     :END:
 
 * Distribution Centers
@@ -54,7 +58,8 @@
 
 * Why Haskell?
     :PROPERTIES:
-    :reveal_background: white
+    :reveal_background: #052d69
+    :reveal_extra_attr: class="section-slide"
     :END:
 
 * We ♥ Haskell
@@ -62,9 +67,6 @@
 * Abstraction
 
 * Probability Distribution Abstraction
-    :PROPERTIES:
-    :reveal_background: white
-    :END:
 
 * 
   Abstract probability distribution type with *multiple interpretations*
@@ -102,7 +104,8 @@
 
 * Interface
     :PROPERTIES:
-    :reveal_background: white
+    :reveal_background: #052d69
+    :reveal_extra_attr: class="section-slide"
     :END:
 
 * Creation
@@ -282,7 +285,8 @@
 
 * Implementations
     :PROPERTIES:
-    :reveal_background: white
+    :reveal_background: #052d69
+    :reveal_extra_attr: class="section-slide"
     :END:
 
 * Sampling
@@ -355,7 +359,8 @@
 
 * Simple abstractions scale…
     :PROPERTIES:
-    :reveal_background: white
+    :reveal_background: #052d69
+    :reveal_extra_attr: class="section-slide"
     :END:
 
 * 
@@ -394,7 +399,8 @@
 
 * Probabilistic Programming
     :PROPERTIES:
-    :reveal_background: white
+    :reveal_background: #052d69
+    :reveal_extra_attr: class="section-slide"
     :END:
 
 * 

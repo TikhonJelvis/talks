@@ -1,9 +1,10 @@
 /**
- * Beige theme for reveal.js.
+ * The blue theme I use for most of my personal talks.
  *
- * Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ * Based on Beige theme for reveal.js by Hakim El Hattab <hakim.se>
  */
 @import url(tikhon-fonts.css);
+
 /*********************************************
  * GLOBAL STYLES
  *********************************************/
@@ -15,7 +16,7 @@ body {
   background: -o-radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
   background: -ms-radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
   background: radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
-  background-color: #8099BB; }
+}
 
 .reveal {
   font-family: Junction, Helvetica, Arial, sans-serif;
@@ -32,6 +33,28 @@ body {
 .reveal .slides > section > section {
   line-height: 1.3;
   font-weight: inherit; }
+
+/*********************************************
+ * TITLE PAGE
+ *********************************************/
+.reveal .title {
+    font-size : 300%;
+    margin-bottom : -2%;
+    color : #C0D9FB;
+}
+
+.reveal .subtitle {
+    font-family : "Kaushan Script";
+    font-size : 175%;
+    color : #C0D9FB;
+}
+
+/*********************************************
+ * SECTION SLIDES
+ *********************************************/
+.reveal section.section-slide h2 {
+    color : #C0D9FB;
+}
 
 /*********************************************
  * HEADERS
@@ -227,6 +250,16 @@ body {
 /*********************************************
  * IMAGES
  *********************************************/
+
+/* Screenshots of floating windows which don't need a border or
+   shadow, and need less space above. */
+.reveal img.window-screenshot {
+    margin-top : -3%;
+    border : none;
+    box-shadow : none;
+    background : none;
+}
+
 .reveal section img {
   margin: 15px 0px;
   background: rgba(255, 255, 255, 0.12);
