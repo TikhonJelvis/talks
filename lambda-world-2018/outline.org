@@ -12,6 +12,9 @@
    - great for internally generated keys
      - like node IDs for graphs!
    - simple!
+   - PATRICIA tries
+     - paper in ML
+     - imperative structure from 1968
 
 *** Benchmarks
     - Data.Map vs Data.HashMap vs Data.IntMap

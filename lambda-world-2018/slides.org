@@ -46,6 +46,11 @@
    #+ATTR_HTML: :class window-screenshot
    [[./img/intmap-haddock.png]]
 
+* PATRICIA
+
+   #+ATTR_REVEAL: :frag (appear)
+   Practical Algorithm to Retrieve Information Coded in Alphanumeric
+
 * Other Uses
 
 * Tries
