@@ -1,0 +1,58 @@
+* Why Radix Trees
+
+** Graphs
+   - Playing with FGL
+   - traditionally hard for functional programming
+   - basic graph operation: like pattern-matching on graph
+   - how could this work?
+   
+** Data.IntMap
+   - efficient, /persistent/ key-value map
+     - compare to imperative hash maps
+   - great for internally generated keys
+     - like node IDs for graphs!
+   - simple!
+
+*** Benchmarks
+    - Data.Map vs Data.HashMap vs Data.IntMap
+
+** Other Uses
+   - simple, elegant data structure with interesting properties
+   - useful for both imperative /and/ functional programming
+
+** Properties
+    - faster, more memory efficient than Data.Map
+      - show some benchmarks!
+    - additional capabilities
+      - reading keys in order
+      - prefix scans
+    - surprisingly simple
+
+** Recap
+   - simple, efficient, persistent
+   - prefix operations
+
+* How Radix Trees Work
+
+** Tries
+   - intro to basic trie idea
+   - node structure (array? linked list?) has a big effect
+     - heavily influenced by /alphabet/
+
+** Compression
+   - path compression
+   - node compression
+
+** Span
+   - benchmarking different spans
+
+** Recap
+   - tries
+   - compression
+   - span (read n bits at a time)
+
+* Future Options
+
+** Adaptive Radix Trees
+
+** Burst Tries?

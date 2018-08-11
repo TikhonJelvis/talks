@@ -38,14 +38,14 @@ body {
  * TITLE PAGE
  *********************************************/
 .reveal .title {
-    font-size : 300%;
+    font-size : 160px;
     margin-bottom : -2%;
     color : #C0D9FB;
 }
 
 .reveal .subtitle {
     font-family : "Kaushan Script";
-    font-size : 175%;
+    font-size : 90px;
     color : #C0D9FB;
 }
 
@@ -76,10 +76,10 @@ body {
   word-wrap: break-word; }
 
 .reveal h1 {
-  font-size: 120px; }
+  font-size: 140px; }
 
 .reveal h2 {
-  font-size: 85px; }
+  font-size: 120px; }
 
 .reveal h3 {
   font-size: 1.55em; }
