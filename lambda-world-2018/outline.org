@@ -12,24 +12,29 @@
    - great for internally generated keys
      - like node IDs for graphs!
    - simple!
+
+*** Benchmarks?
+    - Data.Map vs Data.HashMap vs Data.IntMap
+
+** PATRICIA
    - PATRICIA tries
      - paper in ML
      - imperative structure from 1968
 
-*** Benchmarks
-    - Data.Map vs Data.HashMap vs Data.IntMap
-
-** Other Uses
+*** Other Uses
    - simple, elegant data structure with interesting properties
    - useful for both imperative /and/ functional programming
 
 ** Properties
-    - faster, more memory efficient than Data.Map
-      - show some benchmarks!
-    - additional capabilities
-      - reading keys in order
-      - prefix scans
-    - surprisingly simple
+
+*** Mergeable
+    - useful for functional programming
+      - zips, applicative... etc
+
+*** Prefix Operations
+    - reading keys in order
+    - prefix scans/updates
+      - example: two keys in one
 
 ** Recap
    - simple, efficient, persistent
