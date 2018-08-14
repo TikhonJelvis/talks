@@ -32,29 +32,239 @@
 * Graphs
   :PROPERTIES:
   :reveal_background: ./img/graph-background.png
-  :reveal_background_trans: slide
+  :reveal_background_trans: none
   :END:
 
-* FGL
-  :PROPERTIES:
-  :reveal_background_trans: slide
-  :END:
-  [[./img/step_0.png]]  [[./img/step_1.png]]
+** /Functional/ Graphs
+   :PROPERTIES:
+   :reveal_background: ./img/graph-background.png
+   :reveal_background_trans: none
+   :END:
 
-* Data.IntMap
+** FGL
+   :PROPERTIES:
+   :reveal_background_trans: none
+   :END:
 
-   #+ATTR_HTML: :class window-screenshot
-   [[./img/intmap-haddock.png]]
+   #+BEGIN_EXPORT html
+   <div style="position:relative; height:75px"></div>
+   <img style="height:535px" class="no-background" src="./img/step_0.png" />
+   <span style="position: relative; bottom: 270px; font-size: 94pt"> ⇒ </span>
+   <img style="height:535px" class="no-background" src="./img/step_1.png" />
+   #+END_EXPORT
 
-* PATRICIA
+** Data.IntMap
 
-   #+ATTR_REVEAL: :frag (appear)
-   Practical Algorithm to Retrieve Information Coded in Alphanumeric
+    #+ATTR_HTML: :class no-background
+    [[./img/intmap-haddock.png]]
 
-* Other Uses
+** PATRICIA
 
-* Tries
-  :PROPERTIES:
-  :reveal_background: #052d69
-  :reveal_extra_attr: class="section-slide"
-  :END:
+    #+ATTR_REVEAL: :frag (appear)
+    *P*ractical *A*lgorithm *t*o *R*etrieve *I*nformation *C*oded *i*n *A*lphanumeric
+
+** Other Uses
+
+** Merging
+   [[./img/okasaki.png]]
+
+** Prefix Operations
+    1. all keys, *sorted*
+
+    2. read by prefix
+
+    3. update by prefix
+
+** 
+   # diagram of two keys in one
+
+
+* /How IntMap Works/
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Tries
+
+** Re/trie/val
+
+** 
+   #+ATTR_HTML: :width 800px
+   [[./img/tree.svg]]
+
+** 
+   =lookup “b”=
+
+   [[./img/b.svg]]
+
+   b = 1
+
+** 
+   =lookup “bab”=
+
+   [[./img/b.svg]]
+
+   b
+
+** 
+   =lookup “bab”=
+
+   [[./img/b→ba.svg]]
+
+   b → a
+
+** 
+   =lookup “bab”=
+
+   [[./img/b→ba→bab.svg]]
+
+   b → a → b = 7
+
+** Prefixes
+   every key starting with “ba”
+
+** b 
+   #+ATTR_HTML: :width 700px
+   [[./img/b.svg]]
+
+** b → a
+   #+ATTR_HTML: :width 700px
+   [[./img/b→ba.svg]]
+ 
+** b → a
+   [[./img/prefix-ba.svg]]
+
+** /Binary/ Trie
+
+** Bit-by-Bit
+
+  #+ATTR_HTML: :width 900px
+  [[./img/binary.svg]]
+
+** Paths
+   [[./img/paths-waste.svg]]
+
+   two keys: 00011, 00001 
+
+** Path Compression
+   [[./img/compressed.svg]]
+
+   two keys: 00011, 00001 
+
+** Path Compression
+   [[./img/compressed2.svg]]
+
+** Path Compression
+  [[./img/compressed-leaves.svg]]
+
+** Data.IntMap
+   binary trie with path compression
+
+** Data.IntMap
+   - =Leaf= (path, key, value)
+   - =Branch= (path, children)
+   - =Empty=
+
+** Data.IntMap
+  #+BEGIN_SRC haskell
+  type Prefix = Int
+  type Mask = Int
+
+  data IntMap a = 
+      Branch !Prefix 
+             !Mask 
+             !(IntMap a) !(IntMap a)
+    | Leaf !Prefix a
+    | Empty
+  #+END_SRC
+
+** Performance
+   - unboxed
+   - spine-strict
+
+   - bitwise operations
+
+*** 
+   #+BEGIN_SRC haskell
+highestBitSet :: Int -> Int
+highestBitSet n =
+  case (n .|. shiftR n 1) of
+    n -> case (n .|. shiftR n 2) of
+      n -> case (n .|. shiftR n 4) of
+        n -> case (n .|. shiftR n 8) of
+          n -> case (n .|. shiftR n 16) of
+            n -> case (n .|. shiftR n 32) of
+              n -> (n `xor` (shiftR n 1))
+   #+END_SRC
+
+   Or use =popcount=!
+
+** Performance
+   # benchmarks, same as shown earlier?
+
+
+* /Beyond IntMap/
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** /Binary/ Trie
+   - *binary*: “bit-by-bit”
+   - *binary*: “two children”
+
+** Span
+   [[./img/wtrees.svg]]
+
+   n bits = 2ⁿ children
+
+** /Space/ vs /Height/
+   [[./img/branching-tradeoff.png]]
+
+   from ART paper
+
+** Adaptive Radix Tree
+   [[./img/art.png]]
+
+** Adaptive Radix Tree
+   span: 256 (byte at a time)
+
+   [[./img/art-nodes.png]]
+
+** Nodes
+   [[./img/art-nodes-details.png]]
+
+** /Persistent/ Adaptive Radix Trees?
+   - Java version
+     - [[https://github.com/ankurdave/part][by Ankur Dave, on GitHub]]
+   - good fit for Haskell?
+
+* /Recap/
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Tries
+   - sorted keys
+   - prefix operations
+   - merging
+
+** Data.IntMap
+   - /binary/ trie
+   - path compression
+
+** Beyond IntMap
+   - different spans
+   - adaptive radix trees
+
+* Questions?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
