@@ -20,7 +20,7 @@ body {
 
 .reveal {
   font-family: Junction, Helvetica, Arial, sans-serif;
-  font-size: 50px;
+  font-size: 65px;
   font-weight: normal;
   color: #3f3f3f; }
 
@@ -74,6 +74,19 @@ body {
   text-transform: none;
   text-shadow: none;
   word-wrap: break-word; }
+
+/* Render italics in headers in a script typeface. */
+.reveal h1 i,
+.reveal h2 i,
+.reveal h3 i,
+.reveal h4 i,
+.reveal h5 i,
+.reveal h6 i {
+    font-family : "Kaushan Script";
+    font-style : normal;
+    letter-spacing : -0.04em;
+    margin-right : 0.2em;
+}
 
 .reveal h1 {
   font-size: 140px; }
@@ -251,9 +264,9 @@ body {
  * IMAGES
  *********************************************/
 
-/* Screenshots of floating windows which don't need a border or
-   shadow, and need less space above. */
-.reveal img.window-screenshot {
+/* Images with transparent backgrounds that don't need a border or
+   box-shadow. */
+.reveal img.no-background {
     margin-top : -3%;
     border : none;
     box-shadow : none;
@@ -330,7 +343,6 @@ body {
 
 .reveal code, .reveal pre {
   font-family: "DejaVu Sans Mono";
-  font-size: 42px;
   border-radius: 12px;
   border: 2px solid rgba(100, 0, 150, 0.2);
 }
