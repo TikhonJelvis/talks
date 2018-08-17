@@ -136,6 +136,9 @@
 ** b → a
    [[./img/prefix-ba.svg]]
 
+** Tries
+   re/trie/ve key character by character
+
 ** /Binary/ Trie
 
 ** Bit-by-Bit
@@ -158,6 +161,8 @@
 
 ** Path Compression
   [[./img/compressed-leaves.svg]]
+
+  fully compressed radix tree
 
 ** Data.IntMap
    binary trie with path compression
@@ -188,15 +193,15 @@
 
 *** 
    #+BEGIN_SRC haskell
-highestBitSet :: Int -> Int
+highestBitSet ∷ Int → Int
 highestBitSet n =
   case (n .|. shiftR n 1) of
-    n -> case (n .|. shiftR n 2) of
-      n -> case (n .|. shiftR n 4) of
-        n -> case (n .|. shiftR n 8) of
-          n -> case (n .|. shiftR n 16) of
-            n -> case (n .|. shiftR n 32) of
-              n -> (n `xor` (shiftR n 1))
+    n → case (n .|. shiftR n 2) of
+      n → case (n .|. shiftR n 4) of
+        n → case (n .|. shiftR n 8) of
+          n → case (n .|. shiftR n 16) of
+            n → case (n .|. shiftR n 32) of
+              n → (n `xor` (shiftR n 1))
    #+END_SRC
 
    Or use =popcount=!
