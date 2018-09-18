@@ -1,4 +1,4 @@
-# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2>" -*-
+# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
 #+Title: Radix Trees
 #+Subtitle: How IntMap Works
 #+Author: Tikhon Jelvis

@@ -49,6 +49,14 @@ body {
     color : #C0D9FB;
 }
 
+.reveal .author {
+    position : relative;
+    top : 250px;
+
+    font-size : 70px;
+    color : #C0D9FB;
+}
+
 /*********************************************
  * SECTION SLIDES
  *********************************************/
