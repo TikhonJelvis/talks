@@ -200,7 +200,7 @@
   lookup k (Branch prefix control l r)
     | getPrefix k control /= prefix = Nothing
     | k .&. control == 0            = lookup k l
-    | k .&. control == 1            = lookup k r
+    | otherwise                     = lookup k r
   #+END_SRC  
 
   #+BEGIN_SRC haskell
@@ -233,21 +233,21 @@
    [[./img/art.png]]
 
 ** Adaptive Radix Tree
-   span: 256 (byte at a time)
+   256 children (byte at a time)
 
    [[./img/art-nodes.png]]
+
+** Nodes
+   [[./img/art-nodes-details.png]]
+
 
 ** Adaptive Radix Tree
 
   #+BEGIN_SRC haskell
   data ART a = Empty
-           | Leaf !Key a
-           | Node !Depth !Prefix !(Children a)
-           deriving (Show, Eq, Generic)
+             | Leaf !Key a
+             | Node !Mask !Prefix !(Children a)
   #+END_SRC
-
-** Nodes
-   [[./img/art-nodes-details.png]]
 
 ** Nodes
 
