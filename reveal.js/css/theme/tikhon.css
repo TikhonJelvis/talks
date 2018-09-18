@@ -38,12 +38,18 @@ body {
  * TITLE PAGE
  *********************************************/
 .reveal .title {
+    position : relative;
+    top : 50px;
+
     font-size : 160px;
     margin-bottom : -2%;
     color : #C0D9FB;
 }
 
 .reveal .subtitle {
+    position : relative;
+    top : 50px;
+
     font-family : "Kaushan Script";
     font-size : 90px;
     color : #C0D9FB;
