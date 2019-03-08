@@ -41,9 +41,16 @@ body {
     position : relative;
     top : 50px;
 
+    color : #C0D9FB;
+}
+
+.reveal h1.title {
     font-size : 160px;
     margin-bottom : -2%;
-    color : #C0D9FB;
+}
+
+.reveal h2.title {
+    font-size : 120px;
 }
 
 .reveal .subtitle {
@@ -209,7 +216,6 @@ body {
 .reveal pre code {
   display: block;
   padding: 20px;
-  overflow: auto;
   max-height: 600px;
   word-wrap: normal;
   background: #3F3F3F;

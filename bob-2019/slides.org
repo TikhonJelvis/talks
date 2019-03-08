@@ -1,0 +1,432 @@
+# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
+#+Title: Analyzing Programs 
+#+Subtitle: with SMT solvers
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+#+REVEAL_TITLE_SLIDE_BACKGROUND_TRANSITION: none
+
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="An overview of using SMT solvers to build development tools and statically analyze programs.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
+# Options I change before uploading to jelv.is
+#+OPTIONS: reveal_control:nil
+#+OPTIONS: reveal_mathjax:t
+#+REVEAL_ROOT: /talks/reveal.js
+
+#+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t
+#+OPTIONS: reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_rolling_links:nil
+#+OPTIONS: toc:nil timestamp:nil email:t
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* Constraint Satisfaction
+
+** 
+  [[./img/sudoku.png]]
+
+** 
+  :PROPERTIES:
+  :reveal_background: ./img/bugs.jpg
+  :reveal_background_trans: none
+  :END:
+
+** 
+  #+ATTR_HTML: :class no-background
+  [[./img/liquid-haskell.png]]
+
+  #+ATTR_HTML: :width 200%
+  [[./img/liquid-haskell-snippet.png]]
+
+** 
+
+  [[./img/type-error-localization.png]]
+
+** SMT
+
+   Satisfiability Modulo Theories
+
+** Satisfiability (SAT)
+
+  \begin{equation}
+    (x_1 \lor \lnot x_2) \land (x_1 \lor x_3 \lor \lnot x_4) \land \cdots 
+  \end{equation}
+
+** Theories
+
+  \begin{equation}
+    x_1 \le 10 \land x_3 \le x_1 + x_2 \land \cdots
+  \end{equation}
+
+** Theories
+  - integers
+  - reals
+  - bitvectors
+  - floating point numbers
+  - arrays
+  - ...
+
+** Why?
+
+** Expressive
+
+** Fast
+
+** 
+  [[./img/sat-graf.png]]
+
+* Analyzing Programs
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Program ⇒ SMT formula
+
+** 
+   1. Inputs
+   2. States
+   3. Outputs
+
+** 
+   Inputs ⇒ States + Outputs
+
+   Outputs ⇒ Inputs + States
+
+** 
+   P(States) ⇒ Check Invariant
+
+** 
+   ∃ Input. Output₁ ≠ Output₂
+
+* IMP Language
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+   #+BEGIN_SRC java
+   gcd(a, b) {
+     d := 0;
+     while (even(a) && even(b)) {
+       a := a / 2;
+       b := b / 2;
+       d := d + 1;
+     }
+ 
+     while (a != b) {
+       ...;
+     }
+
+     return d;
+   }
+   #+END_SRC
+
+** IMP
+  #+BEGIN_SRC java
+    1 + x * 2
+    (x <= 10) && (y == 5) 
+  #+END_SRC
+
+  side effects:
+  #+BEGIN_SRC java
+    x := x + 1
+    ⋯ ; ⋯
+    while cond { ⋯ }
+    if cond { ⋯ } else { ⋯ }
+  #+END_SRC
+
+** 
+  \begin{align}
+    A ::&= x & \text{variable}\\
+        &|\quad n & \text{literal} \\
+        &|\quad A + A & \\
+        &|\quad A - A & \\
+        &|\quad A * A & \\
+        &|\quad A / A &
+  \end{align}
+
+** 
+  #+BEGIN_SRC haskell
+    data AExp = Var Name
+              | Lit Int
+              | AExp :+: AExp
+              | AExp :-: AExp
+              | AExp :*: AExp
+              | AExp :/: AExp
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+   data BExp = True' | False' | ⋯
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC haskell
+    data Cmd = Skip
+             | Set Name AExp
+             | Seq Cmd Cmd
+             | If BExp Cmd Cmd
+             | While BExp Cmd
+  #+END_SRC
+
+* Compiling to SMT
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Z3 SMT Solver
+   
+** Inline ⇒ Unroll ⇒ SSA
+
+** Inline
+   #+BEGIN_SRC java
+    foo(a, b) { 
+      ⟨BODY⟩; 
+      return x 
+    }
+    …
+    result := foo (1, 2);
+   #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    // fresh names
+    foo_a := 1;
+    foo_b := 2;
+    ⟨BODY⟩
+    result := foo_x;
+  #+END_SRC
+
+**  Unroll
+  #+BEGIN_SRC java
+    while x < 5 { ⟨BODY⟩ }
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    if x < 5 {
+      ⟨BODY⟩
+      if x < 5 {
+        … /* n times */
+      } else {}
+    } else {}
+  #+END_SRC
+
+** SSA
+  - Single Static Assignment
+
+  #+BEGIN_SRC java
+    x := 10;
+    a := 11;
+    x := x + a;
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    x₀ := 10;
+    a₀ := 11;
+    x₁ := x₀ + a₀;
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC java
+    if x < 5 {
+      x := x + 1;
+    } else {
+      x := x + 2;
+    }
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    if x < 5 {
+      x₁ := x₀ + 1;
+    } else {
+      x₂ := x₀ + 2;
+    }
+    x₃ := φ(x₁, x₂)
+  #+END_SRC
+
+** 
+  - Interpreter
+    #+BEGIN_SRC haskell
+      aexp ∷ (Scope Int) → AExp → Int
+      bexp ∷ (Scope Int) → BExp → Bool
+      cmd  ∷ (Scope Int) → Cmd  → Scope
+    #+END_SRC
+  - Compiler
+    #+BEGIN_SRC haskell
+      aexp ∷ (Scope AST) → AExp → Z3 AST
+      bexp ∷ (Scope AST) → BExp → Z3 AST
+      cmd  ∷ (Scope AST) → Cmd  → Z3 ()
+    #+END_SRC
+
+** 
+   #+BEGIN_SRC java
+   5 + x
+   #+END_SRC
+
+   \begin{align}
+     bvAdd(&bv(5, 32),\\ &bv(x_0, 32))
+   \end{align}
+
+** Expressions
+   #+BEGIN_SRC haskell
+   Lit n     → n
+   Var x     → lookup scope x
+   e₁ :+: e₂ → aexp scope e₁ +
+               aexp scope e₂
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   Lit n     → Z3.mkBv 32 n
+   Var x     → lookup x scope
+   e₁ :+: e₂ → do exp₁ ← aexp scope e₁
+                  exp₂ ← aexp scope e₂
+                  Z3.mkAdd exp₁ exp₂
+   #+END_SRC
+
+** 
+  #+BEGIN_SRC java
+  x = 5 + x
+  #+END_SRC
+
+  \begin{align}
+  \text{assert}(x_1 = bvAdd(&bv(5, 32), \\ &bv(x_0, 32)))
+  \end{align}
+
+** Assignment
+  #+BEGIN_SRC haskell
+  Set name val →
+    let newVal = aexp scope val in
+    update name newVal scope
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  Set name val →
+    do newVal ← aexp scope val
+       newVar ← Z3.mkFreshBvVar name 32
+       eq     ← Z3.mkEq newVar newVal
+       Z3.assert eq
+       return (update name newVar scope)
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC java
+  if x < 5 {
+    x := x + 1
+  } else {
+    x := x + 2
+  }
+  #+END_SRC
+
+  \begin{align}
+    &\text{assert}(x_1 = x_0 + 1) \\
+    &\text{assert}(x_2 = x_0 + 2) \\
+    &\text{assert}(x_3 = \phi(x_0 < 5, x_1, x_2)) \\
+  \end{align}
+
+** If: φ-functions
+  #+BEGIN_SRC haskell
+  If cond c_1 c_2 →
+    do cond'   ← bexp scope cond
+       scope'  ← compile scope c_1
+       scope'' ← compile scope c_2
+       makePhis cond' scope scope' scope''
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+    Z3.mkIte cond (lookup name scope₁)
+                  (lookup name scope₂)
+  #+END_SRC
+
+* Now what?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Interpreting
+  #+BEGIN_SRC java
+  f(x) { ...; return y }
+  #+END_SRC
+
+  ⇓
+
+  \begin{align}
+  \Rightarrow \quad & \exists y. x_0 = \text{input} \\
+  \Leftarrow \quad & \exists x. y_n = \text{output}
+  \end{align}
+
+** Invariants
+
+  #+BEGIN_SRC java
+  while (...) {
+    x := x + 1
+    ...
+    assert (x > 0)
+  }
+  #+END_SRC
+
+  ⇓
+
+  $(x₁ > 0) ∧ (x₂ > 0) ∧ (x₃ > 0) ∧ …$
+
+** Verification
+  #+BEGIN_SRC java
+  f(x) { ...; return y }
+
+  g(x) { ...; return y }
+  #+END_SRC
+
+  ⇓
+
+  $\exists x. y_f \ne y_g$
+      
+** CEGIS
+  *counterexample guided inductive synthesis*
+
+  [[./img/cegis.png]]
+
+** Sketching
+  #+BEGIN_SRC java
+    while x <= ?? {
+      x += a * ??
+    }
+  #+END_SRC
+
+** Refinement Types
+  #+BEGIN_SRC Haskell
+    termination measure len
+      :: List a -> {Int | _v >= 0} where
+      Nil -> 0
+      Cons x xs -> 1 + len xs
+
+    replicate :: n: Nat -> x: a -> 
+                 {List a | len _v == n}
+    replicate = ??
+  #+END_SRC
+
+** Easier for DSLs!
+
+* Questions?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:

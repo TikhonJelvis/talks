@@ -1,0 +1,76 @@
+* SMT Solvers
+
+** SAT Solvers
+   - constraint satisfaction
+     - like Sudoku
+   - formal logic
+   - model circuits, program semantics
+   - "low level"
+
+** SMT Solvers
+   - SAT++
+     - more variables and constraints
+   - very expressive: "shove it into an SMT solver"
+
+** Why SAT/SMT?
+   - problems with well-defined structure
+     - SAT Graf illustration
+   - easy to use
+     - compare to MILP solvers
+
+*** Application areas
+    - type systems
+    - static analysis—check invariants and security properties
+    - verification
+    - program synthesis
+    - interactive tooling
+
+** Z3
+   - "best in class" general-purpose SMT solver
+   - fully open source
+   - lots of theories, fast
+
+* Compiling to SMT
+
+** Z3
+   - API bindings in C++, C#, Python, OCaml...
+
+** Haskell
+   - Z3 bindings
+   - great fit for working with programming languages
+     - example of ADT as grammar
+
+** Example: IMP
+   - Define language
+     - Small example program?
+   - Code will follow "shape of type"
+
+** Compiling to formula
+   - Compiling to formula ≈ writing interpreter
+   - Walk through full example code
+
+* Applications and DSLs
+
+** What can we do with a formula?
+   - run code backwards (cute)
+   - check invariants
+     - can check assertions statically
+   - bounded verification
+     - compare programs or compare against logical spec
+   - program synthesis
+     - CEGIS
+     - interactive tools: synthesis by sketching
+
+** DSLs
+   - easier with smaller/more restrictive languages
+   - streaming example: loop invariants
+
+** Other uses
+   - security
+     - hashes
+     - Cryptol
+   - typechecking
+     - Liquid Haskell
+     - type checker plugins (ie symbolic arithmetic)
+     - better type error messages (error localization)
+
