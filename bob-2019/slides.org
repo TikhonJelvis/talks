@@ -1,4 +1,4 @@
-# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
+# -*- org-reveal-title-slide: "<h2 class='title'>%t</h2> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
 #+Title: Analyzing Programs 
 #+Subtitle: with SMT solvers
 #+Author: Tikhon Jelvis
@@ -34,7 +34,7 @@
 ** 
   [[./img/sudoku.png]]
 
-** 
+** _
   :PROPERTIES:
   :reveal_background: ./img/bugs.jpg
   :reveal_background_trans: none
@@ -134,29 +134,20 @@
    }
    #+END_SRC
 
-** IMP
+** 
+  expressions:
   #+BEGIN_SRC java
     1 + x * 2
     (x <= 10) && (y == 5) 
   #+END_SRC
 
-  side effects:
+  statements:
   #+BEGIN_SRC java
     x := x + 1
     ⋯ ; ⋯
     while cond { ⋯ }
     if cond { ⋯ } else { ⋯ }
   #+END_SRC
-
-** 
-  \begin{align}
-    A ::&= x & \text{variable}\\
-        &|\quad n & \text{literal} \\
-        &|\quad A + A & \\
-        &|\quad A - A & \\
-        &|\quad A * A & \\
-        &|\quad A / A &
-  \end{align}
 
 ** 
   #+BEGIN_SRC haskell
@@ -262,13 +253,14 @@
   #+END_SRC
 
 ** 
-  - Interpreter
+  Interpreter
     #+BEGIN_SRC haskell
-      aexp ∷ (Scope Int) → AExp → Int
-      bexp ∷ (Scope Int) → BExp → Bool
-      cmd  ∷ (Scope Int) → Cmd  → Scope
+      aexp ∷ (Scope Int) → AExp → Result Int
+      bexp ∷ (Scope Int) → BExp → Result Bool
+      cmd  ∷ (Scope Int) → Cmd  → Result Scope
     #+END_SRC
-  - Compiler
+
+  Compiler
     #+BEGIN_SRC haskell
       aexp ∷ (Scope AST) → AExp → Z3 AST
       bexp ∷ (Scope AST) → BExp → Z3 AST
@@ -286,10 +278,11 @@
 
 ** Expressions
    #+BEGIN_SRC haskell
-   Lit n     → n
+   Lit n     → return n
    Var x     → lookup scope x
-   e₁ :+: e₂ → aexp scope e₁ +
-               aexp scope e₂
+   e₁ :+: e₂ → do r₁ ← aexp scope e₁
+                  r₂ ← aexp scope e₂
+                  return (r₁ + r₂)
    #+END_SRC
 
    #+BEGIN_SRC haskell
@@ -311,8 +304,8 @@
 
 ** Assignment
   #+BEGIN_SRC haskell
-  Set name val →
-    let newVal = aexp scope val in
+  Set name val → 
+    do newVal <- aexp scope val
     update name newVal scope
   #+END_SRC
 
@@ -399,9 +392,9 @@
   $\exists x. y_f \ne y_g$
       
 ** CEGIS
-  *counterexample guided inductive synthesis*
-
   [[./img/cegis.png]]
+
+  *counterexample guided inductive synthesis*
 
 ** Sketching
   #+BEGIN_SRC java
