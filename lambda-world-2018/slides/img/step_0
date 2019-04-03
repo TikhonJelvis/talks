@@ -1,0 +1,28 @@
+# neato step_0 -Tpng -O
+
+digraph fgl {
+        graph [ dpi=300 ]
+	margin = "0"
+	page = "4"
+	size = "2"
+	ratio = "fill"
+        bgcolor = "transparent"
+
+	1 [fontname="Junction" shape="doublecircle" color="#0b4faa" style="filled" fillcolor="#90A9CB" label=""]
+        2 [fontname="Junction" shape="circle" label=""]
+        3 [fontname="Junction" shape="circle" label=""]
+        4 [fontname="Junction" shape="circle" label=""]
+        5 [fontname="Junction" shape="circle" label=""]
+        6 [fontname="Junction" shape="circle" label=""]
+        7 [fontname="Junction" shape="circle" label=""] 
+
+        4 -> 1 [color="#0b4faa" arrowhead="onormal"]
+        5 -> 1 [color="#0b4faa" arrowhead="onormal"]
+        5 -> 2 
+        6 -> 1 [color="#0b4faa" arrowhead="onormal"]
+        6 -> 2 
+        6 -> 3 
+        7 -> 2 
+        7 -> 3 
+        7 -> 4 
+}

@@ -53,10 +53,10 @@
    <img style="height:535px" class="no-background" src="./img/step_1.png" />
    #+END_EXPORT
 
-** Data.IntMap
+** 
 
-    #+ATTR_HTML: :class no-background
-    [[./img/intmap-haddock.png]]
+   #+ATTR_HTML: :class no-background
+   [[./img/intmap-haddock.png]]
 
 ** PATRICIA
 
