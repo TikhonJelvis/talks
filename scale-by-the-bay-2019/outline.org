@@ -1,0 +1,68 @@
+* What is FRP?
+   - People have this question a lot.
+** Abstraction
+   - FRP is an abstract idea!
+   - Two things to understand abstraction:
+     - /What/ FRP is.
+       - "Crux" of the idea.
+       - Formal definition.
+     - /Why/ we care about it.
+       - What does it let us do?
+       - Why is it effective at this?
+     - Examples to build up intuition.
+** Definition
+   - An abstraction for programs involving time.
+     - Program with *time varying values*
+       - Note: this is a different way to think about state!
+     - Time is an explicit part of the programming model.
+   - Formally: behaviors, events, semantics.
+     - Behavior:
+       - a value that can change continuously over time
+         - mouse position
+     - Events
+       - a value at a point in time
+         - mouse clicks, keyboard presses
+     - Loop back: how do behaviors and events capture the idea of
+       "time-varying values"?
+** Why?
+   - Time is traditionally seen as "hard" in functional programming.
+     - People don't say this directly. Instead:
+       - FP can't do UIs
+       - FP can't do state.
+       - "Monads" are a hack to...
+   - FRP lets us work with systems involving time in a "functional"
+     style
+     - composable
+     - declarative
+       - clear semantics
+       - abstract over details of implementation (tick rate... etc)
+
+* Examples
+  - I'm not going to use any particular framework in my
+    examples.
+  - Libraries in a similar style:
+    - reactive-banana
+    - reflex
+      - reflex has a *rich* ecosystem
+** General Ideas
+   - Input ⇒ Combinators ⇒ Output
+   - Examples of inputs, combinators and outputs
+     - "Normal" FP combinators
+       - Functor, Applicative, Alternative... etc
+     - UI examples
+     - Robotics examples
+     - Simulation examples?
+** In-Depth Example
+   - Game of life (from earlier talks)
+   - Note about adding features
+     - Great example of composability/modularity!
+** Search Example?
+   - Probably won't have enough time for this one!
+* Further Thoughts
+** Simulation
+   - FRP-style event-based simulation frameworks
+     - Different constraints/implementation, similar API
+** IO
+   - alternative to =IO= type
+     - =IO= is inherently imperative, I/O isn't
+     - what would an "FRP-native" language look like?
