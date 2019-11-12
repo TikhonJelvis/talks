@@ -1,0 +1,196 @@
+# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
+#+Title: What is FRP?
+#+Subtitle:
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+#+REVEAL_TITLE_SLIDE_BACKGROUND_TRANSITION: none
+
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="A simple introduction to functional reactive programming. What is FRP? What do we care about it? What does it get us?">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
+# Change root and enable controls before uploading to jelv.is
+#+REVEAL_ROOT: ../reveal.js-3.8.0
+#+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', progress:false
+
+#+OPTIONS: toc:nil timestamp:nil email:t num:nil
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* /Functional Reactive Programming/
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+**   
+   [[./img/quora.png]]
+   [[./img/stackoverflow.png]]
+
+** An Abstraction
+
+** Abstract
+
+** 
+   1. What *is* it?
+   2. Why do we *care*?
+
+** Time
+   #+BEGIN_no-background
+   [[./img/time-think.png]]
+   [[./img/time-program.png]]
+   #+END_no-background
+
+** Time-Varying Values
+
+** 
+   - explicit
+   - composable
+   - declarative
+
+** 
+   *Behaviors*: continuous
+
+   *Events*: discrete
+
+** Declarative? Denotational.
+
+** 〚Code〛 = Model
+
+** 
+   [[./img/behavior.png]]
+
+   〚Behavior a〛 = Time → a
+
+** 
+   [[./img/event.png]]
+
+   〚Event a〛 = [(Time, a)]
+
+* Why?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+   “FP can't do UIs.”
+
+   “FP can't do state.”
+
+   “…”
+
+   #+ATTR_HTML: :class no-background
+   [[./img/thinking.png]]
+
+** Time is *hard*!
+
+** Can FP do it?
+
+** Yes it can!
+
+** 
+   Can we have a /nice/ way to write “reactive” systems?
+
+   #+ATTR_REVEAL: :frag (appear)
+   Yes: FRP.
+
+** 
+   1. Composable
+
+   2. Declarative
+
+   3. Functional
+
+* Diving In
+
+** In ⇒ Combinators ⇒ Out
+
+** In
+  #+BEGIN_SRC haskell
+  mouse    :: Behavior (Int, Int)
+  click    :: Event (Int, Int)
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  camera :: Behavior Image
+  bump   :: Event ()
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  truck_schedule :: Event Truck
+  sale :: Event Quantity
+  #+END_SRC
+
+** Combinators
+  #+BEGIN_SRC haskell
+  when  :: B Bool -> E a -> E a
+  at    :: B a -> E b -> E a
+  union :: E a -> E a -> E a
+  steps :: E a -> B a
+  foldP :: (a -> b -> b) -> E a -> E b
+  #+END_SRC
+  
+  =Functor=, =Applicative=, =Monoid= …
+
+** Out
+  #+BEGIN_SRC haskell
+  draw :: Behavior Image -> Element -> IO ()
+  text :: Behavior Text -> Element -> IO ()
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  motor :: Behavior Voltage -> Motor -> IO ()
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  metrics :: Behavior State -> IO Metrics
+  #+END_SRC
+
+* Putting it Together...
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Life
+  #+BEGIN_no-background
+  [[./img/life-screenshot-1.png]]
+  [[./img/life-wx.png]]
+  #+END_no-background
+
+** Game rules
+   #+BEGIN_SRC haskell
+   blank :: Int -> Int -> Grid
+   rPentonimo :: Grid
+   step :: Grid -> Grid
+   modify :: (Int, Int) -> Grid -> Grid
+   #+END_SRC
+
+** Widgets
+   - =canvas=
+   - =pauseButton=
+
+** In
+   #+BEGIN_SRC haskell
+   -- every 200ms
+   ticks :: Event ()
+
+   mouse :: Behavior Point
+   click :: Event ()
+
+   -- button presses
+   pauses :: Event ()
+   #+END_SRC
+
+** Combinators
