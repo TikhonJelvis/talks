@@ -1,6 +1,6 @@
 # -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
-#+Title: What is FRP?
-#+Subtitle:
+#+Title:
+#+Subtitle: What is Functional Reactive Programming?
 #+Author: Tikhon Jelvis
 #+Email: tikhon@jelv.is
 
@@ -12,7 +12,7 @@
 
 # Change root and enable controls before uploading to jelv.is
 #+REVEAL_ROOT: ../reveal.js-3.8.0
-#+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', progress:false
+#+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', progress:false, slideNumber: false
 
 #+OPTIONS: toc:nil timestamp:nil email:t num:nil
 
@@ -23,13 +23,6 @@
 #+REVEAL_HLEVEL: 2
 
 #+REVEAL_PLUGINS: (highlight markdown notes)
-
-* /Functional Reactive Programming/
-   :PROPERTIES:
-   :reveal_background: #052d69
-   :reveal_background_trans: none
-   :reveal_extra_attr: class="section-slide"
-   :END:
 
 **   
    [[./img/quora.png]]
@@ -43,27 +36,53 @@
    1. What *is* it?
    2. Why do we *care*?
 
+** What does “reactive” mean?
+
+** 
+   [[./img/reactive-definition.png]]
+   source: dictionary.com
+
+**  
+   *Reactive*:
+
+   #+ATTR_REVEAL: :frag (appear)
+   changing over time
+
+   #+ATTR_REVEAL: :frag (appear)
+   *interactively*
+
 ** Time
    #+BEGIN_no-background
    [[./img/time-think.png]]
    [[./img/time-program.png]]
    #+END_no-background
 
-** Time-Varying Values
+** What does “functional” mean?
 
 ** 
+   Hell if I know.
+
+** “Functional-Style”
+   #+ATTR_REVEAL: :frag (appear)
    - explicit
    - composable
    - declarative
+
+** Fun Reactive Programming
+
+** How do we do this?
+
+** Time-varying values
 
 ** 
    *Behaviors*: continuous
 
    *Events*: discrete
 
-** Declarative? Denotational.
-
 ** 〚Code〛 = Model
+
+   #+ATTR_REVEAL: :frag (appear)
+   This is what “declarative” means!
 
 ** 
    [[./img/behavior.png]]
@@ -85,31 +104,18 @@
 ** 
    “FP can't do UIs.”
 
-   “FP can't do state.”
+   “Monads are a hack.”
 
    “…”
 
    #+ATTR_HTML: :class no-background
    [[./img/thinking.png]]
 
-** Time is *hard*!
-
-** Can FP do it?
-
-** Yes it can!
-
 ** 
-   Can we have a /nice/ way to write “reactive” systems?
+   Can FP do it?
 
    #+ATTR_REVEAL: :frag (appear)
-   Yes: FRP.
-
-** 
-   1. Composable
-
-   2. Declarative
-
-   3. Functional
+   Yes it can!
 
 * Diving In
 
@@ -117,8 +123,8 @@
 
 ** In
   #+BEGIN_SRC haskell
-  mouse    :: Behavior (Int, Int)
-  click    :: Event (Int, Int)
+  mouse :: Behavior (Int, Int)
+  click :: Event (Int, Int)
   #+END_SRC
 
   #+BEGIN_SRC haskell
@@ -127,33 +133,50 @@
   #+END_SRC
 
   #+BEGIN_SRC haskell
-  truck_schedule :: Event Truck
-  sale :: Event Quantity
+  truckSchedule :: Event Truck
+  sale          :: Event Quantity
   #+END_SRC
 
 ** Combinators
   #+BEGIN_SRC haskell
-  when  :: B Bool -> E a -> E a
-  at    :: B a -> E b -> E a
-  union :: E a -> E a -> E a
-  steps :: E a -> B a
-  foldP :: (a -> b -> b) -> E a -> E b
+  when  :: B Bool → E a → E a
+  at    :: B a → E b → E a
+  union :: E a → E a → E a
+  steps :: E a → B a
+  foldB :: (a → b → b) → b → E a → B b
   #+END_SRC
   
   =Functor=, =Applicative=, =Monoid= …
 
+** 
+   #+BEGIN_SRC haskell
+   shiftClick :: Event (Int, Int)
+   shiftClick = when (keyHeld shift) click
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   warning :: Int → Color
+   warning level | level > 100 = red
+                 | level > 80  = yellow
+                 | otherwise   = green
+
+   warningColor :: Behavior Color
+   warningColor = map warning audioLevel
+   #+END_SRC
+
 ** Out
   #+BEGIN_SRC haskell
-  draw :: Behavior Image -> Element -> IO ()
-  text :: Behavior Text -> Element -> IO ()
+  draw :: Behavior Image → Element → IO ()
+  text :: Behavior Text → Element → IO ()
   #+END_SRC
 
   #+BEGIN_SRC haskell
-  motor :: Behavior Voltage -> Motor -> IO ()
+  motor :: Behavior Voltage → Motor → IO ()
   #+END_SRC
 
   #+BEGIN_SRC haskell
-  metrics :: Behavior State -> IO Metrics
+  metrics :: Behavior State → IO Metrics
   #+END_SRC
 
 * Putting it Together...
@@ -171,15 +194,10 @@
 
 ** Game rules
    #+BEGIN_SRC haskell
-   blank :: Int -> Int -> Grid
-   rPentonimo :: Grid
-   step :: Grid -> Grid
-   modify :: (Int, Int) -> Grid -> Grid
+   blank :: Int → Int → Grid
+   step :: Grid → Grid
+   modify :: (Int, Int) → Grid → Grid
    #+END_SRC
-
-** Widgets
-   - =canvas=
-   - =pauseButton=
 
 ** In
    #+BEGIN_SRC haskell
@@ -194,3 +212,88 @@
    #+END_SRC
 
 ** Combinators
+   #+BEGIN_SRC haskell
+   foldB :: (a → b → b)
+         → b
+         → Event a
+         → Behavior b
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   paused :: Behavior Bool
+   paused = foldB flip True pauses
+     where flip () isPaused = not isPaused
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   modifies :: Event (Grid → Grid)
+   modifies = map modify click
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   frames :: Event ()
+   frames = when (map not paused) tick
+
+   steps :: Event (Grid → Grid)
+   steps = map (\ _ → step) frames
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   changes :: Event (Grid → Grid)
+   changes = union frames modifies
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   update :: (Grid → Grid) → Grid → Grid
+   update step grid = step grid
+
+   life :: Behavior Grid
+   life = foldB update blank changes
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_FOO
+   - animation
+   - pausing
+   - clicks to edit
+   #+END_FOO
+
+** Adding Features
+   #+BEGIN_SRC haskell
+   generation :: Behavior Int
+   generation = foldB (\ _ x → x + 1) 0 frames
+   #+END_SRC
+
+   #+BEGIN_FOO
+   No changes to existing code!
+   #+END_FOO
+
+* What is FRP?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+  Functional: /Fun/
+
+  #+ATTR_REVEAL: :frag (appear)
+  Reactive: /Time/
+
+  #+ATTR_REVEAL: :frag (appear)
+  Programming
+
+** An alternative to IO?
+
+* Questions?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
