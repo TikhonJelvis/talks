@@ -1,0 +1,298 @@
+# -*- org-reveal-title-slide: "<h2 class='title'>%t</h2> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
+#+Title: Functional Reactive Programming?
+#+Subtitle: 
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+#+REVEAL_TITLE_SLIDE_BACKGROUND_TRANSITION: none
+
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="A simple introduction to functional reactive programming. What is FRP? What do we care about it? What does it get us?">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
+# Change root and enable controls before uploading to jelv.is
+#+REVEAL_ROOT: ../reveal.js-3.8.0/
+#+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', progress:false, slideNumber: true
+
+#+OPTIONS: toc:nil timestamp:nil email:t num:nil
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+*   
+   [[./img/quora.png]]
+   [[./img/stackoverflow.png]]
+
+** An Abstraction
+
+** Abstract
+
+** 
+   1. What *is* it?
+   2. Why do we *care*?
+
+** What does “reactive” mean?
+
+** 
+   [[./img/reactive-definition.png]]
+   source: dictionary.com
+
+**  
+   *Reactive*:
+
+   #+ATTR_REVEAL: :frag (appear)
+   changing over time
+
+   #+ATTR_REVEAL: :frag (appear)
+   *interactively*
+
+** Time
+   #+BEGIN_no-background
+   [[./img/time-think.png]]
+   [[./img/time-program.png]]
+   #+END_no-background
+
+** What does “functional” mean?
+
+** 
+   Hell if I know.
+
+** “Denotational”
+   An abstraction defined by a simple mathematical model.
+
+   #+ATTR_REVEAL: :frag (appear)
+   - explicit
+   - composable
+   - declarative
+
+** How do we do this?
+
+** Time-varying values
+
+** 
+   *Behaviors*: continuous
+
+   *Events*: discrete
+
+** 
+   [[./img/behavior.png]]
+
+   =Behavior a= = Time → a
+
+** 
+   [[./img/event.png]]
+
+   =Event a= = [(Time, a)]
+
+* Why?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+   “FP can't do UIs.”
+
+   “Monads are a hack.”
+
+   “…”
+
+   #+ATTR_HTML: :class no-background
+   [[./img/thinking.png]]
+
+** 
+   Can FP do it?
+
+   #+ATTR_REVEAL: :frag (appear)
+   Yes it can!
+
+* Diving In
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** In ⇒ Combinators ⇒ Out
+
+** In
+  #+BEGIN_SRC haskell
+  mouse :: Behavior (Int, Int)
+  click :: Event (Int, Int)
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  camera :: Behavior Image
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  truckSchedule :: Event Truck
+  #+END_SRC
+
+** Combinators
+   Functor, applicative... etc.
+   
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   warning :: Int → Color
+   warning level | level > 100 = red
+                 | level > 80  = yellow
+                 | otherwise   = green
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   warningColor :: Behavior Color
+   warningColor = map warning audioLevel
+   #+END_SRC
+
+** Combinators
+   #+BEGIN_SRC haskell
+   when :: Behavior Bool -> Event a -> Event a
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   shiftClick :: Event (Int, Int)
+   shiftClick = when (keyHeld shift) click
+   #+END_SRC
+
+** Out
+  #+BEGIN_SRC haskell
+  drawScreen :: Behavior Image → IO ()
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  motor :: Behavior Voltage → Motor → IO ()
+  #+END_SRC
+
+  #+BEGIN_SRC haskell
+  metrics :: Behavior State → IO Metrics
+  #+END_SRC
+
+* Putting it Together...
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Life
+  #+BEGIN_no-background
+  [[./img/life-screenshot-1.png]]
+  [[./img/life-wx.png]]
+  #+END_no-background
+
+** Game rules
+   #+BEGIN_SRC haskell
+   blank :: Int → Int → Grid
+   step :: Grid → Grid
+   modify :: (Int, Int) → Grid → Grid
+   #+END_SRC
+
+** In
+   #+BEGIN_SRC haskell
+   frames :: Event ()
+
+   mouse :: Behavior Point
+   click :: Event ()
+
+   pauseButton :: Event ()
+   #+END_SRC
+
+** Combinators
+   #+BEGIN_SRC haskell
+   foldB :: (a → b → b)
+         → b
+         → Event a
+         → Behavior b
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   paused :: Behavior Bool
+   paused = foldB flip True pauseButton
+     where flip () isPaused = not isPaused
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   modifies :: Event (Grid → Grid)
+   modifies = map modify click
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   steps :: Event (Grid → Grid)
+   steps = when (map not paused)
+             (map (\ () → step) frames)
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   changes :: Event (Grid → Grid)
+   changes = union [steps, modifies]
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   life :: Behavior Grid
+   life = foldB apply blank changes
+   #+END_SRC
+
+** Out
+   #+BEGIN_SRC haskell
+   draw (map toImage life) canvas
+   #+END_SRC
+   
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   pauseText b = if b then "❚❚" else "▶"
+   map pauseText paused
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_FOO
+   - animation
+   - pausing
+   - clicks to edit
+   #+END_FOO
+
+** Adding Features
+   #+BEGIN_SRC haskell
+   generation :: Behavior Int
+   generation = foldB (\ _ x → x + 1) 0 steps
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   clear :: Event (Grid → Grid)
+   clear = map (\ () → clearGrid) clearButton
+   #+END_SRC
+
+* What is FRP?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+  Functional: “functional-style”
+
+  #+ATTR_REVEAL: :frag (appear)
+  Reactive: “over time”
+
+  #+ATTR_REVEAL: :frag (appear)
+  Programming
+
+* Questions?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
