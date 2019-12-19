@@ -1,6 +1,6 @@
-# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
-#+Title:
-#+Subtitle: What is Functional Reactive Programming?
+# -*- org-reveal-title-slide: "<h2 class='title'>%t</h2> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
+#+Title: Functional Reactive Programming?
+#+Subtitle: 
 #+Author: Tikhon Jelvis
 #+Email: tikhon@jelv.is
 
@@ -11,7 +11,7 @@
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 
 # Change root and enable controls before uploading to jelv.is
-#+REVEAL_ROOT: ../reveal.js-3.8.0
+#+REVEAL_ROOT: .
 #+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', progress:false, slideNumber: false
 
 #+OPTIONS: toc:nil timestamp:nil email:t num:nil
@@ -24,7 +24,7 @@
 
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
-**   
+*   
    [[./img/quora.png]]
    [[./img/stackoverflow.png]]
 
@@ -68,8 +68,6 @@
    - composable
    - declarative
 
-** Fun Reactive Programming
-
 ** How do we do this?
 
 ** Time-varying values
@@ -79,20 +77,15 @@
 
    *Events*: discrete
 
-** 〚Code〛 = Model
-
-   #+ATTR_REVEAL: :frag (appear)
-   This is what “declarative” means!
-
 ** 
    [[./img/behavior.png]]
 
-   〚Behavior a〛 = Time → a
+   =Behavior a= = Time → a
 
 ** 
    [[./img/event.png]]
 
-   〚Event a〛 = [(Time, a)]
+   =Event a= = [(Time, a)]
 
 * Why?
    :PROPERTIES:
@@ -118,6 +111,11 @@
    Yes it can!
 
 * Diving In
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
 
 ** In ⇒ Combinators ⇒ Out
 
@@ -129,26 +127,13 @@
 
   #+BEGIN_SRC haskell
   camera :: Behavior Image
-  bump   :: Event ()
   #+END_SRC
 
   #+BEGIN_SRC haskell
   truckSchedule :: Event Truck
-  sale          :: Event Quantity
   #+END_SRC
 
 ** Combinators
-  #+BEGIN_SRC haskell
-  when  :: B Bool → E a → E a
-  at    :: B a → E b → E a
-  union :: E a → E a → E a
-  steps :: E a → B a
-  foldB :: (a → b → b) → b → E a → B b
-  #+END_SRC
-  
-  =Functor=, =Applicative=, =Monoid= …
-
-** 
    #+BEGIN_SRC haskell
    shiftClick :: Event (Int, Int)
    shiftClick = when (keyHeld shift) click
@@ -160,7 +145,10 @@
    warning level | level > 100 = red
                  | level > 80  = yellow
                  | otherwise   = green
+   #+END_SRC
 
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
    warningColor :: Behavior Color
    warningColor = map warning audioLevel
    #+END_SRC
@@ -168,7 +156,6 @@
 ** Out
   #+BEGIN_SRC haskell
   draw :: Behavior Image → Element → IO ()
-  text :: Behavior Text → Element → IO ()
   #+END_SRC
 
   #+BEGIN_SRC haskell
@@ -201,14 +188,12 @@
 
 ** In
    #+BEGIN_SRC haskell
-   -- every 200ms
-   ticks :: Event ()
+   frames :: Event ()
 
    mouse :: Behavior Point
    click :: Event ()
 
-   -- button presses
-   pauses :: Event ()
+   pauseButton :: Event ()
    #+END_SRC
 
 ** Combinators
@@ -222,7 +207,7 @@
    #+ATTR_REVEAL: :frag (appear)
    #+BEGIN_SRC haskell
    paused :: Behavior Bool
-   paused = foldB flip True pauses
+   paused = foldB flip True pauseButton
      where flip () isPaused = not isPaused
    #+END_SRC
 
@@ -234,26 +219,32 @@
 
    #+ATTR_REVEAL: :frag (appear)
    #+BEGIN_SRC haskell
-   frames :: Event ()
-   frames = when (map not paused) tick
-
    steps :: Event (Grid → Grid)
-   steps = map (\ _ → step) frames
+   steps = when (map not paused)
+             (map (\ () → step) frames)
    #+END_SRC
 
    #+ATTR_REVEAL: :frag (appear)
    #+BEGIN_SRC haskell
    changes :: Event (Grid → Grid)
-   changes = union frames modifies
+   changes = union [steps, modifies]
    #+END_SRC
 
 ** 
    #+BEGIN_SRC haskell
-   update :: (Grid → Grid) → Grid → Grid
-   update step grid = step grid
-
    life :: Behavior Grid
-   life = foldB update blank changes
+   life = foldB apply blank changes
+   #+END_SRC
+
+** Out
+   #+BEGIN_SRC haskell
+   draw (map toImage life) canvas
+   #+END_SRC
+   
+   #+ATTR_REVEAL: :frag (appear)
+   #+BEGIN_SRC haskell
+   pauseText b = if b then "❚❚" else "▶"
+   map pauseText paused
    #+END_SRC
 
    #+ATTR_REVEAL: :frag (appear)
@@ -266,12 +257,13 @@
 ** Adding Features
    #+BEGIN_SRC haskell
    generation :: Behavior Int
-   generation = foldB (\ _ x → x + 1) 0 frames
+   generation = foldB (\ _ x → x + 1) 0 steps
    #+END_SRC
 
-   #+BEGIN_FOO
-   No changes to existing code!
-   #+END_FOO
+   #+BEGIN_SRC haskell
+   clear :: Event (Grid → Grid)
+   clear = map (\ () → clearGrid) clearButton
+   #+END_SRC
 
 * What is FRP?
    :PROPERTIES:
@@ -281,15 +273,13 @@
    :END:
 
 ** 
-  Functional: /Fun/
+  Functional: “functional-style”
 
   #+ATTR_REVEAL: :frag (appear)
-  Reactive: /Time/
+  Reactive: “over time”
 
   #+ATTR_REVEAL: :frag (appear)
   Programming
-
-** An alternative to IO?
 
 * Questions?
    :PROPERTIES:

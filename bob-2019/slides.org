@@ -12,8 +12,8 @@
 
 # Options I change before uploading to jelv.is
 #+OPTIONS: reveal_control:nil
-#+OPTIONS: reveal_mathjax:t
-#+REVEAL_ROOT: /talks/reveal.js
+#+OPTIONS: reveal_mathjax:nil
+#+REVEAL_ROOT: ../reveal.js/
 
 #+OPTIONS: reveal_center:t reveal_progress:nil reveal_history:t
 #+OPTIONS: reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
