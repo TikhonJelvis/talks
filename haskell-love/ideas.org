@@ -1,0 +1,24 @@
+* A Haskell Introduction to Stochastic Optimization
+
+** What is stochastic optimization?
+   Making good decisions under uncertainty.
+
+*** Optimization
+
+*** Reinforcement Learning
+
+*** Examples
+    - OR
+    - finance
+
+** Why Haskell?
+   Great language to make abstract ideas more concrete.
+
+   When I need to learn a new concept, I like to use Haskell as a
+   learning tool. Encoding an idea in Haskell helps me understand all
+   the details without too much incidental complexity. It isn't
+   overwhelming.
+
+** Probability Distributions
+
+** Markov Decision Processes

@@ -1,0 +1,6 @@
+* Tikhon Jelvis
+  I like programming languages. A lot. Especially Haskell.
+
+  I'm a member of the Haskell.org committee, I've used Haskell professionally and I've written about it extensively on both Quora and Stack Overflow.
+
+  I developed an interest in stochastic control after spending several years on retail inventory optimization and simulation before switching focus to demand forecasting.
