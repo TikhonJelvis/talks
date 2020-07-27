@@ -1,0 +1,378 @@
+* Reasoning under Uncertainty
+  - dealing with uncertainty is hard!
+  - a lot of interesting ideas/research/etc
+  - use Haskell as a teaching tool to introduce some of the
+    fundamental abstractions people use to deal with uncertainty
+  - practical examples from retail (and maybe finance?)
+
+** What /is/ uncertainty?
+   - the world is complicated—we can't predict everything
+     - randomness
+     - unknown information
+   - we need to be able to deal with:
+     - defining partial knowledge/belief about the world
+     - make "optimal" decisions given this partial knowledge/belief
+
+* Probability
+
+** Distributions
+   - go over quick definition of probability and probability
+     distributions
+   - a simple example or two
+
+** Probability Monad
+   - probability distributions form a monad
+   - this gives us a powerful and flexible way to write code involving
+     probability (probabilistic programming)
+   - in general, I've found that having an abstraction for probability
+     distributions is super valuable in practice
+
+** Probabilistic Programming Example
+   - simple example (coin toss? something else?)
+   - show what we can do with the result
+   - point people to "Practical Probabilistic Programming with Monads"
+     for further reading
+   - include some pictures?
+     - if you have some or it's easy to produce them
+     - TODO: see what you can reuse from probability monad talk
+
+* Simulation
+  In the real world, things change over time and react differently
+  based on our actions. How can we model this?
+
+** Different Options
+   - time: continuous vs discrete
+     - event-based/FRP/etc
+   - state:
+     - continuous vs discrete
+     - history vs not
+
+** Markov Processes
+   Simple but useful option: Markov process.
+
+   Markov property.
+
+   #+BEGIN_SRC haskell
+   data MarkovProcess m s = MP {
+     step :: s → m s
+   }
+   #+END_SRC
+
+** Inventory Control Example
+   TODO: Should I use =MonadSample= (from monad-bayes library) or a
+   pseudocode =Distribution= class?
+   #+BEGIN_SRC haskell
+   forecast :: MonadSample m ⇒ m Int
+   forecast = …
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   day :: m Int → Int → m Int
+   day demand inventory = do
+     demanded ← demand
+     let remaining = max (inventory - demanded) 0
+     if remaining < 3
+       then pure (remaining + 10)
+       else pure remaining
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   model :: m Int → MarkovProcess m Int
+   model forecast = MP {
+     step = \ inventory → do
+       demanded ← forecast
+       let remaining = max (inventory - demanded) 0
+       if remaining < 3
+         then pure (remaining + 10)
+         else pure remaining
+   }
+   #+END_SRC
+
+** Simulation
+   What can we do with Markov processes?
+
+   Simplest answer: simulation.
+
+   #+BEGIN_SRC haskell
+   simulate :: Monad m ⇒ MarkovProcess m s → s → Stream (Of s) m ()
+   simulate process state = do
+     next ← step process state
+     yield next
+     simulate process next
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   simulate :: Monad m ⇒ MarkovProcess m s → s → Stream (Of s) m ()
+   simulate MP { step } start = iterateM step (pure start)
+   #+END_SRC
+
+   Note: =pure start= is a hint that if we want to supply a
+   /probability distribution/ of start states, we can—and this is a
+   common modeling choice people make!
+
+   #+BEGIN_SRC haskell
+   simulate :: Monad m ⇒ MarkovProcess m s → m s → Stream (Of s) m ()
+   simulate MP { step } start = iterateM step start
+   #+END_SRC
+
+*** Idea: graph inventory model above
+    Visualizations are always fun.
+
+    This should give you the classic "sawtooth" graph.
+
+** Simulations are useful!
+   Simulations give us a simple way to do two things:
+
+     1. Predictions and observations: what is our system going to do in the
+        future? How long is X going to take, how much is it going to
+        cost... etc.
+     2. Experiments: "what-if analysis". Same as predictions but
+        changing the behavior or initial state.
+
+   Both of these things are really useful in the real world.
+
+* Optimization
+  Okay, we can predict the world. But can we change it?
+
+** Rewards
+   To optimize, we need some objective to maximize. How can we
+   retrofit our model with an object?
+
+** Markov Reward Process
+   #+BEGIN_SRC haskell
+   type Reward = Double -- whatever
+
+   data MarkovRewardProcess m s = MRP {
+     step :: s → m (s, Reward)
+   }
+   #+END_SRC
+
+   TODO: Does this work the way I want it to? Is talking about it in the
+   talk a good idea?
+
+   We can make this neater using =Writer=.
+
+   First, we have to make =Reward= a =Monoid=:
+
+   #+BEGIN_SRC haskell
+   type Reward = Sum Double
+   #+END_SRC
+
+   Then:
+
+   #+BEGIN_SRC haskell
+   data MarkovRewardProcess m s = MRP {
+     step :: s → WriterT Reward m s
+   }
+   #+END_SRC
+
+   or even:
+
+   #+BEGIN_SRC haskell
+   type MarkovRewardProcess m s =
+     MarkovProcess (WriteT Reward m) s
+   #+END_SRC
+
+   Haskell is wonderfully composable :).
+
+*** Example
+    Inventory control:
+      - make money per sale
+      - cost money per item
+      - cost money per item/day
+      - cost money per /missed demand/
+        - probably ignore this one for simplicity—you can mention it
+          in passing
+
+    (Without WriterT)
+    #+BEGIN_SRC haskell
+    model :: m Int → MarkovRewardProcess m Int
+    model forecast = MRP {
+      step = \ inventory → do
+        demanded ← forecast
+
+        let sold   = max (inventory - demanded) 0
+            missed = max (demanded - inventory) 0
+            reward = sold * 6 - missed * 12
+
+        if remaining < 3
+          then pure (remaining + 10, reward - 10 * 2.5)
+          else pure (remaining, reward)
+    }
+    #+END_SRC
+
+    (With WriterT)
+    #+BEGIN_SRC haskell
+    model' :: Monad m ⇒ m Int → MarkovRewardProcess m Int
+    model' forecast = MP {
+      step = \ inventory → do
+        demanded ← lift forecast
+
+        let sold   = max (inventory - demanded) 0
+            missed = max (demanded - inventory) 0
+            remaining = inventory - sold
+
+        reward (sold * 6 - missed * 12)
+
+        if remaining < 3
+          then do
+            reward (-30)
+            pure (remaining + 10)
+          else
+            pure remaining
+    }
+    #+END_SRC
+
+*** Simulation
+    We can simulate the Markov reward process just like a Markov
+    process. In fact, since we used a =WriterT= formulation, we can
+    reuse our existing =simulate= function:
+
+    #+BEGIN_SRC haskell
+    simulateReward :: Monad m
+                    ⇒ MarkovRewardProcess m s
+                    → m s
+                    → Stream (Of s) (WriterT Reward m) ()
+    simulateReward mrp start = simulate mrp (lift start)
+    #+END_SRC
+
+** Actions
+
+   MRPs give us a reward we want to increase, but no agency. How do we
+   model /taking actions/, with uncertain results to the actions?
+
+   Idea: at each step, we can choose an *action* to take. The choice
+   of action and the way actions interact with the system is part of
+   our model.
+
+   What does "choosing an action" look like? It's a function (s →
+   a). The function we use to choose an action based on the state is
+   called a *policy*.
+
+*** Markov Decision Process
+
+    #+BEGIN_SRC haskell
+    type Policy s a = s → a
+
+    data MarkovDecisionProcess m s a = MDP {
+      act :: Policy s a → MarkovRewardProcess m s
+    }
+    #+END_SRC
+
+    A Markov decision process combined with a policy gives us a Markov
+    reward process.
+
+    Idea: given an MDP, we can evaluate a policy by simulating the
+    resulting MRP and looking at the reward we get.
+
+    #+BEGIN_SRC haskell
+    type Policy s a = s → a
+
+    data MarkovDecisionProcess m s a = MDP {
+      act :: Policy s a → MarkovRewardProcess m s
+    }
+    #+END_SRC
+
+**** Example
+     The MRP we defined earlier was an MDP with a hard-coded policy
+     (order 10 whenever we're below 3)
+
+     Here's our model with the ordering policy factored out:
+
+     #+BEGIN_SRC haskell
+     model'' :: Monad m
+             ⇒ m Int
+             → Policy Int Int
+             → MarkovRewardProcess m Int
+     model'' forecast policy = MP {
+       step = \ inventory → do
+         demanded ← lift forecast
+
+         let sold   = max (inventory - demanded) 0
+             missed = max (demanded - inventory) 0
+             remaining = inventory - sold
+
+         reward (sold * 6 - missed * 12)
+
+         let order = policy remaining
+         reward (-3 * order)
+         pure (remaining + order)
+     }
+     #+END_SRC
+
+     then we can wrap it into an MDP:
+
+     #+BEGIN_SRC haskell
+     inventoryMDP :: Monad m ⇒ m Int → MarkovDecisionProcess m Int Int
+     inventoryMDP forecast = MDP {
+       act = model'' forecast
+     }
+     #+END_SRC
+
+     The old model is not equivalent to this MDP with a policy of
+     "order 10 if we have less than 3 items remaining":
+
+     #+BEGIN_SRC haskell
+     act inventoryMDP \ remaining →
+       if remaining < 3 then 10 else 0
+     #+END_SRC
+
+**** Improving the policy
+
+     We can now play around and try several different policies, see
+     what the (simulated) reward is and find which one works best.
+
+** Optimization
+
+   So far, we've seen a few things:
+   - probability distributions to model uncertainty
+   - Markov processes to model uncertainty /over time/
+   - Markov reward processes to have an objective to optimize
+   - Markov decision processes and policies to impact the object
+     - some policies perform better—sometimes *much* better—than
+       others
+
+   But how do we actually find good—or even /optimal/—policies in
+   practice?
+
+   This is a whole field unto itself! In practice, a whole range of
+   approaches works:
+
+   1. domain-specific algorithms
+   2. heuristics
+   3. dynamic programming
+   4. reinforcement learning
+
+   In code terms, the important question to consider is: what do we
+   know about our process? What do we know about the state space, the
+   action space, the transition functions... etc?
+
+   Depending on how much we know about the process and how complex it
+   is (state/action space), different algorithms are going to work
+   differently. In code, we'd want to capture some of these
+   restrictions in our abstractions.
+
+   For example, if our state and action spaces are finite and small
+   enough to practically express as a table, we can use efficient
+   exact algorithms:
+
+   #+BEGIN_SRC haskell
+   data FiniteMP s = FMP {
+     transition :: Map s (FiniteDistribution s)
+   }
+
+   toMRP :: MonadSample m ⇒ FiniteMRP s → MarkovProcess m s
+   toMRP finiteMRP = MP {
+     step = \ s → sample (transition ! s)
+   }
+   #+END_SRC
+
+   A pretty common approach is to turn this table into a matrix: the
+   rows and columns of the matrix are the states, and each cell holds
+   the probability for transitioning from one cell to another. This
+   lets us solve problems about our process using efficient linear
+   algebra algorithms.
+
+   However, if our problem is more complex or unbounded, we'll need to
+   reach for ways to explore a subset of the possible states and
+   actions.
