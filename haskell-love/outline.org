@@ -152,28 +152,36 @@
 
    We can make this neater using =Writer=.
 
-   First, we have to make =Reward= a =Monoid=:
+*** Writer
 
-   #+BEGIN_SRC haskell
-   type Reward = Sum Double
-   #+END_SRC
+    I'm pretty sure this doesn't actually work the way I want it to :(
 
-   Then:
+    I bet I could make *something* reasonable work with transformers,
+    but it would be a bit too complicated for at talk. I'll add it as
+    a todo for the future...
 
-   #+BEGIN_SRC haskell
-   data MarkovRewardProcess m s = MRP {
-     step :: s → WriterT Reward m s
-   }
-   #+END_SRC
+    First, we have to make =Reward= a =Monoid=:
 
-   or even:
+    #+BEGIN_SRC haskell
+    type Reward = Sum Double
+    #+END_SRC
 
-   #+BEGIN_SRC haskell
-   type MarkovRewardProcess m s =
-     MarkovProcess (WriteT Reward m) s
-   #+END_SRC
+    Then:
 
-   Haskell is wonderfully composable :).
+    #+BEGIN_SRC haskell
+    data MarkovRewardProcess m s = MRP {
+      step :: s → WriterT Reward m s
+    }
+    #+END_SRC
+
+    or even:
+
+    #+BEGIN_SRC haskell
+    type MarkovRewardProcess m s =
+      MarkovProcess (WriteT Reward m) s
+    #+END_SRC
+
+    Haskell is wonderfully composable :).
 
 *** Example
     Inventory control:
