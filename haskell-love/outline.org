@@ -27,6 +27,10 @@
    - in general, I've found that having an abstraction for probability
      distributions is super valuable in practice
 
+*** Dependent vs Independent Random Variables
+    - dependent = monad
+    - independent = applicative
+
 ** Probabilistic Programming Example
    - simple example (coin toss? something else?)
    - show what we can do with the result
@@ -188,9 +192,9 @@
       - make money per sale
       - cost money per item
       - cost money per item/day
-      - cost money per /missed demand/
         - probably ignore this one for simplicity—you can mention it
           in passing
+      - cost money per /missed demand/
 
     (Without WriterT)
     #+BEGIN_SRC haskell

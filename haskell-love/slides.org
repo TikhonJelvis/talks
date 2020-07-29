@@ -24,23 +24,25 @@
 
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
-* What /is/ uncertainty?
+* /Uncertainty/
    :PROPERTIES:
    :reveal_background: #052d69
    :reveal_background_trans: none
    :reveal_extra_attr: class="section-slide"
    :END:
 
-**
+** What /is/ uncertainty?
+
+** 
    Unknown information.
 
    Randomness.
 
-**
+** 
    #+ATTR_HTML: :width 600px
    [[./img/poisson.svg]]
 
-**
+** 
    #+BEGIN_SRC haskell
    die ∷ MonadSample m ⇒ m Int
    die = uniformD [1..6]
@@ -49,7 +51,7 @@
    #+ATTR_HTML: :width 600px
    [[./img/1× die.svg]]
 
-**
+** 
    #+BEGIN_SRC haskell
    dice2 ∷ MonadSample m ⇒ m Int
    dice2 = do
@@ -61,7 +63,7 @@
    #+ATTR_HTML: :width 600px
    [[./img/2× dice.svg]]
 
-**
+** 
    #+BEGIN_SRC haskell
    diceGame ∷ MonadSample m ⇒ m Int
    diceGame = do
@@ -73,9 +75,35 @@
    #+ATTR_HTML: :width 600px
    [[./img/dice game.svg]]
 
-**
-   [[./img/prac-prob.png]]
+** Dependent /vs/ Independent
 
+** Y depends on X
+   #+ATTR_REVEAL: :frag roll-in
+   =m x=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =x → m y=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =m x → (x → m y) → m y=
+
+** Independent
+   #+ATTR_REVEAL: :frag roll-in
+   =m x=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =m y=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =(x → y → z) → m x → m y → m z=
+
+** 
+   - *Independent* = *Applicative*
+
+   - *Dependent*      = *Monad*
+
+** 
+   [[./img/prac-prob.png]]
 
 * Simulation
    :PROPERTIES:
@@ -84,14 +112,14 @@
    :reveal_extra_attr: class="section-slide"
    :END:
 
-**
+** 
 
    How do we handle
 
    /uncertainty over time/?
 
-**
-   Continuous vs discrete time?
+** 
+   Time?
 
    State?
 
@@ -99,21 +127,35 @@
 
 ** Markov Processes
 
-**
+** 
    #+BEGIN_SRC haskell
    data MakrovProcess m s = MP {
      step ∷ s → m s
    }
    #+END_SRC
 
-**
-   1. Sell based on demand distribution
+   #+ATTR_REVEAL: :frag roll-in
+   Next depends on current.
 
-   2. Order 10 units if 3 or less left.
+   #+ATTR_REVEAL: :frag roll-in
+   Next /only/ depends on current.
+
+   #+ATTR_REVEAL: :frag roll-in
+   =[s] → m s=
+
+** 
+   =s → m s= ∘ =s → m s= ∘ =s → m s= …
+
+** Inventory Control
+
+** 
+   1. Sell items.
+
+   2. Order 10 if 3 or less left.
 
    3. Repeat.
 
-**
+** 
 
    #+BEGIN_SRC haskell
    forecast ∷ MonadSample m ⇒ m Int
@@ -123,7 +165,7 @@
    #+ATTR_HTML: :width 600px
    [[./img/demand distribution.svg]]
 
-**
+** 
    #+BEGIN_SRC haskell
    store ∷ m Int → MarkovProcess m Int
    #+END_SRC
@@ -133,14 +175,17 @@
    store forecast = MP {
      step = \ inventory → do
        demanded ← forecast
-       let remaining = max (inventory - demand) 0
+
+       let sold      = min inventory demand
+           remaining = inventory - sold
+
        if remaining ≤ 3
          then pure (remaining + 10)
          else pure remaining
    }
    #+END_SRC
 
-**
+** 
    #+BEGIN_SRC haskell
    simulate ∷ Monad m
             ⇒ MarkovProcess m s
@@ -152,7 +197,7 @@
      simulate process next
    #+END_SRC
 
-**
+** 
    #+BEGIN_SRC haskell
    start, step start, step (step start), …
    #+END_SRC
@@ -176,13 +221,24 @@
    simulate MP { step } = iterateM step
    #+END_SRC
 
-**
-
+** Daily Inventory
    [[./img/inventory.svg]]
 
 
-**
+** Daily Inventory
    [[./img/inventory traces.svg]]
+
+** Mean (10 Traces)
+   [[./img/mean inventory 10 traces.svg]]
+
+** Mean (100 Traces)
+   [[./img/mean inventory 100 traces.svg]]
+
+** Mean (1000 Traces)
+   [[./img/mean inventory 1000 traces.svg]]
+
+** Mean (10000 Traces)
+   [[./img/mean inventory 10000 traces.svg]]
 
 ** Simulations are useful!
 
@@ -192,3 +248,108 @@
    :reveal_background_trans: none
    :reveal_extra_attr: class="section-slide"
    :END:
+
+** What are we trying to accomplish?
+
+** 
+   #+BEGIN_SRC haskell
+   type Reward = Double
+
+   data MarkovRewardProcess m s = MRP {
+     step ∷ s → m (s, Reward)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   data MarkovRewardProcess m s = MRP {
+     step ∷ s → m (s, Reward)
+   }
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   data WriterT r m a = WriterT {
+     runWriterT ∷ m (s, r)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   data MarkovRewardProcess m s = MRP {
+     step ∷ s → m (s, Reward)
+   }
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC haskell
+   data WriterT m a = WriterT {
+     runWriterT ∷ m (s, Reward)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   data MarkovRewardProcess m s = MRP {
+     step ∷ s → WriterT Reward m s
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   type MarkovRewardProcess m s = 
+     MakrovProcess (WriterT Reward m) s
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   type Reward = Sum Double
+
+   reward ∷ (MonadWriter Reward m, Integral n) 
+          ⇒ n 
+          → m ()
+   reward = tell ∘ Sum
+   #+END_SRC
+
+** What is my reward?  
+
+** Inventory Control 
+   - gain per sale
+   - lose per item
+   - lose per /missed demand/
+
+** 
+   #+BEGIN_SRC haskell
+   step = \ inventory → do
+     demand ← lift forecast
+
+     let sold      = min demand inventory
+         missed    = demand - sold
+         remaining = inventory - sold
+     reward (sold * 6 - missed * 12)
+
+     if remaining ≤ 3
+       then do
+         reward (-30)
+         pure (remaining + 10)
+       else 
+         pure remaining
+   #+END_SRC
+
+** Reward, Inventory
+   [[./img/inventory rewards.svg]]
+
+** Reward (10 Traces)
+   [[./img/mean rewards 10 traces.svg]]
+
+** Reward (100 Traces)
+   [[./img/mean rewards 100 traces.svg]]
+
+** Reward (1000 Traces)
+   [[./img/mean rewards 1000 traces.svg]]
+
+** Reward (10000 Traces)
+   [[./img/mean rewards 10000 traces.svg]]
+
+** Mean Reward
+   [[./img/mean reward.svg]]
+
+   Mean reward at 50 days
