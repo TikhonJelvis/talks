@@ -426,6 +426,11 @@
    [[./img/old rewards.svg]]
 
 ** 
+   =always 0=
+
+   [[./img/always 0 rewards.svg]]
+
+** 
    =always 1=
 
    [[./img/always 1 rewards.svg]]
@@ -441,3 +446,12 @@
 ** 
    =orderPoint 5 5=
    [[./img/orderPoint 5 5 rewards.svg]]
+
+
+** 
+   - heuristics
+   - domain-specific algorithms
+   - dynamic programming
+   - linear programming
+   - reinforcement learning
+   
