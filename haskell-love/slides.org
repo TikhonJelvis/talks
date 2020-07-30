@@ -129,7 +129,7 @@
 
 ** 
    #+BEGIN_SRC haskell
-   data MakrovProcess m s = MP {
+   data MarkovProcess m s = MP {
      step ∷ s → m s
    }
    #+END_SRC
@@ -377,8 +377,11 @@
 
 ** 
    #+BEGIN_SRC haskell
-   type Policy = s → a
+   type Policy s a = s → a
    #+END_SRC
+
+** 
+   Optimization problem: find the policy that maximizes expected reward.
 
 ** MDP + Policy = MRP
 
