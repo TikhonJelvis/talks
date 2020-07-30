@@ -24,7 +24,7 @@
 
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
-* /Uncertainty/
+* Uncertainty
    :PROPERTIES:
    :reveal_background: #052d69
    :reveal_background_trans: none
@@ -149,17 +149,19 @@
 ** Inventory Control
 
 ** 
-   1. Sell items.
+   1. Order 10 if 3 or less left.
 
-   2. Order 10 if 3 or less left.
+   2. Sell items during day.
 
-   3. Repeat.
+   3. Receive order.
+
+   4. Repeat.
 
 ** 
 
    #+BEGIN_SRC haskell
    forecast ∷ MonadSample m ⇒ m Int
-   forecast = poisson 1.2
+   forecast = poisson 3
    #+END_SRC
 
    #+ATTR_HTML: :width 600px
@@ -174,14 +176,13 @@
    #+BEGIN_SRC haskell
    store forecast = MP {
      step = \ inventory → do
+       let ordered = 
+             if inventory ≤ 3 then 10 else 0
+
        demanded ← forecast
+       let sold = min inventory demanded
 
-       let sold      = min inventory demand
-           remaining = inventory - sold
-
-       if remaining ≤ 3
-         then pure (remaining + 10)
-         else pure remaining
+       pure (inventory - sold + ordered)
    }
    #+END_SRC
 
@@ -191,6 +192,9 @@
             ⇒ MarkovProcess m s
             → s
             → Stream (Of s) m ()
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
    simulate process state = do
      next ← lift (step process state)
      yield next
@@ -204,21 +208,33 @@
 
    #+ATTR_REVEAL: :frag roll-in
    #+BEGIN_SRC haskell
+   iterate ∷ (a → a) → a → [a]
+   iterate f x = x : iterate f (f x)
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
    simulate ∷ Monad m
             ⇒ MarkovProcess m s
             → s
             → Stream (Of s) m ()
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
    simulate MP { step } start =
      iterateM step (pure start)
    #+END_SRC
 
-   #+ATTR_REVEAL: :frag roll-in
+** 
    #+BEGIN_SRC haskell
    simulate ∷ Monad m
             ⇒ MarkovProcess m s
             → m s
             → Stream (Of s) m ()
-   simulate MP { step } = iterateM step
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   simulate MP { step } = iterateM step   
    #+END_SRC
 
 ** Daily Inventory
@@ -249,7 +265,7 @@
    :reveal_extra_attr: class="section-slide"
    :END:
 
-** What are we trying to accomplish?
+** What are we trying to /accomplish/?
 
 ** 
    #+BEGIN_SRC haskell
@@ -257,19 +273,6 @@
 
    data MarkovRewardProcess m s = MRP {
      step ∷ s → m (s, Reward)
-   }
-   #+END_SRC
-
-** 
-   #+BEGIN_SRC haskell
-   data MarkovRewardProcess m s = MRP {
-     step ∷ s → m (s, Reward)
-   }
-   #+END_SRC
-
-   #+BEGIN_SRC haskell
-   data WriterT r m a = WriterT {
-     runWriterT ∷ m (s, r)
    }
    #+END_SRC
 
@@ -313,25 +316,25 @@
 
 ** Inventory Control 
    - gain per sale
-   - lose per item
+   - lose per order
+   - lose per inventory/day
    - lose per /missed demand/
 
 ** 
    #+BEGIN_SRC haskell
    step = \ inventory → do
-     demand ← lift forecast
+     reward (-1 * inventory)
 
-     let sold      = min demand inventory
-         missed    = demand - sold
-         remaining = inventory - sold
-     reward (sold * 6 - missed * 12)
+     let ordered =
+           if inventory ≤ 3 then 10 else 0
+     reward (-4 * ordered)
 
-     if remaining ≤ 3
-       then do
-         reward (-30)
-         pure (remaining + 10)
-       else 
-         pure remaining
+     demanded ← lift forecast
+     let sold   = min demanded inventory
+         missed = demanded - sold
+     reward (sold * 12 - missed * 30)
+
+     pure (inventory - sold + ordered)
    #+END_SRC
 
 ** Reward, Inventory
@@ -353,3 +356,88 @@
    [[./img/mean reward.svg]]
 
    Mean reward at 50 days
+
+** What can we /do/?
+
+** Actions
+   
+** 
+   #+BEGIN_SRC haskell
+   data MarkovDecisionProcess m s a = MDP {
+     step ∷ s → a → m (s, Reward)
+   }
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC haskell
+   data MarkovDecisionProcess m s a = MDP {
+     act ∷ s → a → WriterT Reward m s
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   type Policy = s → a
+   #+END_SRC
+
+** MDP + Policy = MRP
+
+** 
+   #+BEGIN_SRC haskell
+   apply ∷ Policy s a 
+         → MarkovDecisionProcess m s a 
+         → MarkovRewardProcess m s
+   apply policy MDP { act } = MP {
+     step = \ s → act s (policy s)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   storeMDP forecast = MDP {
+     act = \ inventory ordered → do
+         reward (-1 * inventory)
+         reward (-4 * ordered)
+
+         demanded ← lift forecast
+         let sold   = min demanded inventory
+             missed = demanded - sold
+         reward (sold * 12 - missed * 30)
+
+         pure (inventory - sold + ordered)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   always ∷ Int → Policy Int Int
+   always order = \ _ → order
+
+   orderPoint ∷ Int → Int → Policy Int Int
+   orderPoint level point = \ inventory →
+     if inventory < level 
+       then point - inventory 
+       else 0
+   #+END_SRC
+
+** 
+   =orderPoint 3 10=
+
+   [[./img/old rewards.svg]]
+
+** 
+   =always 1=
+
+   [[./img/always 1 rewards.svg]]
+** 
+   =always 3=
+
+   [[./img/always 3 rewards.svg]]
+
+** 
+   =orderPoint 0 1=
+   [[./img/orderPoint 0 1 rewards.svg]]
+
+** 
+   =orderPoint 5 5=
+   [[./img/orderPoint 5 5 rewards.svg]]
