@@ -113,7 +113,6 @@
    :END:
 
 ** 
-
    How do we handle
 
    /uncertainty over time/?
@@ -149,7 +148,7 @@
 ** Inventory Control
 
 ** 
-   1. Order 10 if 3 or less left.
+   1. Order 3 items.
 
    2. Sell items during day.
 
@@ -176,8 +175,7 @@
    #+BEGIN_SRC haskell
    store forecast = MP {
      step = \ inventory → do
-       let ordered = 
-             if inventory ≤ 3 then 10 else 0
+       let ordered = 3
 
        demanded ← forecast
        let sold = min inventory demanded
@@ -325,14 +323,13 @@
    step = \ inventory → do
      reward (-1 * inventory)
 
-     let ordered =
-           if inventory ≤ 3 then 10 else 0
+     let ordered = 3
      reward (-4 * ordered)
 
      demanded ← lift forecast
      let sold   = min demanded inventory
          missed = demanded - sold
-     reward (sold * 12 - missed * 30)
+     reward (sold * 8 - missed * 14)
 
      pure (inventory - sold + ordered)
    #+END_SRC
@@ -352,11 +349,6 @@
 ** Reward (10000 Traces)
    [[./img/mean rewards 10000 traces.svg]]
 
-** Mean Reward
-   [[./img/mean reward.svg]]
-
-   Mean reward at 50 days
-
 ** What can we /do/?
 
 ** Actions
@@ -375,13 +367,44 @@
    }
    #+END_SRC
 
+** What now?
+
+** 
+   We know what we want: *reward*.
+
+   #+ATTR_REVEAL: :frag roll-in
+   We know what we can do: *actions*.
+
+** 
+   Choose the *action* that maximizes our *reward*.
+   
+** 
+   Choose the *action* that maximizes our /total expected/ *reward*.
+
+** 
+   But how?
+
+   #+ATTR_REVEAL: :frag roll-in
+   =[a, a, a, a, a, a, a…]=
+
+   #+ATTR_REVEAL: :frag roll-in
+   But actions /depend on state/!
+
+   #+ATTR_REVEAL: :frag roll-in
+   s → a
+
 ** 
    #+BEGIN_SRC haskell
    type Policy s a = s → a
    #+END_SRC
 
 ** 
-   Optimization problem: find the policy that maximizes expected reward.
+
+   Find the *policy*
+
+   that maximizes
+
+   /total expected/ *reward*
 
 ** MDP + Policy = MRP
 
@@ -405,7 +428,7 @@
          demanded ← lift forecast
          let sold   = min demanded inventory
              missed = demanded - sold
-         reward (sold * 12 - missed * 30)
+         reward (sold * 6 - missed * 12)
 
          pure (inventory - sold + ordered)
    }
@@ -415,41 +438,66 @@
    #+BEGIN_SRC haskell
    always ∷ Int → Policy Int Int
    always order = \ _ → order
-
-   orderPoint ∷ Int → Int → Policy Int Int
-   orderPoint level point = \ inventory →
-     if inventory < level 
-       then point - inventory 
-       else 0
    #+END_SRC
 
-** 
-   =orderPoint 3 10=
-
-   [[./img/old rewards.svg]]
-
-** 
-   =always 0=
-
-   [[./img/always 0 rewards.svg]]
-
-** 
-   =always 1=
-
-   [[./img/always 1 rewards.svg]]
 ** 
    =always 3=
 
    [[./img/always 3 rewards.svg]]
 
 ** 
-   =orderPoint 0 1=
-   [[./img/orderPoint 0 1 rewards.svg]]
+   =always 4=
+
+   [[./img/always 4 rewards.svg]]
 
 ** 
-   =orderPoint 5 5=
-   [[./img/orderPoint 5 5 rewards.svg]]
+   =always 2=
 
+   [[./img/always 2 rewards.svg]]
+
+** 
+   =always= 0–8
+
+   [[./img/always 0–8 rewards.svg]]
+
+** 
+   #+BEGIN_SRC haskell
+   orderUpTo ∷ Int → Policy Int Int
+   orderUpTo level = \ inventory →
+     if inventory < level 
+       then level - inventory 
+       else 0
+   #+END_SRC
+
+** 
+   =orderUpTo 6=
+
+   [[./img/orderUpTo 6 inventory rewards.svg]]
+
+** 
+   =orderUpTo 6=
+
+   [[./img/orderUpTo 6 rewards.svg]]
+
+** 
+   =orderUpTo= 4–16
+
+   [[./img/orderUpTo 4–16 rewards.svg]]
+
+** 
+   =orderUpTo 10=
+
+   [[./img/orderUpTo 10 rewards.svg]]
+
+** 
+   =orderUpTo 10=
+   
+   [[./img/orderUpTo 10 inventory rewards.svg]]
+
+** 
+   Lots of policies
+
+   [[./img/different policies rewards.svg]]
 
 ** 
    - heuristics
