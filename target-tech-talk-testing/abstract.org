@@ -1,0 +1,11 @@
+* Title
+  "Automated Testing for Machine Learning"
+
+* Abstract
+  Automated testing is a key tool for developing and maintaining quality software. However, machine learning code is notoriously hard to test. ML systems' performance is determined by software components and data sources that aren't easily decoupled. It is difficult to generate representative input data for tests and, once we have input data, we run into the "oracle problem": the point of writing machine learning code is to answer questions we can't answer otherwise, so how can we define the expected outputs for our tests?
+
+  I'll cover three testing techniques, focused on the challenges of testing machine learning code:
+
+  1. Unit tests—a solid but limited baseline testing strategy.
+  2. Property-based tests—a more automated take on unit testing, helping us catch "unknown unknowns".
+  3. Metamorphic relations—a way to generate useful input data and properties to test.
