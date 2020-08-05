@@ -24,6 +24,7 @@
     - [[https://hypothesis.works/][Hypothesis description/testimonials]]
     - [[https://hypothesis.readthedocs.io/en/latest/endorsements.html][Hypothesis testimonials]]
       - highlight Stripe example in particular
+      - [[https://stripe.com/blog/hypothesis][Strip blog post about Hypothesis]]
     - [[https://haskell.love/susan-potter/][Susan Potter: Thinking in Properties]]
     - [[https://publications.lib.chalmers.se/records/fulltext/232550/local_232550.pdf][Experiences with QuickCheck: testing the hard stuff]]
     - [[http://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quick.pdf][QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs]]
