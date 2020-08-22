@@ -8,21 +8,25 @@
 /*********************************************
  * GLOBAL STYLES
  *********************************************/
+:root {
+  --base: #C0D9FB;
+  --bg-inner: white;
+  --text: #3f3f3f;
+  --title: #052d69;
+
+  --blackboard-bg: #0C1021;
+}
+
 body {
-  background: #C0D9FB;
-  background: -moz-radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
-  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #FFF), color-stop(100%, #C0D9FB));
-  background: -webkit-radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
-  background: -o-radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
-  background: -ms-radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
-  background: radial-gradient(center, circle cover, #FFF 0%, #C0D9FB 100%);
+  background: var(--base);
+  background: -webkit-radial-gradient(center, circle cover, var(--bg-inner) 0%, var(--base) 100%);
 }
 
 .reveal {
   font-family: Junction, Helvetica, Arial, sans-serif;
   font-size: 65px;
   font-weight: normal;
-  color: #3f3f3f; }
+  color: var(--text); }
 
 ::selection {
   color: #fff;
@@ -41,7 +45,7 @@ body {
     position : relative;
     top : 50px;
 
-    color : #C0D9FB;
+    color : var(--base);
 }
 
 .reveal h1.title {
@@ -59,7 +63,7 @@ body {
 
     font-family : "Kaushan Script";
     font-size : 90px;
-    color : #C0D9FB;
+    color : var(--base);
 }
 
 .reveal .author {
@@ -67,14 +71,14 @@ body {
     top : 250px;
 
     font-size : 70px;
-    color : #C0D9FB;
+    color : var(--base);
 }
 
 /*********************************************
  * SECTION SLIDES
  *********************************************/
 .reveal section.section-slide h2 {
-    color : #C0D9FB;
+    color : var(--base);
 }
 
 /*********************************************
@@ -87,7 +91,7 @@ body {
 .reveal h5,
 .reveal h6 {
   margin: 0 0 20px 0;
-  color: #052d69;
+  color: var(--title);
   font-family: Aller;
   font-weight: normal;
   line-height: 1.2;
@@ -198,29 +202,6 @@ body {
 .reveal q {
   font-style: italic; }
 
-.reveal pre {
-  display: block;
-  position: relative;
-  width: 90%;
-  margin: 20px auto;
-  text-align: left;
-  font-size: 0.55em;
-  font-family: monospace;
-  line-height: 1.2em;
-  word-wrap: break-word;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3); }
-
-.reveal code {
-  font-family: monospace; }
-
-.reveal pre code {
-  display: block;
-  padding: 20px;
-  max-height: 600px;
-  word-wrap: normal;
-  background: #3F3F3F;
-  color: #DCDCDC; }
-
 .reveal table {
   margin: auto;
   border-collapse: collapse;
@@ -272,7 +253,7 @@ body {
   transition: color .15s ease; }
 
 .reveal a:hover {
-  color: #052d69;
+  color: var(--title);
   text-shadow: none;
   border: none; }
 
@@ -302,7 +283,7 @@ body {
 .reveal section img {
   margin: 15px 0px;
   background: rgba(255, 255, 255, 0.12);
-  border: 4px solid #3f3f3f;
+  border: 4px solid var(--text);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
 
 .reveal a img {
@@ -335,16 +316,16 @@ body {
   border-top-color: #0a57ca; }
 
 .reveal .controls div.navigate-left.enabled:hover {
-  border-right-color: #052d69; }
+  border-right-color: var(--title); }
 
 .reveal .controls div.navigate-right.enabled:hover {
-  border-left-color: #052d69; }
+  border-left-color: var(--title); }
 
 .reveal .controls div.navigate-up.enabled:hover {
-  border-bottom-color: #052d69; }
+  border-bottom-color: var(--title); }
 
 .reveal .controls div.navigate-down.enabled:hover {
-  border-top-color: #052d69; }
+  border-top-color: var(--title); }
 
 /*********************************************
  * PROGRESS BAR
@@ -367,24 +348,44 @@ body {
 .reveal h2 > a {
   font-size: 70%; }
 
-.reveal code, .reveal pre {
-  font-family: "DejaVu Sans Mono";
-  border-radius: 12px;
-  border: 2px solid rgba(100, 0, 150, 0.2);
-}
-
-// .reveal pre {
-//   padding: 15px 30px;
-//   line-height: 125%; }
+/** CODE FORMATTING **/
 
 .reveal code {
-  padding: 5px 10px; }
+  font-family: "DejaVu Sans Mono";
+  padding: 5px 10px;
+  border-radius: 12px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+}
+
+.reveal pre {
+  display: block;
+  position: relative;
+  width: 90%;
+  margin: 20px auto;
+  text-align: left;
+  font-size: 0.55em;
+  font-family: monospace;
+  line-height: 1.2em;
+  word-wrap: break-word;
+}
+
+.reveal pre code {
+  display: block;
+  padding: 20px;
+  max-height: 600px;
+  word-wrap: normal;
+  background: var(--blackboard-bg);
+  color: #DCDCDC;
+  border: none;
+}
 
 .reveal ul {
-  margin-top: 30px; }
+  margin-top: 30px;
+}
 
 .reveal ul li {
   width: 110%;
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+}
 
 .MathJax_Display { margin-top : 2ex !important; margin-bottom : 2ex !important }
