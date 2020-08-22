@@ -1,0 +1,36 @@
+* Testing in general
+  - what are we trying to accomplish with automated tests?
+  - example: regression testing
+** Testing machine learning
+   What makes it harder to test machine learning code? What can we do
+   about that?
+*** References:
+    - [[https://arxiv.org/pdf/1906.10742][ML testing survey paper]]
+* Testing Techniques
+** Unit Tests
+   - general tutorial on unit tests
+   - use a diagram to show how they work 
+     - point cloud as inputs, point cloud as outputs, unit tests
+       connecting specific input to specific output
+** Property-based Tests
+   - known unknowns vs unknown unknowns
+   - a few examples:
+     - testing that code doesn't crash
+     - testing mathematical/logical properties
+     - testing optimized/scaled code against a reference
+       implementation
+   - walk through some examples with Hypothesis
+*** References:
+    - [[https://hypothesis.works/][Hypothesis description/testimonials]]
+    - [[https://hypothesis.readthedocs.io/en/latest/endorsements.html][Hypothesis testimonials]]
+      - highlight Stripe example in particular
+      - [[https://stripe.com/blog/hypothesis][Strip blog post about Hypothesis]]
+    - [[https://haskell.love/susan-potter/][Susan Potter: Thinking in Properties]]
+    - [[https://publications.lib.chalmers.se/records/fulltext/232550/local_232550.pdf][Experiences with QuickCheck: testing the hard stuff]]
+    - [[http://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quick.pdf][QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs]]
+** Metamorphic Relations
+   What can we do if inputs are hard to generate *and* we don't know
+   exactly what output to expect?
+*** References:
+    - [[https://www.hillelwayne.com/post/metamorphic-testing/][Hillel's blog post]]
+    - [[https://arxiv.org/abs/1807.10453][METTLE]]
