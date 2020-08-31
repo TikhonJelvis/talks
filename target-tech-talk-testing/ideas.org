@@ -20,6 +20,15 @@
      - testing optimized/scaled code against a reference
        implementation
    - walk through some examples with Hypothesis
+*** Examples
+    - don't crash
+      - more useful than it sounds!
+    - encode-decode (Theta)
+    - optimized vs reference algorithm
+    - mathematical properties
+      - non-decreasing function
+      - sum to 1 (ish?)
+      - etc
 *** References:
     - [[https://hypothesis.works/][Hypothesis description/testimonials]]
     - [[https://hypothesis.readthedocs.io/en/latest/endorsements.html][Hypothesis testimonials]]
