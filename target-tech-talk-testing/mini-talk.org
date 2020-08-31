@@ -72,4 +72,28 @@
         - Croatian characters like "Ǉ"
 
 *** Shrinking
+    - once we have a failure, can we make it simpler?
+    - usually based on heuristics
 
+*** Hypothesis
+    Python property-based testing framework
+
+**** Properties
+     - integrates with unittest
+     - simplest example: test + @given decorator
+
+**** Generators
+     - composable
+     - tuned well (ie biased towards edge-cases)
+
+**** Reproduciblity 
+     - @example annotation
+       - regression testing
+     - Hypothesis database
+       - automated, but with no guarantees
+       - helps with development
+
+**** Shrinking
+     - given a failure, find *simpler* failures
+     - really helps with debugging
+       - generators handle shrinking in a composable way
