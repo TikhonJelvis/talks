@@ -22,7 +22,7 @@
 #+REVEAL_THEME: tikhon
 #+REVEAL_HLEVEL: 2
 
-#+REVEAL_PLUGINS: (highlight markdown notes)
+#+REVEAL_PLUGINS: (markdown notes)
 
 * Uncertainty
    :PROPERTIES:
@@ -55,9 +55,10 @@
    #+BEGIN_SRC haskell
    dice2 ∷ MonadSample m ⇒ m Int
    dice2 = do
-     one ← die
-     two ← die
-     pure (one + two)
+     one   ← die
+     two   ← die
+     three ← die
+     pure (one + two + three)
    #+END_SRC
 
    #+ATTR_HTML: :width 600px
@@ -413,6 +414,9 @@
    apply ∷ Policy s a 
          → MarkovDecisionProcess m s a 
          → MarkovRewardProcess m s
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
    apply policy MDP { act } = MP {
      step = \ s → act s (policy s)
    }
