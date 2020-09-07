@@ -1,0 +1,512 @@
+# -*- org-reveal-title-slide: "<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>" -*-
+#+Title: Reasoning under Uncertainty
+#+Subtitle:
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+#+REVEAL_TITLE_SLIDE_BACKGROUND_TRANSITION: none
+
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="An introduction to Markov decision processes in Haskell.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
+# Options I change before uploading to jelv.is
+#+REVEAL_ROOT: ../reveal.js-3.8.0
+#+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', progress:false, slideNumber: false
+
+#+OPTIONS: toc:nil timestamp:nil email:nil num:nil
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_PLUGINS: (markdown notes)
+
+* Uncertainty
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** What /is/ uncertainty?
+
+** 
+   Unknown information.
+
+   Randomness.
+
+** 
+   #+ATTR_HTML: :width 600px
+   [[./img/poisson.svg]]
+
+** 
+   #+BEGIN_SRC haskell
+   die ∷ MonadSample m ⇒ m Int
+   die = uniformD [1..6]
+   #+END_SRC
+
+   #+ATTR_HTML: :width 600px
+   [[./img/1× die.svg]]
+
+** 
+   #+BEGIN_SRC haskell
+   dice2 ∷ MonadSample m ⇒ m Int
+   dice2 = do
+     one   ← die
+     two   ← die
+     three ← die
+     pure (one + two + three)
+   #+END_SRC
+
+   #+ATTR_HTML: :width 600px
+   [[./img/2× dice.svg]]
+
+** 
+   #+BEGIN_SRC haskell
+   diceGame ∷ MonadSample m ⇒ m Int
+   diceGame = do
+     n  ← die
+     xs ← replicateM n die
+     pure (sum xs)
+   #+END_SRC
+
+   #+ATTR_HTML: :width 600px
+   [[./img/dice game.svg]]
+
+** Dependent /vs/ Independent
+
+** Y depends on X
+   #+ATTR_REVEAL: :frag roll-in
+   =m x=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =x → m y=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =m x → (x → m y) → m y=
+
+** Independent
+   #+ATTR_REVEAL: :frag roll-in
+   =m x=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =m y=
+
+   #+ATTR_REVEAL: :frag roll-in
+   =(x → y → z) → m x → m y → m z=
+
+** 
+   - *Independent* = *Applicative*
+
+   - *Dependent*      = *Monad*
+
+** 
+   [[./img/prac-prob.png]]
+
+* Simulation
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+   How do we handle
+
+   /uncertainty over time/?
+
+** 
+   Time?
+
+   State?
+
+   History?
+
+** Markov Processes
+
+** 
+   #+BEGIN_SRC haskell
+   data MarkovProcess m s = MP {
+     step ∷ s → m s
+   }
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   Next depends on current.
+
+   #+ATTR_REVEAL: :frag roll-in
+   Next /only/ depends on current.
+
+   #+ATTR_REVEAL: :frag roll-in
+   =[s] → m s=
+
+** 
+   =s → m s= ∘ =s → m s= ∘ =s → m s= …
+
+** Inventory Control
+
+** 
+   1. Order 3 items.
+
+   2. Sell items during day.
+
+   3. Receive order.
+
+   4. Repeat.
+
+** 
+
+   #+BEGIN_SRC haskell
+   forecast ∷ MonadSample m ⇒ m Int
+   forecast = poisson 3
+   #+END_SRC
+
+   #+ATTR_HTML: :width 600px
+   [[./img/demand distribution.svg]]
+
+** 
+   #+BEGIN_SRC haskell
+   store ∷ m Int → MarkovProcess m Int
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC haskell
+   store forecast = MP {
+     step = \ inventory → do
+       let ordered = 3
+
+       demanded ← forecast
+       let sold = min inventory demanded
+
+       pure (inventory - sold + ordered)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   simulate ∷ Monad m
+            ⇒ MarkovProcess m s
+            → s
+            → Stream (Of s) m ()
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   simulate process state = do
+     next ← lift (step process state)
+     yield next
+     simulate process next
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   start, step start, step (step start), …
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC haskell
+   iterate ∷ (a → a) → a → [a]
+   iterate f x = x : iterate f (f x)
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   simulate ∷ Monad m
+            ⇒ MarkovProcess m s
+            → s
+            → Stream (Of s) m ()
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   simulate MP { step } start =
+     iterateM step (pure start)
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   simulate ∷ Monad m
+            ⇒ MarkovProcess m s
+            → m s
+            → Stream (Of s) m ()
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   simulate MP { step } = iterateM step   
+   #+END_SRC
+
+** Daily Inventory
+   [[./img/inventory.svg]]
+
+
+** Daily Inventory
+   [[./img/inventory traces.svg]]
+
+** Mean (10 Traces)
+   [[./img/mean inventory 10 traces.svg]]
+
+** Mean (100 Traces)
+   [[./img/mean inventory 100 traces.svg]]
+
+** Mean (1000 Traces)
+   [[./img/mean inventory 1000 traces.svg]]
+
+** Mean (10000 Traces)
+   [[./img/mean inventory 10000 traces.svg]]
+
+** Simulations are useful!
+
+* Optimization
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** What are we trying to /accomplish/?
+
+** 
+   #+BEGIN_SRC haskell
+   type Reward = Double
+
+   data MarkovRewardProcess m s = MRP {
+     step ∷ s → m (s, Reward)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   data MarkovRewardProcess m s = MRP {
+     step ∷ s → m (s, Reward)
+   }
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC haskell
+   data WriterT m a = WriterT {
+     runWriterT ∷ m (s, Reward)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   data MarkovRewardProcess m s = MRP {
+     step ∷ s → WriterT Reward m s
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   type MarkovRewardProcess m s = 
+     MakrovProcess (WriterT Reward m) s
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   type Reward = Sum Double
+
+   reward ∷ (MonadWriter Reward m, Integral n) 
+          ⇒ n 
+          → m ()
+   reward = tell ∘ Sum
+   #+END_SRC
+
+** What is my reward?  
+
+** Inventory Control 
+   - gain per sale
+   - lose per order
+   - lose per inventory/day
+   - lose per /missed demand/
+
+** 
+   #+BEGIN_SRC haskell
+   step = \ inventory → do
+     reward (-1 * inventory)
+
+     let ordered = 3
+     reward (-4 * ordered)
+
+     demanded ← lift forecast
+     let sold   = min demanded inventory
+         missed = demanded - sold
+     reward (sold * 8 - missed * 14)
+
+     pure (inventory - sold + ordered)
+   #+END_SRC
+
+** Reward, Inventory
+   [[./img/inventory rewards.svg]]
+
+** Reward (10 Traces)
+   [[./img/mean rewards 10 traces.svg]]
+
+** Reward (100 Traces)
+   [[./img/mean rewards 100 traces.svg]]
+
+** Reward (1000 Traces)
+   [[./img/mean rewards 1000 traces.svg]]
+
+** Reward (10000 Traces)
+   [[./img/mean rewards 10000 traces.svg]]
+
+** What can we /do/?
+
+** Actions
+   
+** 
+   #+BEGIN_SRC haskell
+   data MarkovDecisionProcess m s a = MDP {
+     step ∷ s → a → m (s, Reward)
+   }
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC haskell
+   data MarkovDecisionProcess m s a = MDP {
+     act ∷ s → a → WriterT Reward m s
+   }
+   #+END_SRC
+
+** What now?
+
+** 
+   We know what we want: *reward*.
+
+   #+ATTR_REVEAL: :frag roll-in
+   We know what we can do: *actions*.
+
+** 
+   Choose the *action* that maximizes our *reward*.
+   
+** 
+   Choose the *action* that maximizes our /total expected/ *reward*.
+
+** 
+   But how?
+
+   #+ATTR_REVEAL: :frag roll-in
+   =[a, a, a, a, a, a, a…]=
+
+   #+ATTR_REVEAL: :frag roll-in
+   But actions /depend on state/!
+
+   #+ATTR_REVEAL: :frag roll-in
+   s → a
+
+** 
+   #+BEGIN_SRC haskell
+   type Policy s a = s → a
+   #+END_SRC
+
+** 
+
+   Find the *policy*
+
+   that maximizes
+
+   /total expected/ *reward*
+
+** MDP + Policy = MRP
+
+** 
+   #+BEGIN_SRC haskell
+   apply ∷ Policy s a 
+         → MarkovDecisionProcess m s a 
+         → MarkovRewardProcess m s
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+   apply policy MDP { act } = MP {
+     step = \ s → act s (policy s)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   storeMDP forecast = MDP {
+     act = \ inventory ordered → do
+         reward (-1 * inventory)
+         reward (-4 * ordered)
+
+         demanded ← lift forecast
+         let sold   = min demanded inventory
+             missed = demanded - sold
+         reward (sold * 6 - missed * 12)
+
+         pure (inventory - sold + ordered)
+   }
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+   always ∷ Int → Policy Int Int
+   always order = \ _ → order
+   #+END_SRC
+
+** 
+   =always 3=
+
+   [[./img/always 3 rewards.svg]]
+
+** 
+   =always 4=
+
+   [[./img/always 4 rewards.svg]]
+
+** 
+   =always 2=
+
+   [[./img/always 2 rewards.svg]]
+
+** 
+   =always= 0–8
+
+   [[./img/always 0–8 rewards.svg]]
+
+** 
+   #+BEGIN_SRC haskell
+   orderUpTo ∷ Int → Policy Int Int
+   orderUpTo level = \ inventory →
+     if inventory < level 
+       then level - inventory 
+       else 0
+   #+END_SRC
+
+** 
+   =orderUpTo 6=
+
+   [[./img/orderUpTo 6 inventory rewards.svg]]
+
+** 
+   =orderUpTo 6=
+
+   [[./img/orderUpTo 6 rewards.svg]]
+
+** 
+   =orderUpTo= 4–16
+
+   [[./img/orderUpTo 4–16 rewards.svg]]
+
+** 
+   =orderUpTo 10=
+
+   [[./img/orderUpTo 10 rewards.svg]]
+
+** 
+   =orderUpTo 10=
+   
+   [[./img/orderUpTo 10 inventory rewards.svg]]
+
+** 
+   Lots of policies
+
+   [[./img/different policies rewards.svg]]
+
+** 
+   - heuristics
+   - domain-specific algorithms
+   - dynamic programming
+   - linear programming
+   - reinforcement learning
+   

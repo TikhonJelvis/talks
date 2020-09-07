@@ -1,0 +1,99 @@
+* Towards better testing
+  I want to help us improve our testing practices. 
+
+   1. Figure out what makes testing difficult.
+   2. Bring in tools and techniques to address that.
+
+** ML testing is hard
+   - validation metrics only exist end-to-end
+     - data → data prep → training → scoring → validation
+     - data itself needs to be tested!
+   - "Oracle Problem"
+     - we're writing code to answer questions /to which we don't know
+       the answer/!
+   - statistical reasoning
+     - a piece of ML code can be correctly non-deterministic
+     - we can change the exact output of the code, but still be
+       "correct"
+       - how to avoid over-specification and brittle test suites?
+
+** Different Kinds of Code
+
+*** Data Handling
+    - data preparation
+    - feature engineering
+    - hard to make good examples
+      - wide range of data to set up test
+        - tedious
+        - easy to mess up
+      - internal invariants (foreign keys... etc)
+        - these are a real source of bugs though!
+      - ...interesting data schemas
+        - fun example: what would you expect for the "close date" of
+          an open store?
+      - are realistic distributions important?
+      - what edge cases to watch out for?
+
+**** What can we do?
+     - make generating inputs as easy as possible
+     - shared data access library (@Anna)
+       - example records
+       - code to *generate* example records
+     - reusable example inputs make unit tests less tedious
+     
+*** Model Components
+    - what are the "units" of an ML model?
+    - hard to narrow down specific behavior of components
+      - extreme: anything that results in good performance
+      - over-specification
+        - can't "just provide the right answer"
+    - numbers are hard (numerical stability... etc)
+
+**** What can we do?
+     - rely on mathematical properties
+       - instead of testing for "this code does X", test for "this
+         code *doesn't* do Y"
+       - examples:
+         - monotonically increasing
+         - idempotent
+         - result within range
+         - non-zero
+
+** Property-Based Testing
+   generate inputs + specify properties = property-based testing
+
+*** Unknown Unknowns
+    - hit edge-cases
+      - how does your code handle NaNs?
+      - subnormal numbers?
+      - etc
+    - find issues you didn't think about
+      - example: title case vs upper case
+        - Croatian characters like "Ǉ"
+
+*** Shrinking
+    - once we have a failure, can we make it simpler?
+    - usually based on heuristics
+
+*** Hypothesis
+    Python property-based testing framework
+
+**** Properties
+     - integrates with unittest
+     - simplest example: test + @given decorator
+
+**** Generators
+     - composable
+     - tuned well (ie biased towards edge-cases)
+
+**** Reproduciblity 
+     - @example annotation
+       - regression testing
+     - Hypothesis database
+       - automated, but with no guarantees
+       - helps with development
+
+**** Shrinking
+     - given a failure, find *simpler* failures
+     - really helps with debugging
+       - generators handle shrinking in a composable way

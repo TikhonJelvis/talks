@@ -1,0 +1,71 @@
+* Reasoning under Uncertainty
+
+** Why Haskell?
+   Great language to make abstract ideas more concrete.
+
+   When I need to learn a new concept, I like to use Haskell as a
+   learning tool. Encoding an idea in Haskell helps me understand all
+   the details without too much incidental complexity. It isn't
+   overwhelming.
+
+** What is uncertainty?
+   We don't know what will happen. We might have *some* idea, but
+   there is some random behavior we can't predict exactly.
+
+** Probability Distributions
+   Probability distributions form a monad. This gives us an easy way
+   to write code involving probability in Haskell.
+
+   Having a type for probability distributions—that could be
+   implemented in different ways—turns out to be incredibly useful.
+
+   We can do different things with different kinds of distributions:
+   - computable = can sample
+   - finite = can represent as table directly
+   - more = integrate over probability... etc
+
+** Ongoing Examples
+   Unify the talk with one or two ongoing examples. Simplest example:
+   retail inventory management.
+
+   This example has nice examples of everything:
+   - probability distributions (demand)
+   - Markov processes (simulation)
+   - Markov decision processes (optimization)
+   - easy to tune complexity up/down
+
+** Time: Markov Processes
+   How do we model systems that can change randomly over time?
+
+   Markov chains are /one/ useful answer.
+
+   There are others: processes sensitive to history,, event-based
+   systems, FRP... etc
+
+*** Simulation
+    What can we do with Markov processes? Simplest answer: run
+    simulations.
+
+** What is stochastic optimization?
+   When the outcomes of our actions are random, how can we make good
+   decisions?
+
+   Idea: maximize our *expected* utility.
+
+   Note: utility doesn't have to be something directly measurable in
+   the real world; it's a modeling choice that we can use to account
+   for things like risk tolerance.
+
+** Markov Decision Processes
+   What can we do with an MDP?
+
+   Simplest answer: apply an MDP to a policy and get a Markov process
+   out.
+
+*** Optimization
+
+*** Reinforcement Learning
+
+*** Examples
+    - OR
+    - finance
