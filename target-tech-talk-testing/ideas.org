@@ -1,13 +1,28 @@
 * Testing in general
   - what are we trying to accomplish with automated tests?
   - example: regression testing
+** Why?
+*** Cycle Times
+    How fast do you know something is wrong? The /faster/ you get
+    feedback, the easier it is to improve your code.
+
+    How long does it take you to /track down/ where a bug is coming
+    from? The /more specific/ your feedback, the easier it is to
+    debug.
+*** Code Quality
+    - catch bugs before they go into production
+    - regression tests make sure production bugs don't come back
 ** Testing machine learning
    What makes it harder to test machine learning code? What can we do
    about that?
 *** References:
     - [[https://arxiv.org/pdf/1906.10742][ML testing survey paper]]
 * Testing Techniques
-** Unit Tests
+  What can we do to get these benefits /for machine learning code/?
+
+  Basic unit tests + regression tests are a start and there are more
+  advanced techniques for testing code that is hard to unit test.
+** Unit Tests + Regression Tests
    - general tutorial on unit tests
    - use a diagram to show how they work 
      - point cloud as inputs, point cloud as outputs, unit tests
@@ -29,6 +44,10 @@
       - non-decreasing function
       - sum to 1 (ish?)
       - etc
+*** Bonus: benchmarking
+    Being able to generate inputs to your code is useful not just for
+    testing but also for performance optimization: benchmarking,
+    profiling, stress-testing... etc.
 *** References:
     - [[https://hypothesis.works/][Hypothesis description/testimonials]]
     - [[https://hypothesis.readthedocs.io/en/latest/endorsements.html][Hypothesis testimonials]]

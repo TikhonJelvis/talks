@@ -1,0 +1,97 @@
+* Testing
+** Why write tests?
+*** Because David/Tikhon/? said so
+    It's a start :). But, like anything else, using tests effectively
+    requires understanding /what we're trying to accomplish/.
+*** Code Quality
+    Fewer bugs in production = less headaches, more trust.
+*** Cycle Times
+    How fast do you catch errors?
+
+    What is the turnaround time on experiments?
+
+    Have you had experiments fail due to problems that have nothing to
+    do with modeling? How much time did that waste?
+** Machine learning code is hard to test
+*** Inputs are hard to get
+*** Outputs are hard to specify
+**** Oracle problem
+**** Test suite over-fitting
+     We don't want our tests to be /too/ brittle!
+*** Hard to break down
+**** Modular design
+     Is our code designed to have distinct pieces with well-defined
+     interfaces?
+
+     Tests are a forcing function for modular design.
+**** Modular /understanding/
+     Do we understand what the modular pieces of our code have to do?
+     Often, all we know is what the end-to-end goal is (ie
+     corss-validation, "improve supply chain metrics"... etc), but not
+     how components impact it.
+
+     Tests are a tool for /understanding/ our code.
+* Techniques
+** Unit + regression tests
+*** Automation
+    Once a test suite + CI is set up, activation energy for writing new
+    tests goes way down. Shared testing infrastructure/tooling/etc is
+    worth a lot.
+*** Regression tests
+    If you run into a bug in stage or on prod /reproduce it as a test
+    case/ before fixing. Advantages:
+
+      1. Your fix actually fixes the problem!
+      2. Bug won't come back.
+      3. You don't have to manually recreate the scenario as you're
+         iterating. What if you have to go back to a similar problem 3
+         months later?
+** Property-based testing
+*** Known unknowns vs unknown unknowns
+*** Oracle problem
+    Don't know the exact output a function is supposed to produce?
+    Test the behavior you *do* know.
+
+    Examples:
+      - Doesn't crash.
+      - Monotonic/converging/etc
+      - Within range (≥0, [0-1), "reasonable"... etc)
+      - Doesn't NaN/go to infinity/etc
+        - What if it does? You've learned something new about your
+          code; document it!
+*** Bonus
+    Generating inputs is super useful on its own. Apart from testing,
+    it's great for benchmarking, profiling, stress tests, local
+    exploration... etc.
+
+    Would be a good function to have in domain object library.
+*** Outcome
+    - Tests that don't overfit to the problem, even if multiple
+      answers would be valid.
+    - Tests that find unknown unknowns.
+** Metamorphic relations
+*** What if you don't know inputs /or/ outputs?
+    Example: speech detection. (Link to Hillel's blog post.)
+*** "Metamorphic property"
+    Sounds fancy, but is simple. 
+
+    Instead of testing the /absolute/ behavior of a function, test
+    it's /relative/ behavior: how do the outputs change when you
+    change the inputs?
+*** Examples
+    - invariance: which ways can you change the inputs /without/
+      changing the outputs?
+      - examples: speech transcription, clustering, forecasting
+      - silly side note: conservation laws?
+    - monotonicity: if you double the inputs, the forecast better not
+      get /smaller/
+* Conclusion
+** Testing machine learning code is *hard*
+** What can we do about it?
+*** Unit + regression tests
+*** Property-based tests
+*** Metamorphic relations
+** What does it get us?
+*** Higher quality code
+*** Faster cycle times
+*** Happier scientists?
