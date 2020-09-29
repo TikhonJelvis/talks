@@ -275,9 +275,56 @@ body {
     background : none;
 }
 
+/* Stacking several images on top of each other, with each image
+   having a drop shadow. */
+.reveal ul.stacked {
+  list-style : none;
+  margin-left : 15%;
+  width : 50%;
+}
+
+.reveal ul.stacked > li {
+  display : inline-block;
+  position : absolute;
+  margin : 0;
+  border: none;
+  
+  transform-origin: 80% 150%;
+}
+
+.reveal ul.stacked > li img {
+  width : 400px;
+  height : 550px;
+  border : none;
+  padding : 0;
+  margin : 0;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.reveal ul.stacked > li:nth-child(1) {
+  transform: rotate(10deg) translate(0, 20%);
+}
+
+.reveal ul.stacked > li:nth-child(2) {
+  transform: rotate(5deg) translate(0, 10%);
+}
+
+.reveal ul.stacked > li:nth-child(3) {
+  transform: rotate(0deg) translate(0, 0);
+}
+
+.reveal ul.stacked > li:nth-child(4) {
+  transform: rotate(-5deg) translate(0, -10%);
+}
+
+.reveal ul.stacked > li:nth-child(5) {
+  transform: rotate(-10deg) translate(0, -20%);
+}
+
 .reveal .no-background p {
-    margin: 0;
-    padding-bottom: 0;
+    margin : 0;
+    padding-bottom : 0;
 }
 
 .reveal section img {
