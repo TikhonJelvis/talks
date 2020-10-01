@@ -65,11 +65,29 @@
   :END:
 ** Testing ML is /Hard/
 ** Inputs
-   #+ATTR_HTML: :height 500px
+   #+ATTR_HTML: :height 600px
    [[./img/input-data.svg]]
 ** The Oracle Problem
    #+ATTR_HTML: :height 800px :style position: relative; top: -100px
    [[./img/oracle-problem.svg]]
 ** 
    How well can we separate our ML systems into parts?
+* 
+  1. Unit Tests
+  2. Property-Based Tests
+  3. Metamorphic Relations
 * Unit Tests
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
+* Property-Based Tests
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
+* Metamorphic Relations
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
