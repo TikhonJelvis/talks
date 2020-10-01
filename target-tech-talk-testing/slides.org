@@ -37,7 +37,19 @@
    </ul>
    #+END_EXPORT
 
-   Empirically?
-
-   /Probably/
+   Probably
 ** Cycle Times
+** 
+   How fast do you catch errors? 
+** 
+   #+ATTR_HTML: :height 800px :class no-background
+   [[./img/cycle-times-1.png]]
+** 
+   #+ATTR_HTML: :height 800px :class no-background
+   [[./img/cycle-times-2.png]]
+** 
+   #+ATTR_HTML: :height 800px :class no-background
+   [[./img/cycle-times-3.png]]
+** 
+   #+ATTR_HTML: :height 800px :class no-background
+   [[./img/cycle-times-with-tests.png]]
