@@ -26,15 +26,10 @@
 * Testing
   :PROPERTIES:
   :reveal_background: #052d69
-  :reveal_background_trans: none
   :reveal_extra_attr: class="section-slide"
   :END:
 
 ** /Why?/
-   :PROPERTIES:
-   :reveal_background_trans: "none"
-   :END:
-
 ** Fewer bugs?
 ** 
    #+BEGIN_EXPORT html
@@ -61,15 +56,11 @@
    #+ATTR_HTML: :height 1000px :class no-background
    [[./img/cycle-times-3.png]]
 ** 
-   :PROPERTIES:
-   :reveal_background_trans: none
-   :END:
    #+ATTR_HTML: :height 1000px :class no-background
    [[./img/cycle-times-with-tests.png]]
 * Machine Learning
   :PROPERTIES:
   :reveal_background: #052d69
-  :reveal_background_trans: none
   :reveal_extra_attr: class="section-slide"
   :END:
 ** Testing ML is /Hard/
