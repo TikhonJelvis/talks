@@ -36,4 +36,8 @@
      <li> <img src="img/unit-testing-paper-2.png" /> </li>
    </ul>
    #+END_EXPORT
+
+   Empirically?
+
+   /Probably/
 ** Cycle Times

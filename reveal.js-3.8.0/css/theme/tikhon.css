@@ -278,48 +278,57 @@ body {
 /* Stacking several images on top of each other, with each image
    having a drop shadow. */
 .reveal ul.stacked {
-  list-style : none;
-  margin-left : 15%;
+  height : 600px;
   width : 50%;
+
+  list-style : none;
+
+  margin-left : 15%;
+  margin-top : -50px;
+  margin-bottom : 30px;
 }
 
 .reveal ul.stacked > li {
-  display : inline-block;
   position : absolute;
+  display : inline-block;
+
+  height : 550px;
   margin : 0;
+
   border: none;
-  
+
   transform-origin: 80% 150%;
 }
 
 .reveal ul.stacked > li img {
   width : 400px;
   height : 550px;
-  border : none;
-  padding : 0;
   margin : 0;
 
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  padding : 0;
+
+  border-width : 2px;
+  box-shadow : 5px -2px 10px rgba(0, 0, 0, 0.8);
 }
 
 .reveal ul.stacked > li:nth-child(1) {
-  transform: rotate(10deg) translate(0, 20%);
+  transform : rotate(10deg) translate(0, 20%);
 }
 
 .reveal ul.stacked > li:nth-child(2) {
-  transform: rotate(5deg) translate(0, 10%);
+  transform : rotate(5deg) translate(0, 10%);
 }
 
 .reveal ul.stacked > li:nth-child(3) {
-  transform: rotate(0deg) translate(0, 0);
+  transform : rotate(0deg) translate(0, 0);
 }
 
 .reveal ul.stacked > li:nth-child(4) {
-  transform: rotate(-5deg) translate(0, -10%);
+  transform : rotate(-5deg) translate(0, -10%);
 }
 
 .reveal ul.stacked > li:nth-child(5) {
-  transform: rotate(-10deg) translate(0, -20%);
+  transform : rotate(-10deg) translate(0, -20%);
 }
 
 .reveal .no-background p {
