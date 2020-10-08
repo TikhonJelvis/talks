@@ -31,6 +31,10 @@
      how components impact it.
 
      Tests are a tool for /understanding/ our code.
+**** Emergent Properties
+     Even if our code is modular, the behavior might not be—the
+     components of an ML system can interact in complex ways (ie
+     emergent complexity).
 * Techniques
 ** Unit + regression tests
 *** Automation

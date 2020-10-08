@@ -265,6 +265,10 @@ body {
  * IMAGES
  *********************************************/
 
+.figure {
+  display : inline-block;
+}
+
 /* Images with transparent backgrounds that don't need a border or
    box-shadow. */
 .reveal img.no-background, .reveal .no-background img {

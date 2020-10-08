@@ -58,36 +58,147 @@
 ** 
    #+ATTR_HTML: :height 1000px :class no-background
    [[./img/cycle-times-with-tests.png]]
+** Code Design
+** Testable Code ⇒ Usable Code
 * Machine Learning
   :PROPERTIES:
   :reveal_background: #052d69
   :reveal_extra_attr: class="section-slide"
   :END:
 ** Testing ML is /Hard/
-** Inputs
+** Inputs and Data
    #+ATTR_HTML: :height 600px
    [[./img/input-data.svg]]
 ** The Oracle Problem
    #+ATTR_HTML: :height 800px :style position: relative; top: -100px
    [[./img/oracle-problem.svg]]
+** Emergent Complexity
+   #+ATTR_HTML: :height 600px
+   [[./img/network.svg]]
+** Testing is useful; Testing /ML/ is hard.
+* Testing Techniques
 ** 
-   How well can we separate our ML systems into parts?
-* 
   1. Unit Tests
   2. Property-Based Tests
   3. Metamorphic Relations
-* Unit Tests
-  :PROPERTIES:
-  :reveal_background: #052d69
-  :reveal_extra_attr: class="section-slide"
-  :END:
-* Property-Based Tests
-  :PROPERTIES:
-  :reveal_background: #052d69
-  :reveal_extra_attr: class="section-slide"
-  :END:
-* Metamorphic Relations
-  :PROPERTIES:
-  :reveal_background: #052d69
-  :reveal_extra_attr: class="section-slide"
-  :END:
+** Unit Tests
+** 
+   [[./img/programs-all-lines.svg]]
+** 
+   [[./img/programs-two-lines.svg]]
+** 
+   #+BEGIN_SRC python
+   def mean(xs):
+       return sum(xs) / len(xs)
+   #+END_SRC
+** 
+   #+BEGIN_SRC python
+   class TestMean(unittest.TestCase):
+       def test_mean():
+           short = [10]
+           self.assertEqual(mean(short), 10.0)
+
+           longer = [1,2,3,4]
+           self.assertEqual(mean(longer), 5.0)
+   #+END_SRC
+** ∃x. f(x) is correct
+** Simple Tests?
+     - fast feedback
+     - future regressions
+     - executable examples
+** Unknowns
+   #+ATTR_HTML: :height 500px :class no-background
+   [[./img/unknown.svg]]
+** Unknown Unknowns
+   #+ATTR_HTML: :height 500px :class no-background
+   [[./img/unknown.svg]] 
+
+   #+ATTR_HTML: :height 500px :class no-background
+   [[./img/unknown.svg]]
+** Property-Based Tests
+** 
+   [[./img/programs-all-lines.svg]]
+** ∀x. ϕ(f(x))
+   [[./img/programs-properties-no-formula.svg]]
+
+** 
+   1. x ← random input
+   2. y = f(x)
+   3. assert ϕ(y)
+** ∀x. f(x) is not wrong
+   #+ATTR_REVEAL: :frag roll-in
+   In a specific way.
+   #+ATTR_REVEAL: :frag roll-in
+   Probably...
+** 
+   #+BEGIN_SRC python
+   def mean(xs):
+      return sum(xs) / len(xs)
+   #+END_SRC
+** 
+   #+BEGIN_SRC python
+   from hypothesis import given
+   from hypothesis.strategies import *
+   #+END_SRC
+
+   #+BEGIN_SRC python
+   class TestMean(unittest.TestCase):
+   #+END_SRC
+
+   #+BEGIN_SRC python
+       @given(lists(floats(), min_size=1))
+       def test_mean(self, xs):
+           self.assertTrue(
+               min(xs) <= mean(xs) <= max(xs))
+   #+END_SRC
+** 
+   #+BEGIN_SRC python
+   Falsifying example: 
+     test_mean(self=<...>, xs=[nan],)
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC python
+   floats(allow_nan=False)
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC python
+   Falsifying example: 
+     test_mean(self=<...>, xs=[inf, -inf],)
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC python
+   floats(allow_nan=False, allow_infinity=False)
+   #+END_SRC
+** 
+   #+BEGIN_SRC python
+   Falsifying example: test_mean(
+       self=<...>, 
+       xs=[9.9792015476736e+291, 1.7976931348623157e+308],
+   )
+   #+END_SRC
+** Hypothesis
+   1. Generate random values
+   2. Check properties
+   3. Shrink failing examples
+** Metamorphic Relations
+** 
+   [[./img/programs-metamorphic.svg]]
+
+   $R_I(a, b) ⇒ R_O(f(a), f(b))$
+** 
+   [[./img/programs-metamorphic-equivalence.svg]]
+
+   $R_I(a, b) ⇒ f(a) = f(b)$
+** 
+   [[./img/mettle-paper-screenshot.png]]
+* What's Next?
+** Let's write tests!
+** Techniques
+   1. Unit tests
+   2. Property-based tests
+   3. Metamorphic relations
+   4. More?
+** Can we make it easier?
