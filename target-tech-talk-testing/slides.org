@@ -28,7 +28,6 @@
   :reveal_background: #052d69
   :reveal_extra_attr: class="section-slide"
   :END:
-
 ** /Why?/
 ** Fewer bugs?
 ** 
@@ -47,16 +46,16 @@
 ** 
    How fast do you catch errors? 
 ** 
-   #+ATTR_HTML: :height 1000px :class no-background
+   #+ATTR_HTML: :height 800px :class no-background
    [[./img/cycle-times-1.png]]
 ** 
-   #+ATTR_HTML: :height 1000px :class no-background
+   #+ATTR_HTML: :height 800px :class no-background
    [[./img/cycle-times-2.png]]
 ** 
-   #+ATTR_HTML: :height 1000px :class no-background
+   #+ATTR_HTML: :height 800px :class no-background
    [[./img/cycle-times-3.png]]
 ** 
-   #+ATTR_HTML: :height 1000px :class no-background
+   #+ATTR_HTML: :height 800px :class no-background
    [[./img/cycle-times-with-tests.png]]
 ** Code Design
 ** Testable Code ⇒ Usable Code
@@ -77,6 +76,10 @@
    [[./img/network.svg]]
 ** Testing is useful; Testing /ML/ is hard.
 * Testing Techniques
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
 ** 
   1. Unit Tests
   2. Property-Based Tests
@@ -202,3 +205,8 @@
    3. Metamorphic relations
    4. More?
 ** Can we make it easier?
+* Questions?
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
