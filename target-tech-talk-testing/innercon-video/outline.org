@@ -1,0 +1,81 @@
+* “Untestable” Code
+** Testing
+   - reduce defects
+   - refactoring
+   - cycle times
+   - prevent regressions
+** “Untestable” Code
+   Code where the /domain/ or /logic/ make testing hard. I'm not
+   talking about poorly written or poorly factored code here!
+*** Knowns
+    Traditional input-output tests check that our code behaves in a
+    /known/ way. We have to know:
+
+    1. How to get inputs worth testing.
+    2. What outputs to expect.
+    3. How outputs might vary in the future.
+
+    What happens if we don't know these things?
+*** Unknowns
+    - The “Oracle Problem” in machine learning.
+    - Outputs are hard to create.
+      - How do we handle edge cases in that case?
+*** Over-fitting
+    What if the behavior of our system can change in some range of
+    ways? Overly specific tests can become brittle.
+*** Unknown Unknowns
+    What if there are edge cases we didn't even think of?
+
+    Can we use tests as a tool to /find/ bugs, rather than just
+    catching bugs we already know?
+* Property-Based Tests
+  Instead of using fixed inputs and outputs, let's:
+
+  1. Define *invariants* (“properties”) our code has to maintain.
+  2. Randomly generate inputs.
+  3. Check that property holds on output.
+  4. *Optional*: Shrink failing tests cases, if any.
+** Examples
+   - Code doesn't crash.
+   - Round trips don't lose information.
+   - Monotonic/converging/etc
+   - Within range (≥0, [0-1), “reasonable”... etc)
+   - Doesn't NaN/go to infinity/etc
+** Documentation
+   In my experience with property based tests, about half the time the
+   bug is in the /property/, not the /code/. This is great! You've
+   found a bug in your own mental model of the code; add it to the
+   documentation to avoid confusion in the future.
+** Bonus
+   Generating inputs is super useful on top of testing:
+     - benchmarking
+     - profiling
+     - stress tests
+     - exploration
+     - local debugging
+** Outcome
+   - Find bugs you didn't think of—unknown unknowns
+   - Tests don't overfit to existing code
+* Metamorphic Relations
+** What if you don't know inputs /or/ outputs?
+   Example: speech detection. (Link to Hillel's blog post.)
+** “Metamorphic property”
+   Sounds fancy, but is simple. 
+
+   Instead of testing the /absolute/ behavior of a function, test
+   it's /relative/ behavior: how do the outputs change when you
+   change the inputs?
+** Examples
+   - invariance: which ways can you change the inputs /without/
+     changing the outputs?
+     - examples: speech transcription, clustering, forecasting
+     - silly side note: conservation laws?
+   - monotonicity: if you double the inputs, the forecast better not
+     get /smaller/
+* Conclusion
+  We can test “untestable” code:
+    - property-based testing
+    - metamorphic relations
+
+  This also helps us find bugs (“unknown unknowns”) and keep our tests
+  from becoming too brittle.

@@ -11,7 +11,7 @@
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 
 # Options I change before uploading to jelv.is
-#+REVEAL_ROOT: ../reveal.js-3.8.0
+#+REVEAL_ROOT: ../../reveal.js-3.8.0
 #+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', backgroundTransition:'none', progress:false, slideNumber: false
 
 #+OPTIONS: toc:nil timestamp:nil email:nil num:nil
