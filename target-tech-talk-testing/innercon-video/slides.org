@@ -1,0 +1,164 @@
+# -*- org-reveal-title-slide: "<h3 class='title'>%t</h3> <h3 class='subtitle'>%s</h3> <h4 class='author'>%a</h4>" -*-
+#+Title: Testing “Untestable” Code
+#+Subtitle: 
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+#+REVEAL_TITLE_SLIDE_BACKGROUND_TRANSITION: "none"
+
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="An introduction to Markov decision processes in Haskell.">
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+
+# Options I change before uploading to jelv.is
+#+REVEAL_ROOT: ../../reveal.js-3.8.0
+#+REVEAL_INIT_OPTIONS: width:1200, height:800, controls:false, history:true, center:true, touch:true, transition:'none', backgroundTransition:'none', progress:false, slideNumber: false
+
+#+OPTIONS: toc:nil timestamp:nil email:nil num:nil
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_PLUGINS: (markdown notes)
+* “Untestable”?
+** Hard to test…
+** /…with normal techniques/.
+** Inputs
+   #+ATTR_HTML: :height 600px
+   [[./img/input-data.svg]]
+** The Oracle Problem
+   #+ATTR_HTML: :height 800px :style position: relative; top: -100px
+   [[./img/oracle-problem.svg]]
+** Overspecification
+   #+ATTR_HTML: :height 600px
+   [[./img/rules.svg]]
+** Testing ML is /Hard/
+* Unit Tests
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
+** 
+   [[./img/programs-all-lines.svg]]
+** 
+   [[./img/programs-two-lines.svg]]
+** ∃x. f(x) is correct
+** Unknowns
+   #+ATTR_HTML: :height 500px :class no-background
+   [[./img/unknown.svg]]
+** Unknown Unknowns
+   #+ATTR_HTML: :height 500px :class no-background
+   [[./img/unknown.svg]] 
+
+   #+ATTR_HTML: :height 500px :class no-background
+   [[./img/unknown.svg]]
+** Can we do better?
+** /Yes!/
+   1. Property-Based Tests
+   2. Metamorphic Relations
+   3. …
+* Property-Based Tests
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
+** 
+   [[./img/programs-all-lines.svg]]
+** ∀x. ϕ(f(x))
+   [[./img/programs-properties-no-formula.svg]]
+
+** 
+   1. x ← random input
+   2. y = f(x)
+   3. assert ϕ(y)
+** ∀x. f(x) is not wrong
+   #+ATTR_REVEAL: :frag roll-in
+   In a specific way.
+   #+ATTR_REVEAL: :frag roll-in
+   Probably...
+** 
+   #+BEGIN_SRC python
+   def mean(xs):
+      return sum(xs) / len(xs)
+   #+END_SRC
+** 
+   #+BEGIN_SRC python
+   from hypothesis import given
+   from hypothesis.strategies import *
+   #+END_SRC
+
+   #+BEGIN_SRC python
+   class TestMean(unittest.TestCase):
+   #+END_SRC
+
+   #+BEGIN_SRC python
+       @given(lists(floats(), min_size=1))
+       def test_mean(self, xs):
+           self.assertTrue(
+               min(xs) <= mean(xs) <= max(xs))
+   #+END_SRC
+** 
+   #+BEGIN_SRC python
+   Falsifying example: 
+     test_mean(self=<...>, xs=[nan],)
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC python
+   floats(allow_nan=False)
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC python
+   Falsifying example: 
+     test_mean(self=<...>, xs=[inf, -inf],)
+   #+END_SRC
+
+   #+ATTR_REVEAL: :frag roll-in
+   #+BEGIN_SRC python
+   floats(allow_nan=False, allow_infinity=False)
+   #+END_SRC
+** 
+   #+BEGIN_SRC python
+   Falsifying example: test_mean(
+       self=<...>, 
+       xs=[9.9792015476736e+291, 1.7976931348623157e+308],
+   )
+   #+END_SRC
+** Frameworks
+   1. Generate random values
+   2. Check properties
+   3. Shrink failing examples
+* Metamorphic Relations
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
+** 
+   [[./img/programs-metamorphic.svg]]
+
+   $R_I(a, b) ⇒ R_O(f(a), f(b))$
+** 
+   [[./img/programs-metamorphic-equivalence.svg]]
+
+   $R_I(a, b) ⇒ f(a) = f(b)$
+** 
+   [[./img/mettle-paper-screenshot.png]]
+** 
+   [[./img/metamorphic-api-testing-paper-screenshot.png]]
+* What's Next?
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
+** Try these out!
+   Can you find new bugs in existing code?
+** Can we make it easier?
+* Questions?
+  :PROPERTIES:
+  :reveal_background: #052d69
+  :reveal_extra_attr: class="section-slide"
+  :END:
