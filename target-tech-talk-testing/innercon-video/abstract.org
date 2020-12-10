@@ -1,0 +1,7 @@
+* Testing “Untestable” Code
+
+  Normally, we write tests by specifying inputs, running our code and checking that the outputs are what we expect. But what do we do when this is not feasible? What happens if we don't know what the correct outputs should be? What if *inputs* are hard to supply? What if we don't know the edge cases that we should check?
+
+  Hard-to-test code comes up in all areas of programming, but it's especially common in machine learning. I'll talk about why this is the case and then cover two specific techniques for testing seemingly "untestable" code. Both of these techniques can be applied to any kind of code—not just machine learning—and they not only help us test tricky code but also find bugs we'd otherwise miss in even the most unit-test-friendly situations. Both of these make powerful additions to your testing toolbox.
+
+  
