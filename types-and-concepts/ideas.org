@@ -1,0 +1,110 @@
+* Better Code Design /with/ Types /and/ Concepts
+Are types /only/ good for preventing bugs? What else can types help us
+with?
+
+Why do I find types /actively useful/ for quick prototyping? Why do I
+like to have types reflect aspects of the code that aren't key to correctness?
+
+** A Simple Model of Programming
+What's the relationship between our code and the—fuzzy, infinitely
+complex—world?
+
+Simplest level: code ⇐ world
+
+Better: code ⇐ concepts ⇐ world
+
+Best: code ⇔ concepts ⇐ world
+
+(Reality: we end up with concepts to understand /what we are doing in
+the world/ but also concepts to understand /the system we are
+building/.)
+
+** How can we improve our code design?
+We can improve the system by improving the individual parts (code,
+model, world*), or by improving the /connection/ between our code, our
+concepts and the world.
+
+Can we move the world closer to our concepts? Probably not! (And even if we could, maybe
+we shouldn't?)
+
+So we are left with:
+
+ 1. Moving our concepts closer to reality: iteration, user research...
+ 2. Improving the concepts themselves: simplicity, consistency, adaptability...
+ 3. Move our code closer to our concepts: expressiveness, abstraction
+ 4. Improve the code itself: code quality
+
+*** Tech Debt
+The relationship between code, concepts and world gives us a better
+model of technical debt:
+
+  1. *Code debt* is problems purely in the code or in the distance
+     between the code and the concepts we use to understand our system
+  2. *Design debt* is problems in our conceptual model or in the
+     distance between our concepts and reality
+
+These should be considered and handled differently!
+
+*** How do we see programming?
+Is design part of programming? Do we see code ⇐ concepts or code ⇔
+concepts?
+
+If you sat down and watched how experts make decisions—and this isn't
+unique to programming!—you'd find that problem solving, design,
+planning /and/ execution are naturally iterative and mixed. Experts
+don't think in separate phases because they have to adapt to changes
+in circumstance and complexity.
+  - see /Sources of Power/
+
+So, how can we take advantage of this with types?
+
+** Types
+Where do types fit in?
+
+Three views: "narrow", "practical", "design".
+
+*** Narrow
+"Types help prevent bugs."
+
+Just helps with 4.
+
+TODO find online examples people dismissing static typing because it
+doesn't catch bugs
+
+*** Practical
+"Types help prevent bugs."
+
+"Types help structure code."
+
+*** Design
+"Types help prevent bugs."
+
+"Types help structure code."
+
+"Types help develop and maintain /our conceptual models/."
+
+*** Examples
+Haskell Servant? Session types?
+
+MDP type?
+  - not novel /per se/, but helped unify how we think about DP/RL/etc
+
+Need to find some other examples where types helped me refine ideas.
+
+** Using this Idea
+Type-oriented design/type-driven development.
+
+Domain-driven design with types.
+
+The best languages can be tools for design, not just programming
+
+Dependent types/etc excite me not because I care about proofs, buta
+because I care about expressiveness
+
+* Resources
+  - [[https://essenceofsoftware.com/][/The Essence of Software/, Daniel Jackson]]
+  - [[https://www.youtube.com/watch?v=3U3lV5VPmOU][What are Types for, or are they only Against?, Connor McBride]]
+  - [[https://tomasp.net/blog/2015/against-types/]["Against Types", Tomas Petricek]]
+  - [[https://theanarchistlibrary.org/library/james-c-scott-seeing-like-a-state][/Seeing like a State/, James C. Scott]]
+  - [[https://www.goodreads.com/book/show/65229.Sources_of_Power][Sources of Power: How People Make Decisions, Gary Klein]]
+  - [[https://pragprog.com/titles/swdddf/domain-modeling-made-functional/][Domain Modeling made Functional, Scott Wlaschin]]
