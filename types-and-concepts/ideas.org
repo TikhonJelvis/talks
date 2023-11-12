@@ -83,7 +83,39 @@ doesn't catch bugs
 
 "Types help develop and maintain /our conceptual models/."
 
-*** Examples
+*** Does "static" matter?
+
+If we're looking at types as a design tool, does it matter that the
+types are /static/?
+
+Yes: static types let us have rich tooling and immediate feedback
+without needing to handle all the details in running code. *Static
+typing is a way to abstract over the runtime behavior of our code.*
+It's an intentional simplification of what happens at runtime, which
+is useful for:
+
+ 1. Understanding: thinking about types takes less working memory than
+    thinking about all the possible traces our program can take
+ 2. Tooling: we can get detailed feedback quickly, without needing to
+    initialize our code or run it on a wide range of inputs
+ 3. Reading: types act as a summaries of what our code does and how we
+    think about it—which, again, is useful /because/ they are a
+    simplification over the full behavior of the program (or the full
+    complexity of the domain!)
+
+Additional thought: static types create pressure to simplify the core
+concepts and data model behind our code. This can be
+difficult—sometimes we can't easily model what we need because the
+types would be too complex—but it also does a great job of naturally
+pushing us to develop and use better abstractions with fewer special
+cases.
+
+If there's one recurring theme here, it's: static types are a powerful
+tool for designing and managing abstraction, which helps us reduce the
+amount of working memory we need to understand and work on our
+codebases. (Okay, that's pretty wordy :()
+
+**** Examples
 Haskell Servant? Session types?
 
 MDP type?
@@ -108,3 +140,4 @@ because I care about expressiveness
   - [[https://theanarchistlibrary.org/library/james-c-scott-seeing-like-a-state][/Seeing like a State/, James C. Scott]]
   - [[https://www.goodreads.com/book/show/65229.Sources_of_Power][Sources of Power: How People Make Decisions, Gary Klein]]
   - [[https://pragprog.com/titles/swdddf/domain-modeling-made-functional/][Domain Modeling made Functional, Scott Wlaschin]]
+  - [[http://www.rntz.net/post/2014-06-16-on-dynamic-and-static-types.html][On dynamic and static types, @rntz]]
