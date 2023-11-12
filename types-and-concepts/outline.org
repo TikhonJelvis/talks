@@ -1,0 +1,175 @@
+* Better Code Design /with/ Types /and/ Concepts
+
+** Types aren't just for correctness
+
+*** Three views on static types
+
+**** *Narrow*: "types catch mistakes"
+     - "types as obstacles"
+     - catch argument mix-ups, passing int where string is expected
+     - these problems (should) get caught with tests; in this view,
+       static typing /might/ still be useful, but its utility is
+       limited
+
+**** *Practical*: "types provide the structure of my code"
+     - "types as interfaces"
+     - interfaces and modularity
+     - types used for information hiding
+     - different approach to programming:
+       - "I'm writing code and the type system is an obstacle" vs
+       - "I'm writing code /using/ my type system, and type errors
+         help me stay consistent"
+     - this view doesn't make sense /without/ types, but would it
+       still make sense with /dynamic/ types?
+       - mostly, yeah—again, static checking might be /nice/, but it
+         is not /fundamental/
+
+**** *Design*: "types are a tool for design, not just correctness"
+     - "types as language"
+     - type-first development
+     - code abstraction *along a different dimension*: not the same
+       as "traditional" information-hiding abstraction
+       - information-hiding lets us abstract over /implementation details/
+       - types let us abstract over /semantics/
+         - add note/diagram about abstract interpretation here?
+           - types are a sort of abstract interpretation that
+             oversimplifies the runtime behavior of our code
+           - it is not the only sort of abstract interpretation that
+             can be useful!
+     - types + type checking provide immediate feedback /on our
+       conceptual design/!
+       - we don't need to figure out all the details of *how our
+         code works*...
+       - but we also don't need to figure out all the details of
+         *what our code does*!
+
+** What /is/ code design?
+   - explicitly think about the /abstract concepts/ underlying the
+     design of your system
+     - if you're not explicit, the concepts will be implicit—complex,
+       inconsistent and diverged from your aims
+
+*** Thinking about thinking about programming
+
+**** code ⇐ world
+     - just write code that does the thing
+     - make sure it does the right thing with tests and debugging
+     - code can "incidentally" do the right thing
+       - "hacks"
+       - examples:
+         - screenshots on states?
+         - bugs in games?
+         - ...
+     - "simple" /but/
+       - inconsistent: weird edge cases, parts of the application
+         behave in different ways
+         - examples:
+           - shell globbing, [[https://www.reddit.com/r/linux/comments/if1krd/how_to_delete_all_your_files/][rsync delete stuff]]
+
+**** code ⇐ concepts ⇐ world
+     - we have some intuitive, informal set of ideas we're building
+       around
+     - we use these ideas to organize code and define code
+       abstractions
+       - aside: difference between /abstraction/ and /concept/
+     - reality: at least two sorts of concepts:
+       - concepts for understanding the world:
+         - domain vocabulary
+         - mathematical models
+         - etc
+       - concepts for understanding the system we're building
+         - design concepts (ideally shared all the way from the
+           application layer to the code)
+           - examples:
+             - "track" in Spotify
+             - shape with properties/etc in diagramming tool
+         - implementation concepts
+           - examples:
+             - caches
+             - "tasks"
+             - threads/processes/actors/etc
+     - reference: [[https://essenceofsoftware.com/][/The Essence of Software/, Daniel Jackson]]
+     - what makes for a /great/ codebase?
+       1. "clean" code, sure
+       2. good conceptual model
+          - simple, understandable
+          - internally consistent
+          - useful
+       3. small distance between conceptual model and code
+          - the structure and abstractions in the code do a good job
+            reflecting the conceptual model
+          - refactoring: try to reduce distance between code and
+            concepts
+
+**** code ⇔ concepts ⇐ world
+     - in reality, there are always feedback loops between programming
+       and thinking—turning something into code forces you to think
+       through details and make your ideas concrete, which exposes
+       inconsistencies and missing pieces
+     - but our tools are, mostly, not oriented around this; how can
+       we:
+       - get concrete feedback /about our design/
+         - *edge cases*: did we cover everything? (ADTs, case analysis,
+           exhaustive patterns...)
+         - *consistency*: do our concepts fit together?
+         - *summaries*: what /are/ our concepts? Can we look them up,
+           see what fits together... etc?
+       - get feedback /quickly/, iterating on design without needing
+         to work out all the details
+         - what sort of feedback can we get without code that can run
+           end-to-end?
+         - what sort of feedback can we get without code that runs /at
+           all/?
+         - without even knowing /what it would mean/ for the code to
+           run?
+     - static typing can—and /should/!—provide this!
+
+** What do we do with this?
+
+*** Type-driven development
+    - types aren't incidental, they're the touchstones for our whole
+      codebase
+      - the skeleton that forms the "shape" of the code
+      - points of gravity towards which the codebase naturally falls
+        - make /clear/ and /correct/ code the path of least
+          resistance!
+
+*** Domain-driven design
+    - everything I've talked about naturally fits with domain-driven
+      design
+      - doesn't have to—lots of useful concepts don't come from the
+        "domain" /per se/
+      - but it's a solid fit; see [[https://pragprog.com/titles/swdddf/domain-modeling-made-functional/][Domain Modeling made Functional,
+        Scott Wlaschin]]
+
+*** Dependent types
+    - makes types /more expressive/
+    - I'm more excited about types that do a better job of
+      representing concepts than about proofs or verification
+
+*** LLMs?
+    - LLMs are good at generating "local" code
+    - LLMs are good at generating garbage
+    - do we want to live in a world where we generate more worse code
+      faster?
+    - do we want to spend time understanding how thousands of lines of
+      fiddly logic maps to a higher-level design?
+    - do we want to spend more time debugging?
+    - can we rely on human insight for high-level design and
+      structure, and rely on "dumb" code generation to fill in the
+      details?
+      - I don't know, but if we can, we'll need two things:
+        1. a way to specify the design and concepts
+           - specific enough to be useful and unambiguous
+           - sufficiently high-level and expressive not to be "just
+             programming"
+        2. a way to automatically check that generated code actually
+           fits with the design
+           - maybe a way to guide code generation based on the design,
+             as a (major?) performance optimization
+      - what does this sound like?
+        - types?
+        - specification languages?
+        - some combination of these?
+
+*** The best languages can be tools for design, not just programming
