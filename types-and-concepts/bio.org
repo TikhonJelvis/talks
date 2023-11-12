@@ -1,0 +1,14 @@
+* Tikhon Jelvis
+
+Tikhon is a software engineer who specializes in bringing ideas from
+programming languages and functional programming to machine learning
+and data science. He is a speaker and active contributor in the
+Haskell community, where he is currently the chair of the Haskell.org
+committee. He recently co-authored *Foundations in Reinforcement
+Learning with Applications in Finance* with Ashwin Rao, bringing a
+code design lens to teaching applied reinforcement learning.
+
+Tikhon is currently a founding engineer at CX Score, developing
+algorithms to improve web accessibility. Before that, he was a
+Principal AI Scientist at Target, focused on supply chain
+optimization, simulation and demand forecasting.
