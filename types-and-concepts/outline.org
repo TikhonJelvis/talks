@@ -24,6 +24,12 @@
        limited
      - if types are a bureaucratic way to dot your ts and cross your
        is, why are (some) people so excited about them?
+     - in this view, static typing is a purely binary thing; going
+       from static to dynamic typing doesn't change "the programming"
+       itself, it just turns off the fussy type system
+       - this might make sense in going from Java to Python—but it
+         does not make sense for more expressive type systems and
+         type-oriented ways of programming (think Haskell)
 
 **** *Practical*: "types provide the structure of my code"
      - "types as interfaces"
