@@ -1,6 +1,18 @@
 * Better Code Design /with/ Types /and/ Concepts
 
-** Types aren't just for correctness
+** Two inexorably entwined questions:
+
+  1. How do we use static types more effectively?
+  2. How do we design holistically better codebases?
+
+  These questions are entwined because using types more effectively
+  requires thinking about programming in terms of design and
+  concepts...
+
+  ...and in typed languages, effective types are the natural
+  foundation for concept/design-oriented programming.
+
+** What are types for?
 
 *** Three views on static types
 
@@ -10,6 +22,8 @@
      - these problems (should) get caught with tests; in this view,
        static typing /might/ still be useful, but its utility is
        limited
+     - if types are a bureaucratic way to dot your ts and cross your
+       is, why are (some) people so excited about them?
 
 **** *Practical*: "types provide the structure of my code"
      - "types as interfaces"
@@ -44,6 +58,9 @@
          *what our code does*!
 
 ** What /is/ code design?
+   - "types-as-design" is:
+     - a specific perspective types...
+     - but also a specific approach to programming!
    - explicitly think about the /abstract concepts/ underlying the
      design of your system
      - if you're not explicit, the concepts will be implicit—complex,
@@ -133,6 +150,11 @@
       - points of gravity towards which the codebase naturally falls
         - make /clear/ and /correct/ code the path of least
           resistance!
+    - how do we design typed languages and tools to better-support
+      this style of programming and design?
+      - richer, more expressive types
+      - interactive tooling (goal-oriented programming... etc)
+      - other tooling (documentation, navigation, code generation...?)
 
 *** Domain-driven design
     - everything I've talked about naturally fits with domain-driven
@@ -141,6 +163,13 @@
         "domain" /per se/
       - but it's a solid fit; see [[https://pragprog.com/titles/swdddf/domain-modeling-made-functional/][Domain Modeling made Functional,
         Scott Wlaschin]]
+    - in my perfect world, the codebase becomes a strong learning
+      resource for the domain!
+      - interactive
+      - concrete
+      - explicit structure
+      - easy to navigate at different levels of detail
+      - extended example: MDPs and RL algorithms?
 
 *** Dependent types
     - makes types /more expressive/
