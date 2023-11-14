@@ -1,13 +1,20 @@
-#+Title: Types /as/ Design
-#+Subtitle: Design /through/ Types
+#+Title: Types ⇔ Design
+#+Subtitle: 
 #+Author: Tikhon Jelvis
 #+Email: tikhon@jelv.is
 #+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Static types aren't just about preventing bugs and errors, they can be a powerful tool for code design.">
 
-# Options I change before uploading to jelv.is
-#+OPTIONS: reveal_title_slide:nil
+# Options I change before uploading to jelv.is:
+#
+# - set controls to true
+# - change reveal_root
+
 #+REVEAL_INIT_OPTIONS: controls:false, center:true, progress:false, transition:"none", autoAnimate: false
 #+REVEAL_ROOT: ../reveal.js-3.8.0/
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+#+REVEAL_TITLE_SLIDE_BACKGROUND_TRANSITION: none
+#+OPTIONS: reveal_title_slide:"<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>"
 
 #+OPTIONS: num:nil toc:nil timestamp:nil email:t
 
@@ -19,13 +26,6 @@
 
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
-
-* Types for Design
-   :PROPERTIES:
-   :reveal_background: #052d69
-   :reveal_background_trans: none
-   :reveal_extra_attr: class="section-slide"
-   :END:
 
 * What /is/ code design?
    :PROPERTIES:
