@@ -57,6 +57,18 @@
   [[./img/rsync-delete-files.png]]
 
 ** 
+   #+BEGIN_SRC bash
+   > rsync -r * ~/Documents
+   #+END_SRC
+
+   #+BEGIN_SRC bash
+   > ls
+   --delete
+   normal-document.txt
+   stuff.json
+   #+END_SRC
+
+** 
    #+BEGIN_EXPORT html
    <pre class="manual-highlight">
    rsync -r --delete ~/path/a ~/path/b
