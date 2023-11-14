@@ -1,0 +1,200 @@
+#+Title: Types /as/ Design
+#+Subtitle: Design /through/ Types
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Static types aren't just about preventing bugs and errors, they can be a powerful tool for code design.">
+
+# Options I change before uploading to jelv.is
+#+OPTIONS: reveal_title_slide:t
+#+REVEAL_INIT_OPTIONS: reveal_control:false, reveal_mathjax:false, reveal_center:true, reveal_progress: false, reveal_overview:true
+#+REVEAL_ROOT: ../reveal.js-3.8.0/
+
+#+OPTIONS: num:nil toc:nil timestamp:nil email:t
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+* What /is/ code design?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+   #+BEGIN_EXPORT html
+   <ul class="stacked">
+     <li> <img src="img/clean-code.jpg">
+     <li> <img src="img/domain-driven-design.jpg">
+     <li> <img src="img/design-patterns.jpg">
+     <li> <img src="img/the-pragmatic-programmer.jpg">
+     <li> <img src="img/philosophy-of-software.jpg">
+   </ul>
+   #+END_EXPORT
+
+** 
+   #+ATTR_HTML: :width 400px
+   [[./img/essence-of-software.jpg]]
+
+** Code ⇐ World
+
+** Code ⇐ Concepts ⇐ World
+
+** 
+  [[./img/rsync-delete-files.png]]
+
+** 
+   #+BEGIN_EXPORT html
+   <pre class="manual-highlight">
+   rsync -r --delete ~/path/a ~/path/b
+   </pre>
+   #+END_EXPORT
+
+** 
+   #+BEGIN_EXPORT html
+   <pre class="manual-highlight">
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="b">--delete</span> <span class="c">~/path/a</span> <span class="c">~/path/b</span>
+   </pre>
+   #+END_EXPORT
+
+** 
+   #+BEGIN_EXPORT html
+   <pre class="manual-highlight">
+   <span class="a">rsync</span> -r --delete ~/path/a ~/path/b
+   </pre>
+   #+END_EXPORT
+
+** 
+   #+BEGIN_EXPORT html
+   <pre class="manual-highlight">
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">~/path/a</span> <span class="c">~/path/b</span>
+   </pre>
+   #+END_EXPORT
+
+   #+BEGIN_EXPORT html
+   <pre class="manual-highlight">
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">*</span>
+   </pre>
+   #+END_EXPORT
+
+
+
+** Code ⇔ Concepts ⇐ World
+
+* What are types /for/?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+
+  #+BEGIN_EXPORT html
+  <div class="horizontal-gallery">
+  #+END_EXPORT
+  
+  #+ATTR_HTML: :class icon
+  [[./img/barrier.svg]]
+
+  #+ATTR_HTML: :class icon
+  [[./img/scaffolding.svg]]
+
+
+  #+ATTR_HTML: :class icon
+  [[./img/blueprint.svg]]
+
+  #+BEGIN_EXPORT html
+  </div>
+  #+END_EXPORT
+
+
+** Shallow
+
+** 
+
+  #+ATTR_HTML: :width 400px :class no-background
+  [[./img/barrier.svg]]
+
+  “Types catch mistakes”
+
+** Middling
+
+** 
+
+  #+ATTR_HTML: :width 400px :class no-background  
+  [[./img/scaffolding.svg]]
+  
+  “Types structure my code”
+
+** Deep
+
+** 
+
+  #+ATTR_HTML: :width 400px :class no-background  
+  [[./img/blueprint.svg]]
+
+  “Types help me think”
+
+** 
+
+  #+BEGIN_EXPORT html
+  <div class="horizontal-gallery">
+  #+END_EXPORT
+  
+  #+ATTR_HTML: :class icon
+  [[./img/barrier.svg]]
+
+
+  #+ATTR_HTML: :class icon
+  [[./img/scaffolding.svg]]
+
+  #+ATTR_HTML: :class icon
+  [[./img/blueprint.svg]]
+
+  #+BEGIN_EXPORT html
+  </div>
+  #+END_EXPORT
+
+** 
+   Simplest "formal specification" tool: table with cases
+
+   Types can make this a first-class citizen of your language
+
+** 
+   <MDP example>
+
+** 
+   <pretty printer example>
+   
+** 
+   JPEG example: a summary of how JPEG encoding works, in types
+
+* Where does this take us?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Type-Driven Development
+
+** Domain-Drive Design
+
+** Dependent Types
+
+** LLM Code Generation
+
+* Our tools should help us think
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:

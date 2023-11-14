@@ -12,57 +12,6 @@
   ...and in typed languages, effective types are the natural
   foundation for concept/design-oriented programming.
 
-** What are types for?
-
-*** Three views on static types
-
-**** *Narrow*: "types catch mistakes"
-     - "types as obstacles"
-     - catch argument mix-ups, passing int where string is expected
-     - these problems (should) get caught with tests; in this view,
-       static typing /might/ still be useful, but its utility is
-       limited
-     - if types are a bureaucratic way to dot your ts and cross your
-       is, why are (some) people so excited about them?
-     - in this view, static typing is a purely binary thing; going
-       from static to dynamic typing doesn't change "the programming"
-       itself, it just turns off the fussy type system
-       - this might make sense in going from Java to Python—but it
-         does not make sense for more expressive type systems and
-         type-oriented ways of programming (think Haskell)
-
-**** *Practical*: "types provide the structure of my code"
-     - "types as interfaces"
-     - interfaces and modularity
-     - types used for information hiding
-     - different approach to programming:
-       - "I'm writing code and the type system is an obstacle" vs
-       - "I'm writing code /using/ my type system, and type errors
-         help me stay consistent"
-     - this view doesn't make sense /without/ types, but would it
-       still make sense with /dynamic/ types?
-       - mostly, yeah—again, static checking might be /nice/, but it
-         is not /fundamental/
-
-**** *Design*: "types are a tool for design, not just correctness"
-     - "types as language"
-     - type-first development
-     - code abstraction *along a different dimension*: not the same
-       as "traditional" information-hiding abstraction
-       - information-hiding lets us abstract over /implementation details/
-       - types let us abstract over /semantics/
-         - add note/diagram about abstract interpretation here?
-           - types are a sort of abstract interpretation that
-             oversimplifies the runtime behavior of our code
-           - it is not the only sort of abstract interpretation that
-             can be useful!
-     - types + type checking provide immediate feedback /on our
-       conceptual design/!
-       - we don't need to figure out all the details of *how our
-         code works*...
-       - but we also don't need to figure out all the details of
-         *what our code does*!
-
 ** What /is/ code design?
    - "types-as-design" is:
      - a specific perspective types...
@@ -146,6 +95,57 @@
          - without even knowing /what it would mean/ for the code to
            run?
      - static typing can—and /should/!—provide this!
+
+** What are types for?
+
+*** Three views on static types
+
+**** *Narrow*: "types catch mistakes"
+     - "types as obstacles"
+     - catch argument mix-ups, passing int where string is expected
+     - these problems (should) get caught with tests; in this view,
+       static typing /might/ still be useful, but its utility is
+       limited
+     - if types are a bureaucratic way to dot your ts and cross your
+       is, why are (some) people so excited about them?
+     - in this view, static typing is a purely binary thing; going
+       from static to dynamic typing doesn't change "the programming"
+       itself, it just turns off the fussy type system
+       - this might make sense in going from Java to Python—but it
+         does not make sense for more expressive type systems and
+         type-oriented ways of programming (think Haskell)
+
+**** *Practical*: "types provide the structure of my code"
+     - "types as interfaces"
+     - interfaces and modularity
+     - types used for information hiding
+     - different approach to programming:
+       - "I'm writing code and the type system is an obstacle" vs
+       - "I'm writing code /using/ my type system, and type errors
+         help me stay consistent"
+     - this view doesn't make sense /without/ types, but would it
+       still make sense with /dynamic/ types?
+       - mostly, yeah—again, static checking might be /nice/, but it
+         is not /fundamental/
+
+**** *Design*: "types are a tool for design, not just correctness"
+     - "types as language"
+     - type-first development
+     - code abstraction *along a different dimension*: not the same
+       as "traditional" information-hiding abstraction
+       - information-hiding lets us abstract over /implementation details/
+       - types let us abstract over /semantics/
+         - add note/diagram about abstract interpretation here?
+           - types are a sort of abstract interpretation that
+             oversimplifies the runtime behavior of our code
+           - it is not the only sort of abstract interpretation that
+             can be useful!
+     - types + type checking provide immediate feedback /on our
+       conceptual design/!
+       - we don't need to figure out all the details of *how our
+         code works*...
+       - but we also don't need to figure out all the details of
+         *what our code does*!
 
 ** What do we do with this?
 
