@@ -183,6 +183,10 @@
    #+ATTR_HTML: :width 800px :class no-background
    [[./img/code-design-point-code-distance.svg]]
 
+   #+BEGIN_NOTES
+   static vs dynamic is a simple binary
+   #+END_NOTES
+
 ** 
 
   #+ATTR_HTML: :width 400px :class no-background  
