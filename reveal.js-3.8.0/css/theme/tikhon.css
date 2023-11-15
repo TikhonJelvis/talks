@@ -11,7 +11,7 @@
 :root {
   --base: #C0D9FB;
   --bg-inner: white;
-  --text: #3f3f3f;
+  --text: black;
   --title: #052d69;
 
   --blackboard-bg: #0C1021;
@@ -290,6 +290,14 @@ body {
   position: relative;
   display: table-cell;
   padding: 3%;
+}
+
+.reveal .horizontal-gallery .figure p {
+  font-size: 30pt;
+  margin: auto;
+  margin-top: -10px;
+  margin-left: 15%;
+  color: black;
 }
 
 /* Images with transparent backgrounds that don't need a border or

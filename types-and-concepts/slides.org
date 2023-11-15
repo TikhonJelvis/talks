@@ -49,9 +49,25 @@
    #+ATTR_HTML: :width 400px
    [[./img/essence-of-software.jpg]]
 
-** Code ⇐ World
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design.svg]]
 
-** Code ⇐ Concepts ⇐ World
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-concepts.svg]]
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-code.svg]]
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-concepts.svg]]
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-distance.svg]]
 
 ** 
   [[./img/rsync-delete-files.png]]
@@ -80,19 +96,23 @@
 ** 
    #+BEGIN_EXPORT html
    <pre class="manual-highlight">
-   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">~/path/a</span> <span class="c">~/path/b</span>
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">*</span>
    </pre>
    #+END_EXPORT
 
    #+BEGIN_EXPORT html
    <pre class="manual-highlight">
-   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">*</span>
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">~/path/a</span> <span class="c">~/path/b</span>
    </pre>
    #+END_EXPORT
 
+** 
+   #+ATTR_HTML: :class no-background :width 400
+   [[./img/delete-file-directory-listing.png]]
 
-
-** Code ⇔ Concepts ⇐ World
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-feedback.svg]]
 
 * What are types /for/?
    :PROPERTIES:
@@ -105,24 +125,20 @@
 
   #+BEGIN_EXPORT html
   <div class="horizontal-gallery">
-  #+END_EXPORT
-  
-  #+ATTR_HTML: :class icon
-  [[./img/barrier.svg]]
-
-  #+ATTR_HTML: :class icon
-  [[./img/scaffolding.svg]]
-
-
-  #+ATTR_HTML: :class icon
-  [[./img/blueprint.svg]]
-
-  #+BEGIN_EXPORT html
+    <div class="figure">
+      <img src="./img/barrier.svg" class="icon" width="275">
+      <p>bugs</p>
+    </div>
+    <div class="figure">
+      <img src="./img/scaffolding.svg" class="icon" width="275">
+      <p>structure</p>
+    </div>
+    <div class="figure">
+      <img src="./img/blueprint.svg" class="icon" width="275">
+      <p>design</p>
+    </div>
   </div>
   #+END_EXPORT
-
-
-** Shallow
 
 ** 
 
@@ -131,7 +147,9 @@
 
   “Types catch mistakes”
 
-** Middling
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-code.svg]]
 
 ** 
 
@@ -140,7 +158,9 @@
   
   “Types structure my code”
 
-** Deep
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-code-distance.svg]]
 
 ** 
 
@@ -148,6 +168,10 @@
   [[./img/blueprint.svg]]
 
   “Types help me think”
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-types-concepts-feedback.svg]]
 
 ** 
 
