@@ -122,13 +122,13 @@ body {
 }
 
 .reveal h1 {
-  font-size: 140px; }
-
-.reveal h2 {
   font-size: 120px; }
 
+.reveal h2 {
+  font-size: 80px; }
+
 .reveal h3 {
-  font-size: 1.55em; }
+  font-size: 80px; }
 
 .reveal h4 {
   font-size: 1em; }
