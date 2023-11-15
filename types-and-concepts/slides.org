@@ -59,6 +59,16 @@
 
 ** 
    #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-feedback.svg]]
+
+** 
+   “Programming /is/ planning.”
+
+   #+ATTR_REVEAL: :frag roll-in
+   Programming /is/ design.
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
    [[./img/code-design-point-code.svg]]
 
 ** 
@@ -96,7 +106,7 @@
 ** 
    #+BEGIN_EXPORT html
    <pre class="manual-highlight">
-   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">*</span>
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">*</span> <span class="c">~/out</span>
    </pre>
    #+END_EXPORT
 
@@ -111,8 +121,9 @@
    [[./img/delete-file-directory-listing.png]]
 
 ** 
-   #+ATTR_HTML: :width 800px :class no-background
-   [[./img/code-design-feedback.svg]]
+   #+ATTR_HTML: :class no-background
+   [[./img/frustrated.svg]]
+
 
 * What are types /for/?
    :PROPERTIES:
@@ -121,6 +132,11 @@
    :reveal_extra_attr: class="section-slide"
    :END:
 
+   #+BEGIN_NOTES
+   Do we /need/ static types for good design?
+
+   If we don't, what are types /for/?
+   #+END_NOTES
 ** 
 
   #+BEGIN_EXPORT html
@@ -204,7 +220,15 @@
 
   abstract over *runtime*
 
-** Abstraction along a different dimension
+** 
+   #+ATTR_HTML: :class no-background :width 600
+   [[./img/abstract-interpretation-traces.svg]]
+
+** 
+   #+ATTR_HTML: :class no-background :width 600
+   [[./img/abstract-interpretation-approximation.svg]]
+
+   a different sort of abstraction
 
 ** 
    #+BEGIN_SRC haskell
