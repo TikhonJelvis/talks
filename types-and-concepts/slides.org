@@ -25,7 +25,7 @@
 #+REVEAL_HLEVEL: 2
 
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
-#+REVEAL_PLUGINS: (highlight markdown notes)
+#+REVEAL_PLUGINS: (markdown notes)
 
 * What /is/ code design?
    :PROPERTIES:
@@ -49,9 +49,35 @@
    #+ATTR_HTML: :width 400px
    [[./img/essence-of-software.jpg]]
 
-** Code ⇐ World
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design.svg]]
 
-** Code ⇐ Concepts ⇐ World
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-concepts.svg]]
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-feedback.svg]]
+
+** 
+   “Programming /is/ planning.”
+
+   #+ATTR_REVEAL: :frag roll-in
+   Programming /is/ design.
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-code.svg]]
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-concepts.svg]]
+
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-distance.svg]]
 
 ** 
   [[./img/rsync-delete-files.png]]
@@ -92,19 +118,24 @@
 ** 
    #+BEGIN_EXPORT html
    <pre class="manual-highlight">
-   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">~/path/a</span> <span class="c">~/path/b</span>
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">*</span> <span class="c">~/out</span>
    </pre>
    #+END_EXPORT
 
    #+BEGIN_EXPORT html
    <pre class="manual-highlight">
-   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">*</span>
+   <span class="a">rsync</span> <span class="b">-r</span> <span class="c">~/path/a</span> <span class="c">~/path/b</span>
    </pre>
    #+END_EXPORT
 
+** 
+   #+ATTR_HTML: :class no-background :width 400
+   [[./img/delete-file-directory-listing.png]]
 
+** 
+   #+ATTR_HTML: :class no-background
+   [[./img/frustrated.svg]]
 
-** Code ⇔ Concepts ⇐ World
 
 * What are types /for/?
    :PROPERTIES:
@@ -113,28 +144,29 @@
    :reveal_extra_attr: class="section-slide"
    :END:
 
+   #+BEGIN_NOTES
+   Do we /need/ static types for good design?
+
+   If we don't, what are types /for/?
+   #+END_NOTES
 ** 
 
   #+BEGIN_EXPORT html
   <div class="horizontal-gallery">
-  #+END_EXPORT
-  
-  #+ATTR_HTML: :class icon
-  [[./img/barrier.svg]]
-
-  #+ATTR_HTML: :class icon
-  [[./img/scaffolding.svg]]
-
-
-  #+ATTR_HTML: :class icon
-  [[./img/blueprint.svg]]
-
-  #+BEGIN_EXPORT html
+    <div class="figure">
+      <img src="./img/barrier.svg" class="icon" width="275">
+      <p>bugs</p>
+    </div>
+    <div class="figure">
+      <img src="./img/scaffolding.svg" class="icon" width="275">
+      <p>structure</p>
+    </div>
+    <div class="figure">
+      <img src="./img/blueprint.svg" class="icon" width="275">
+      <p>design</p>
+    </div>
   </div>
   #+END_EXPORT
-
-
-** Shallow
 
 ** 
 
@@ -143,7 +175,9 @@
 
   “Types catch mistakes”
 
-** Middling
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-code.svg]]
 
 ** 
 
@@ -152,7 +186,9 @@
   
   “Types structure my code”
 
-** Deep
+** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-point-code-distance.svg]]
 
 ** 
 
@@ -162,6 +198,10 @@
   “Types help me think”
 
 ** 
+   #+ATTR_HTML: :width 800px :class no-background
+   [[./img/code-design-types-concepts-feedback.svg]]
+
+** 
 
   #+BEGIN_EXPORT html
   <div class="horizontal-gallery">
@@ -182,21 +222,164 @@
   #+END_EXPORT
 
 ** 
-   Simplest "formal specification" tool: decision table
+  Information hiding:
 
-   Types can make this a first-class citizen of your language
+  abstract over *implementation*
 
-   Find edge-cases
+  ::
+
+  Static types:
+
+  abstract over *runtime*
 
 ** 
-   <MDP example>
+   #+ATTR_HTML: :class no-background :width 600
+   [[./img/abstract-interpretation-traces.svg]]
 
 ** 
-   <pretty printer example>
+   #+ATTR_HTML: :class no-background :width 600
+   [[./img/abstract-interpretation-approximation.svg]]
+
+   a different sort of abstraction
+
+** 
+   #+BEGIN_SRC haskell
+     encode :: Image RGB -> ByteString
+     encode = _
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+     encode :: Image RGB -> ByteString
+     encode = _
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+     colorSpace :: Image RGB -> Image YCbCr
+     colorSpace = _
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+     downsample :: Image YCbCr 
+                -> Downsampled
+     downsample = _
+   #+END_SRC
+
+   #+BEGIN_SRC haskell
+     blocks :: Downsampled 
+            -> [Downsampled]
+     blocks = _
+   #+END_SRC
+
+   ...
+
+** 
+   #+BEGIN_SRC haskell
+     data Image space = Image
+       { pixels :: Vector space }
+
+     data Downsampled = Downsampled
+       { y  :: Vector Word8
+       , cb :: Vector Word8
+       , cr :: Vector Word8
+       }
+   #+END_SRC
+
+** 
+   #+ATTR_HTML: :width 500
+   [[./img/foundations-of-rl.jpg]]
+
+** 
+   #+ATTR_HTML: :width 900
+   [[./img/mdp-definition.jpg]]
+
+** 
+   #+ATTR_HTML: :width 500
+   [[./img/mp-definition.jpg]]
+
+   #+ATTR_HTML: :width 500
+   [[./img/mrp-definition.jpg]]
+
+
+** 
+   #+BEGIN_SRC haskell
+     data MarkovProcess m s = MP {
+       step :: s -> m s
+     }
+
+     data MarkovRewardProcess m s = MRP {
+       step :: s -> m (r, s)
+     }
+
+     data MDP m a s = MDP {
+       step :: s -> a -> m (r, s)
+     }
+
+     type Policy s a = s -> a
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+     data MarkovProcess m s = MP {
+       step :: s -> m s
+     }
+
+     type MarkovRewardProcess m s =
+       MarkovProcess (WriterT Reward m) s
+   #+END_SRC
+
+** 
+   #+BEGIN_SRC haskell
+     data MDP m a s = MDP {
+       step :: s -> a -> m s
+     }
+
+     apply :: MDP m a s 
+           -> Policy s a 
+           -> MarkovProcess m s
+   #+END_SRC
+
+** 
+  #+BEGIN_SRC haskell
+           ▿
+  data MDP m a s = MDP {
+    step :: s -> a -> m s
+  }
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC haskell
+             ▿
+  data MDP m a s = MDP {
+    step :: s -> a -> m s
+  }
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC haskell
+               ▿
+  data MDP m a s = MDP {
+    step :: s -> a -> m s
+  }
+  #+END_SRC
+
+** 
+
+   So, what did static typing get us?
+
+** 
+   #+ATTR_REVEAL: :frag roll-in
+   simplify our *conceptual model*
+
+   #+ATTR_REVEAL: :frag roll-in
+   feedback *before we had runnable code*
+
+   #+ATTR_REVEAL: :frag roll-in
+   *interactive* support as we program
+
+   #+ATTR_REVEAL: :frag roll-in
+   *high-level* guide to our conceptual model
    
-** 
-   JPEG example: a summary of how JPEG encoding works, in types
-
 * Where does this take us?
    :PROPERTIES:
    :reveal_background: #052d69
@@ -205,12 +388,27 @@
    :END:
 
 ** Type-Driven Development
+   #+ATTR_REVEAL: :frag roll-in
+   Concepts ⇒ Types ⇒ Code
 
-** Domain-Drive Design
+** 
+   [[./img/how-statically-typed-programmers-write-code.png]]
 
-** Dependent Types
+** Domain Driven Design?
+   #+ATTR_HTML: :width 600
+   [[./img/domain-driven-design-made-functional.jpg]]
+
+** Dependent Types?
+   #+ATTR_HTML: :width 600
+   [[./img/type-driven-development-with-idris.jpg]]
 
 ** LLM Code Generation
+
+** 
+   Today: boilerplate, bad code, no design, no verification
+
+** 
+   Tomorrow: better tools, good design, verification?
 
 * Our tools should help us think
    :PROPERTIES:
