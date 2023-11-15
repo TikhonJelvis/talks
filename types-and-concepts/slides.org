@@ -53,9 +53,19 @@
    #+ATTR_HTML: :width 800px :class no-background
    [[./img/code-design.svg]]
 
+   #+BEGIN_NOTE
+   Code that does the right thing /incidentally/
+   #+END_NOTE
+
 ** 
    #+ATTR_HTML: :width 800px :class no-background
    [[./img/code-design-concepts.svg]]
+
+   #+BEGIN_NOTE
+   managing complexity
+
+   working memory
+   #+END_NOTE
 
 ** 
    #+ATTR_HTML: :width 800px :class no-background
@@ -123,10 +133,15 @@
    :END:
 
    #+BEGIN_NOTES
+   ...or are they only against?
+
    Do we /need/ static types for good design?
+
+   Any expressive mechanism for abstraction will do.
 
    If we don't, what are types /for/?
    #+END_NOTES
+
 ** 
 
   #+BEGIN_EXPORT html
@@ -199,6 +214,19 @@
   </div>
   #+END_EXPORT
 
+* Why /static/ types?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+   What do we want from a /design/ tool?
+
+   #+ATTR_REVEAL: :frag roll-in
+   It needs to work at /design/ time!
+
 ** 
   Information hiding:
 
@@ -211,20 +239,26 @@
   abstract over *runtime*
 
 ** 
-   #+ATTR_HTML: :class no-background :width 600
+   #+ATTR_HTML: :class no-background :height 500
    [[./img/abstract-interpretation-traces.svg]]
 
 ** 
-   #+ATTR_HTML: :class no-background :width 600
+   #+ATTR_HTML: :class no-background :height 500
    [[./img/abstract-interpretation-approximation.svg]]
 
-   a different sort of abstraction
+** 
+
+    Feedback *without working code*
+
+    Abstract over *runtime semantics*
 
 ** 
    #+BEGIN_SRC haskell
      encode :: Image RGB -> ByteString
      encode = _
    #+END_SRC
+
+   [[./img/jpeg-example.png]]
 
 ** 
    #+BEGIN_SRC haskell
@@ -272,12 +306,17 @@
    [[./img/mdp-definition.jpg]]
 
 ** 
-   #+ATTR_HTML: :width 500
+   #+BEGIN_EXPORT html
+   <div class="horizontal-gallery">
+   #+END_EXPORT
+
    [[./img/mp-definition.jpg]]
 
-   #+ATTR_HTML: :width 500
    [[./img/mrp-definition.jpg]]
 
+   #+BEGIN_EXPORT html
+   </div>
+   #+END_EXPORT
 
 ** 
    #+BEGIN_SRC haskell
@@ -319,27 +358,17 @@
 
 ** 
   #+BEGIN_SRC haskell
-           ▿
+           ▿ ▿ ▿
   data MDP m a s = MDP {
     step :: s -> a -> m s
   }
   #+END_SRC
 
-** 
-  #+BEGIN_SRC haskell
-             ▿
-  data MDP m a s = MDP {
-    step :: s -> a -> m s
-  }
-  #+END_SRC
+  #+BEGIN_NOTES
+  We don't need separate names/concepts for the variations.
 
-** 
-  #+BEGIN_SRC haskell
-               ▿
-  data MDP m a s = MDP {
-    step :: s -> a -> m s
-  }
-  #+END_SRC
+  Working memory!
+  #+END_NOTES
 
 ** 
 
