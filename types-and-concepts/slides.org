@@ -53,19 +53,19 @@
    #+ATTR_HTML: :width 800px :class no-background
    [[./img/code-design.svg]]
 
-   #+BEGIN_NOTE
+   #+BEGIN_NOTES
    Code that does the right thing /incidentally/
-   #+END_NOTE
+   #+END_NOTES
 
 ** 
    #+ATTR_HTML: :width 800px :class no-background
    [[./img/code-design-concepts.svg]]
 
-   #+BEGIN_NOTE
+   #+BEGIN_NOTES
    managing complexity
 
    working memory
-   #+END_NOTE
+   #+END_NOTES
 
 ** 
    #+ATTR_HTML: :width 800px :class no-background
