@@ -1,0 +1,52 @@
+* Programming with Probability
+
+* Outline
+  - probability monad
+    - abstract
+  - different interpretations
+    - examples
+  - limitations
+  - supply chain
+    - examples
+  - looking forward
+
+* Probability Monad
+
+* Interpretations
+
+** Single Model, Multiple Implementations
+
+** Exhaustive
+   - Erwig paper
+   - issues: performance
+     - binomial example
+
+** Realigned (Codensity)
+
+** Sampling
+   - MWC-random
+   - stdgen
+   - etc
+
+* Supply Chain
+
+** Examples
+   - Target background: supply chain, DCs... etc
+   - walk through single-node model
+
+** MDPs
+   - define MDPs and Markov Chains
+   - talk about stochastic optimization
+   - bad performance? fine for us, for now!
+
+* Future: Full-on probabilistic programming
+  - "Practical Probabilistic Programming with Monads"
+
+** Free Monad
+
+** Continuous Distributions
+
+** Conditional Probability
+
+** Modern PPL algorithms/inference
+   - integrate with stochastic optimization?

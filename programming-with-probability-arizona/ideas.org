@@ -1,0 +1,34 @@
+* Why?
+  - build probabilistic models
+  - understand complex systems
+    - risk management
+    - optimization
+    - ... <find more>
+
+** Supply Chain Optimization
+   - stochasticity is *important*
+     - demand, supply, lead times, spoilage...
+   - stochasticity is *hard*
+     - computationally challenging
+     - hard to write
+     - hard to reason about
+
+* Discrete Probability
+  - simple
+  - simple abstractions scale more than you'd think
+    - worked surprisingly well for supply chain models
+
+** Details
+   - <tutorial on Dist monad>
+
+** Random Sampling
+   - reuse same program to sample *or* compute distribution
+     exhaustively
+
+* Probabilistic Programming
+  - "Practical Probabilistic Programming with Monad" paper
+  - advances:
+    - continuous distributions
+      - normal, exponential... etc
+    - conditional probability
+    - advanced sampling algorithms

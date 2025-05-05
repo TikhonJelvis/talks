@@ -10,6 +10,14 @@
 
 * Abstract
 
-  How can we make optimal decisions when outcomes aren't deterministic? Traditional optimization techniques can't apply directly because they don't address uncertainty. Instead, we need a framework for specifying the random behaviors of a system, and algorithms that can handle randomness.
+  How can we make optimal decisions when outcomes aren't
+  deterministic? Traditional optimization techniques can't apply
+  directly because they don't address uncertainty. Instead, we need a
+  framework for specifying the random behaviors of a system, and
+  algorithms that can handle randomness.
 
-  Markov decision processes offer such a framework and come with a suite of optimization algorithms. Haskell is a great learning tool for making mathematical abstractions more concrete, so this talk will teach Markov decision processes by designing a Haskell library for working with them.
+  Markov decision processes offer such a framework and come with a
+  suite of optimization algorithms. Haskell is a great learning tool
+  for making mathematical abstractions more concrete, so this talk
+  will teach Markov decision processes by designing a Haskell library
+  for working with them.
