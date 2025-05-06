@@ -57,6 +57,7 @@
   [[./img/dc-map.png]]
 
 ** Demand Uncertainty
+  #+ATTR_HTML: :width 700px
   [[file:img/item-demand.png]]
 
 ** How do we...
@@ -108,6 +109,10 @@
      f x y = 1 + (2 * x * y) + (2 * x ^ 2 * y)
    #+end_src
 
+   \begin{equation}
+   g(x) = f(x, x + 1) + f (x + 1, x)
+   \end{equation}
+   
    #+begin_src haskell
      g :: Double → Double
      g x = f x (x + 1) + f (x + 1) x
@@ -125,13 +130,22 @@
   \end{equation}
   
   #+begin_src haskell
-    point :: ∀a. a → F a
+    pure :: ∀a. a → F a
+  #+end_src
+
+  #+begin_src haskell
+    pure :: a → F a
   #+end_src
 
 ** 
-  #+being_src haskell
-    point :: ∀f. ∀a. Pointed f ⇒ a → f a
-  #+end_src
+#+begin_src haskell
+class Functor f ⇒ Pointed f where
+  pure :: a → f a
+#+end_src
+
+#+begin_src haskell
+pure :: Pointed f ⇒ a → f a
+#+end_src
 
 
 * Probability Distributions
@@ -148,41 +162,57 @@
 ** 
   \begin{equation}
   X \in \mathbb{Z} \\
-  P(X) \\
+  P(X = x) \\
   \end{equation}
 
   #+begin_src haskell
     data Dist a = ...
 
-    example :: Dist Integer
+    example :: Dist Int
   #+end_src
 
 ** 
   \begin{equation}
   X \in \mathbb{Z} \\
   Y \in \{0, 1\} \\
-  P(X|Y)
+  P(X = x|Y = 1)
   \end{equation}
   
   #+begin_src haskell
-    example :: Bool → Dist Integer
+  example :: Bool → Dist Int
+  #+end_src
+
+  #+begin_src haskell
+  example True :: Dist Int
   #+end_src
   
 ** Functor
   [[file:img/functor-diagram.jpg]]
 
   #+begin_src haskell
-    fmap :: Functor f ⇒ (a → b) → (f a → f b)
+    fmap :: ∀f a b. Functor f ⇒ (a → b) → (f a → f b)
   #+end_src
 
   #+begin_src haskell
-    fmap :: (a → b) → (Dist a → Dist b)
+    fmap :: ∀f a b. Functor f ⇒ (a → b) → f a → f b
+  #+end_src
+
+** Functor
+
+  #+begin_src haskell
+    die :: Dist Int
+    die = uniform [1..6]
+  #+end_src
+
+  #+begin_src haskell
+    coin :: Dist Bool
+    coin = fmap isEven die 
   #+end_src
 
 ** Monad
   \begin{align}
-  & D: \textbf{X} → \textbf{X} \\
-  & \eta: 1_{\textbf{X}} → D \\
+  & D: \textbf{Set} → \textbf{Set} \\
+  & \eta: 1 → D \\
   & \mu: D \circ D \to D
   \end{align}
 
@@ -201,24 +231,47 @@
   #+end_src
 
   \begin{align}
-  & P(X|Y) \\
-  & P(Y) \\
-  & P(X)
+  & P(X = x|Y = y) \\
+  & P(Y = y) \\
+  & P(X = x)
   \end{align}
 
 ** 
-   #+BEGIN_SRC haskell
-   die ∷ Dist Int
-   die = uniformD [1..6]
-   #+END_SRC
+  #+BEGIN_SRC haskell
+  data Coin = H | T
+  
+  -- Bernoulli distribution 
+  coin ∷ Double → Dist Coin
+  coin p = weighted [(T, p), (H, 1 - p)]
 
-   #+BEGIN_SRC haskell
-   diceGame ∷ Dist Int
-   diceGame = do
-     n  ← die
-     xs ← replicate n die
-     pure (sum xs)
-   #+END_SRC
+  fair   = coin 0.5
+  unfair = coin 0.9
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC haskell
+  randomCoin ∷ Dist (Dist Coin)
+  randomCoin = 
+    weighted [ (fair,   0.5)
+             , (unfair, 0.5)
+             ]
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC haskell
+  coinGame :: Dist Coin
+  coinGame = join randomCoin
+  #+END_SRC
+
+** 
+
+  #+begin_src haskell
+    coinGame :: Dist Coin
+    coinGame = do
+      coin ← fair
+      flip ← if coin == H then fair else unfair
+      pure flip
+  #+end_src
 
 ** Different Interpretations 
 
@@ -226,10 +279,295 @@
    2. Each ← calculates /all combinations/
    3. More sophisticated algorithms
 
+** Sampling
+
+   Run a simulation:
+
+   1. Sample =randomCoin=
+   2. If heads, sample =fair=
+   3. If tails, sample =unfair=
+
+** All Combinations
+
+  [[file:img/nested.svg]]
+
+#+begin_src haskell
+toTable :: Dist Coin → [(Coin, Double)]
+#+end_src
+
 * Uncertainty over Time
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
 
 ** Markov Processes
 
+   - $S$ states
+   - $P(X_{n+1} = x | X_n = y)$ transition probability
+
+** Markov Processes
+
+#+begin_src haskell
+data MarovProcess s = MarkovProcess
+  { transition :: s → Dist s }
+
+process.transition :: s → Dist s
+#+end_src
+
+** Markov Processes
+
+#+begin_src haskell
+step :: MarkovProcess s → Dist s → Dist s
+step process current = do
+  state ← current
+  process.transition current
+#+end_src
+
+#+begin_src haskell
+step :: MarkovProcess s → Dist s → Dist s
+step current = bind current process.transition
+#+end_src
+
 ** Simulations
 
-** Markov Decision Processes
+#+begin_src haskell
+iterate :: Monad m ⇒ (a → m a) → a → Stream (Of a) m ()
+iterate f a = do
+  yield a
+  x ← f a
+  iterate f x
+#+end_src
+
+#+begin_src haskell
+simulate :: MarkovProcess s → s → Stream (Of s) Dist ()
+simulate process start =
+  iterate process.transition start
+#+end_src
+
+** Rewards
+
+\begin{equation}
+P((X_{n + 1} = x, r) | X_n = y)
+\end{equation}
+
+#+begin_src haskell
+type Reward = Double
+
+data MarkovRewardProcess s = MarkovRewardProcess
+  { transition :: s → Dist (s, Reward) }
+#+end_src
+
+** Rewards
+
+#+begin_src haskell
+simulateReward :: MarkovRewardProcess s
+                → s
+                → Stream (Of (s, Reward)) Dist ()
+simulateReward = ...
+#+end_src
+
+** 
+
+\begin{equation}
+R: \textbf{Set} → \textbf{Set} \\
+R(S) = S \times \mathbb{R}
+\end{equation}
+
+\begin{align}
+& \eta: x \mapsto (x, 0) \\
+& \mu: ((x, r_1), r_2) \mapsto (x, r_1 + r_2)
+\end{align}
+
+** 
+
+#+begin_src haskell
+data WithReward s = WithReward
+  { state :: s
+  , reward :: Reward
+  }
+#+end_src
+
+#+begin_src haskell
+pure :: s → WithReward s
+pure s = WithReward { state = s, reward = 0 }
+#+end_src
+
+#+begin_src haskell
+join :: WithReward (WithReward s) → WithReward s
+join wr = WithReward
+  { state = wr.state.state
+  , reward = wr.state.reward + wr.reward
+  }
+#+end_src
+
+** Composition
+
+$D \circ R$ forms a monad
+
+#+begin_src haskell
+Dist (s, Reward) = Dist ∘ WithReward
+#+end_src
+
+** Composition
+
+We can compose /any/ monad with $R$
+
+#+begin_src haskell
+data WithRewardT m s = WithRewardT
+  { state :: m s
+  , reward :: Reward
+  }
+#+end_src
+
+$\text{ignore}: M \circ R \to M$
+
+#+begin_src haskell
+ignore :: WithRewardT m s → m s
+ignore wr = wr.state
+#+end_src
+
+** 
+
+#+begin_src haskell
+data MarkovProcess m s = MarkovProcess
+  { transition :: s → m s }
+#+end_src
+
+#+begin_src haskell
+simulate :: Monad m ⇒ MarkovProcess s → s → Stream (Of s) m ()
+simulate process start =
+  iterate process.transition start
+#+end_src
+
+#+begin_src haskell
+simulateReward :: Monad m
+                ⇒ MarkovProcess (WithRewardT m s)
+                → s
+                → Stream (Of s) (WithRewardT m s)
+simulateReward = simulate
+#+end_src
+
+** 
+   #+BEGIN_EXPORT html
+   <div class="horizontal-gallery">
+   #+END_EXPORT
+
+   [[./img/mp-definition.jpg]]
+
+   [[./img/mrp-definition.jpg]]
+
+   #+BEGIN_EXPORT html
+   </div>
+   #+END_EXPORT
+
+   (slides: David Silver)
+
+** 
+
+#+begin_src haskell
+data MarkovProcess m s = MarkovProcess
+  { transition :: s → m s }
+
+type MarkovRewardProcess m s = 
+  MarkovProcess (WithRewardT m) s
+#+end_src
+
+** Inventory Control 
+   - gain per sale
+   - lose per order
+   - lose per inventory/day
+   - lose per /missed demand/
+
+** 
+   #+BEGIN_SRC haskell
+   transition = \ inventory → do
+     reward (-1 * inventory)
+
+     let ordered = 3
+     reward (-4 * ordered)
+
+     demanded ← forecast
+     let sold   = min demanded inventory
+         missed = demanded - sold
+     reward (sold * 8 - missed * 14)
+
+     pure (inventory - sold + ordered)
+   #+END_SRC
+
+** 
+   [[./img/inventory rewards.svg]]
+
+** 
+   #+ATTR_HTML: :width 800
+   [[./img/mdp-definition.jpg]]
+
+   (slide: David Silver)
+
+** 
+
+#+BEGIN_SRC haskell
+data MarkovDecisionProcess m s a = MDP {
+  step ∷ s → a → m (s, Reward)
+}
+#+END_SRC
+
+#+ATTR_REVEAL: :frag roll-in
+#+BEGIN_SRC haskell
+data MarkovDecisionProcess m s a = MDP {
+  step ∷ s → a → WithReward m s
+}
+#+END_SRC
+
+** Optimization
+
+Find a /policy/ $S → A$ that maximizes expected reward
+
+#+begin_src haskell
+type Policy s a = s → a
+#+end_src
+
+** MDP + Policy = MRP
+
+#+begin_src haskell
+apply :: Monad m
+       ⇒ MarkovDecisionProcess m s a 
+       → Policy s a 
+       → MarkovProcess m s
+#+end_src
+
+** Different Interpretations
+
+  - some algorithms need full distributions
+  - some algorithms need sampling
+  - same =MDP= type works for both!
+
+** Reusable Pieces
+
+** Point Processes
+
+$D \circ B$
+
+#+begin_src haskell
+type PointProcess x = Dist (Bag x)
+#+end_src
+
+#+ATTR_HTML: :width 600
+[[file:img/point-process-example.png]]
+
+[[https://arxiv.org/abs/2101.10479][A Monad for Probabilistic Point Processes]]
+
+** 
+
+#+ATTR_HTML: :width 500
+[[file:img/unsure-calculator.png]]
+
+[[https://alt-romes.github.io/posts/2025-04-25-unsure-calculator-in-100-lines-of-haskell.html][Unsure Calculator in 100 Lines of Haskell]]
+
+* Questions?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
