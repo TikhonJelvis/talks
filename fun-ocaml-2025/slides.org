@@ -1,0 +1,470 @@
+#+Title: Analyzing Programs
+#+Subtitle: with SMT solvers
+#+Author: Tikhon Jelvis
+#+Email: tikhon@jelv.is
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Analzying programs with the Z3 SMT solver from OCaml.">
+
+#+REVEAL_TITLE_SLIDE_BACKGROUND: #052d69
+#+REVEAL_TITLE_SLIDE_BACKGROUND_TRANSITION: none
+#+OPTIONS: reveal_title_slide:"<h1 class='title'>%t</h1> <h2 class='subtitle'>%s</h2> <h3 class='author'>%a</h3>"
+
+# Options I change before uploading to jelv.is:
+#
+# - set controls to true
+# - change reveal_root
+#+REVEAL_INIT_OPTIONS: controls:false, center:true, progress:false, transition:"none", autoAnimate: false
+#+REVEAL_ROOT: ../reveal.js-3.8.0/
+
+#+OPTIONS: num:nil toc:nil timestamp:nil email:t
+
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: tikhon
+#+REVEAL_HLEVEL: 2
+
+#+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
+#+REVEAL_PLUGINS: (highlight markdown notes)
+* Constraint Satisfaction
+
+** 
+  [[./img/sudoku.png]]
+
+** _
+  :PROPERTIES:
+  :reveal_background: ./img/bugs.jpg
+  :reveal_background_trans: none
+  :END:
+
+** 
+  #+ATTR_HTML: :class no-background
+  [[./img/liquid-haskell.png]]
+
+  #+ATTR_HTML: :width 200%
+  [[./img/liquid-haskell-snippet.png]]
+
+** 
+
+  [[./img/type-error-localization.png]]
+
+** SMT
+
+   Satisfiability Modulo Theories
+
+** Satisfiability (SAT)
+
+  \begin{equation}
+    (x_1 \lor \lnot x_2) \land (x_1 \lor x_3 \lor \lnot x_4) \land \cdots 
+  \end{equation}
+
+** Theories
+
+  \begin{equation}
+    x_1 \le 10 \land x_3 \le x_1 + x_2 \land \cdots
+  \end{equation}
+
+** Theories
+  - integers
+  - reals
+  - bitvectors
+  - floating point numbers
+  - arrays
+  - ...
+
+** Why?
+
+** Expressive
+
+** Fast
+
+** 
+  [[./img/sat-graf.png]]
+
+* Analyzing Programs
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Program ⇒ SMT formula
+
+** 
+   1. Inputs
+   2. States
+   3. Outputs
+
+** 
+   Inputs ⇒ States + Outputs
+
+   Outputs ⇒ Inputs + States
+
+** 
+   P(States) ⇒ Check Invariant
+
+** 
+   ∃ Input. Output₁ ≠ Output₂
+
+* IMP Language
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** 
+   #+BEGIN_SRC java
+   gcd(a, b) {
+     d := 0;
+     while (even(a) && even(b)) {
+       a := a / 2;
+       b := b / 2;
+       d := d + 1;
+     }
+ 
+     while (a != b) {
+       ...;
+     }
+
+     return d;
+   }
+   #+END_SRC
+
+** 
+  expressions:
+  #+BEGIN_SRC java
+    1 + x * 2
+    (x <= 10) && (y == 5) 
+  #+END_SRC
+
+  statements:
+  #+BEGIN_SRC java
+    x := x + 1
+    ⋯ ; ⋯
+    while cond { ⋯ }
+    if cond { ⋯ } else { ⋯ }
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC ocaml
+    type aexp = Var of name
+              | Lit of int
+              | Plus of aexp * aexp
+              | Minus of aexp * aexp
+              | Times of aexp * aexp
+              | Div of aexp * aexp
+  #+END_SRC
+
+  #+BEGIN_SRC ocaml
+   type bexp = True | False | Le of aexp * aexp | ...
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC ocaml
+    type cmd = Skip
+             | Set of name * aexp
+             | Seq of cmd * cmd
+             | If of bexp * cmd * cmd
+             | While of bexp * cmd
+  #+END_SRC
+
+* Compiling to SMT
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Z3 SMT Solver
+  - official OCaml =z3= package
+  - higher-level =smtml= library
+   
+** Inline ⇒ Unroll ⇒ SSA
+
+** Inline
+   #+BEGIN_SRC java
+    foo(a, b) { 
+      ⟨BODY⟩; 
+      return x 
+    }
+    …
+    result := foo (1, 2);
+   #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    // fresh names
+    foo_a := 1;
+    foo_b := 2;
+    ⟨BODY⟩
+    result := foo_x;
+  #+END_SRC
+
+**  Unroll
+  #+BEGIN_SRC java
+    while x < 5 { ⟨BODY⟩ }
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    if x < 5 {
+      ⟨BODY⟩
+      if x < 5 {
+        … /* n times */
+      } else {}
+    } else {}
+  #+END_SRC
+
+** SSA
+  - Single Static Assignment
+
+  #+BEGIN_SRC java
+    x := 10;
+    a := 11;
+    x := x + a;
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    x₀ := 10;
+    a₀ := 11;
+    x₁ := x₀ + a₀;
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC java
+    if x < 5 {
+      x := x + 1;
+    } else {
+      x := x + 2;
+    }
+  #+END_SRC
+
+  #+ATTR_REVEAL: :frag roll-in
+  #+BEGIN_SRC java
+    if x < 5 {
+      x₁ := x₀ + 1;
+    } else {
+      x₂ := x₀ + 2;
+    }
+    x₃ := φ(x₁, x₂)
+  #+END_SRC
+
+** 
+  Interpreter
+    #+BEGIN_SRC ocaml
+      val eval_aexp : int Scope.t -> aexp -> int
+      val eval_bexp : int Scope.t -> bexp -> bool
+      val eval_cmd : int Scope.t -> cmd -> int Scope.t
+    #+END_SRC
+
+  Compiler
+    #+BEGIN_SRC ocaml
+      val z3_aexp : Expr.expr Scope.t -> aexp -> Expr.expr
+      val z3_bexp : Expr.expr Scope.t -> bexp -> Expr.expr
+      val z3_cmd : Z3.t -> Expr.expr Scope.t -> cmd -> Scope.t
+    #+END_SRC
+
+** 
+   #+BEGIN_SRC java
+   5 + x
+   #+END_SRC
+
+   \begin{align}
+     bvAdd(&bv(5, 32),\\ &bv(x_0, 32))
+   \end{align}
+
+** Expressions
+   #+BEGIN_SRC ocaml
+     let rec eval_aexp scope = function
+       | Var x -> Scope.find x scope
+       | Lit n -> n
+       | Plus (e_1, e_2) -> 
+          eval_aexp scope e_1 + eval_aexp scope e_2
+   #+END_SRC
+
+   #+BEGIN_SRC ocaml
+     let rec z3_aexp scope = function
+       | Var x -> Scope.find x scope
+       | Lit n -> I32.v n
+       | Plus (e_1, e_2) ->
+          let z3_1 = z3_aexp scope e_1 in
+          let z3_2 = z3_aexp scope e_2 in
+          Expr.(binop (Ty_bitv 32) Add z3_1 z3_2)
+   #+END_SRC
+
+** Commands
+  #+BEGIN_SRC ocaml
+    let eval_cmd scope = function
+      | Skip -> scope
+      (* ... *)
+  #+END_SRC
+
+  #+BEGIN_SRC ocaml
+    let z3_cmd z3 scope = function
+      | Skip -> scope
+      (* ... *)
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC java
+  x = 5 + x
+  #+END_SRC
+
+  \begin{align}
+  \text{assert}(x_1 = bvAdd(&bv(5, 32), \\ &bv(x_0, 32)))
+  \end{align}
+
+** Assignment
+  #+BEGIN_SRC ocaml
+    | Set (x, e) ->
+       Scope.add x (eval_aexp scope e) scope
+  #+END_SRC
+
+  #+BEGIN_SRC ocaml
+    | Set (x, e) ->
+       let new_var = mk_fresh x in
+       let value = z3_aexp scope e in
+       let assertion = Expr.(relop Ty_bool Eq new_var value) in
+       Z3.add z3 [ assertion ];
+       Scope.add x new_var scope
+  #+END_SRC
+
+** Seq
+  #+BEGIN_SRC ocaml
+    | Seq c_1 c_2 ->
+       let scope' = z3_cmd z3 scope c_1 in
+       z3_cmd z3 scope' c_2
+  #+END_SRC
+
+** 
+  #+BEGIN_SRC java
+  if x < 5 {
+    x := x + 1
+  } else {
+    x := x + 2
+  }
+  #+END_SRC
+
+  \begin{align}
+    &\text{assert}(x_1 = x_0 + 1) \\
+    &\text{assert}(x_2 = x_0 + 2) \\
+    &\text{assert}(x_3 = \phi(x_0 < 5, x_1, x_2)) \\
+  \end{align}
+
+** If: φ-functions
+  #+BEGIN_SRC ocaml
+    | If (cond, then_, else_) ->
+       let cond' = z3_bexp scope cond in
+       let scope' = z3_cmd z3 scope then_ in
+       let scope'' = z3_cmd z3 scope else_ in
+       makePhis cond' scope scope' scope''
+  #+END_SRC
+
+  #+BEGIN_SRC ocaml
+    let new_var = mk_fresh x in
+    let phi = Bool.ite cond (Scope.find x scope') (Scope.find x scope'') in
+    let assertion = Expr.(relop Ty_bool Eq new_var phi) in
+    Z3.add z3 [ assertion ];
+    Scope.add x assertion scope
+  #+END_SRC
+
+** Loops
+  #+BEGIN_SRC java
+  while x < 5 {
+    x := x + 1
+  }
+  #+END_SRC
+
+  #+BEGIN_SRC java
+  if x < 5 {
+    x := x + 1
+    if x < 5 {
+      ... inlined n times ...
+      fail("out of bounds")
+    }
+  }
+  #+END_SRC
+
+
+* Now what?
+   :PROPERTIES:
+   :reveal_background: #052d69
+   :reveal_background_trans: none
+   :reveal_extra_attr: class="section-slide"
+   :END:
+
+** Interpreting
+  #+BEGIN_SRC java
+  f(x) { ...; return y }
+  #+END_SRC
+
+  ⇓
+
+  \begin{align}
+  \Rightarrow \quad & \exists y. x_0 = \text{input} \\
+  \Leftarrow \quad & \exists x. y_n = \text{output}
+  \end{align}
+
+** Invariants
+
+  #+BEGIN_SRC java
+  while (...) {
+    x := x + 1
+    ...
+    assert (x > 0)
+  }
+  #+END_SRC
+
+  ⇓
+
+  $(x₁ > 0) ∧ (x₂ > 0) ∧ (x₃ > 0) ∧ …$
+
+** Verification
+  #+BEGIN_SRC java
+  f(x) { ...; return y }
+
+  g(x) { ...; return y }
+  #+END_SRC
+
+  ⇓
+
+  $\exists x. y_f \ne y_g$
+      
+** CEGIS
+  [[./img/cegis.png]]
+
+  *counterexample guided inductive synthesis*
+
+** Sketching
+  #+BEGIN_SRC java
+    while x <= ?? {
+      x += a * ??
+    }
+  #+END_SRC
+
+* Easier for DSLs!
+:PROPERTIES:
+:reveal_background: #052d69
+:reveal_background_trans: none
+:reveal_extra_attr: class="section-slide"
+:END:
+
+** Souper (LLVM IR)
+
+[[file:img/souper.png]]
+
+** F18A
+
+[[file:img/chlorophyll.png]]
+
+** REDFIN (SMT /in space/!)
+
+[[file:img/redfin-dsl.png]]
+
+** Consider SMT
+
+  - complex logic and conditionals
+  - constraints
+  - small set of core operations

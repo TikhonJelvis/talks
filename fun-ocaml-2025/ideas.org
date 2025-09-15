@@ -1,0 +1,15 @@
+* Structure
+  1. What are SAT/SMT solvers?
+     - Why should you care?
+     - Why do they work?
+     - How can we use them? (With examples.)
+  2. Compiling programs to SMT formulas.
+     - Interpreter → formula compiler
+     - Bounded verification
+     - Program synthesis
+  3. DSLs
+     - Why DSL tooling can be better/easier.
+     - What can you do with DSLs that you can't with "full" languages?
+     - Examples?
+       - Stream processing
+       - Cryptol
