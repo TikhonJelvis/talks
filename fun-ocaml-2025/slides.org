@@ -26,30 +26,7 @@
 
 #+REVEAL_POSTAMBLE: <p> Created by Tikhon Jelvis. </p>
 #+REVEAL_PLUGINS: (highlight markdown notes)
-* Constraint Satisfaction
-
-** 
-  [[./img/sudoku.png]]
-
-** _
-  :PROPERTIES:
-  :reveal_background: ./img/bugs.jpg
-  :reveal_background_trans: none
-  :END:
-
-** 
-  #+ATTR_HTML: :class no-background
-  [[./img/liquid-haskell.png]]
-
-  #+ATTR_HTML: :width 200%
-  [[./img/liquid-haskell-snippet.png]]
-
-** 
-
-  [[./img/type-error-localization.png]]
-
-** SMT
-
+* SMT
    Satisfiability Modulo Theories
 
 ** Satisfiability (SAT)
@@ -71,12 +48,6 @@
   - floating point numbers
   - arrays
   - ...
-
-** Why?
-
-** Expressive
-
-** Fast
 
 ** 
   [[./img/sat-graf.png]]
@@ -101,7 +72,9 @@
    Outputs ⇒ Inputs + States
 
 ** 
-   P(States) ⇒ Check Invariant
+   □(x ≥ y)
+
+   ∃ Input. ¬P(States)
 
 ** 
    ∃ Input. Output₁ ≠ Output₂
@@ -175,10 +148,6 @@
    :reveal_background_trans: none
    :reveal_extra_attr: class="section-slide"
    :END:
-
-** Z3 SMT Solver
-  - official OCaml =z3= package
-  - higher-level =smtml= library
    
 ** Inline ⇒ Unroll ⇒ SSA
 
@@ -250,6 +219,10 @@
     }
     x₃ := φ(x₁, x₂)
   #+END_SRC
+
+** Z3 SMT Solver
+  - official OCaml =z3= package
+  - higher-level =smtml= library
 
 ** 
   Interpreter
@@ -334,6 +307,12 @@
 ** Seq
   #+BEGIN_SRC ocaml
     | Seq c_1 c_2 ->
+       let scope' = eval_cmd scope c_1 in
+       eval_cmd scope c_2
+  #+END_SRC
+
+  #+BEGIN_SRC ocaml
+    | Seq c_1 c_2 ->
        let scope' = z3_cmd z3 scope c_1 in
        z3_cmd z3 scope' c_2
   #+END_SRC
@@ -356,37 +335,25 @@
 ** If: φ-functions
   #+BEGIN_SRC ocaml
     | If (cond, then_, else_) ->
+       if eval_bexp scope cond
+       then eval_cmd scope then_
+       else eval_cmd scope else_
+  #+END_SRC
+  
+  #+BEGIN_SRC ocaml
+    | If (cond, then_, else_) ->
        let cond' = z3_bexp scope cond in
        let scope' = z3_cmd z3 scope then_ in
        let scope'' = z3_cmd z3 scope else_ in
        makePhis cond' scope scope' scope''
   #+END_SRC
 
-  #+BEGIN_SRC ocaml
-    let new_var = mk_fresh x in
-    let phi = Bool.ite cond (Scope.find x scope') (Scope.find x scope'') in
-    let assertion = Expr.(relop Ty_bool Eq new_var phi) in
-    Z3.add z3 [ assertion ];
-    Scope.add x assertion scope
-  #+END_SRC
-
-** Loops
-  #+BEGIN_SRC java
-  while x < 5 {
-    x := x + 1
-  }
-  #+END_SRC
-
-  #+BEGIN_SRC java
-  if x < 5 {
-    x := x + 1
-    if x < 5 {
-      ... inlined n times ...
-      fail("out of bounds")
-    }
-  }
-  #+END_SRC
-
+  #+begin_src ocaml
+    let makePhi x cond scope' scope'' =
+      Bool.ite cond 
+        (Scope.find x scope')
+        (Scope.find x scope'')
+  #+end_src
 
 * Now what?
    :PROPERTIES:

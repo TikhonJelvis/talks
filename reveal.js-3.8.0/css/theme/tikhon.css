@@ -60,7 +60,7 @@ body {
 }
 
 .reveal h1.title {
-    font-size : 120px;
+    font-size : 95px;
     margin-bottom : -2%;
 }
 
@@ -70,10 +70,10 @@ body {
 
 .reveal .subtitle {
     position : relative;
-    top : 50px;
+    top : 60px;
 
     font-family : "Kaushan Script";
-    font-size : 90px;
+    font-size : 80px;
     color : var(--base);
 }
 
