@@ -11,7 +11,7 @@
 #
 # - set controls to true
 # - change reveal_root
-#+REVEAL_INIT_OPTIONS: controls:false, center:true, progress:false, transition:"none", autoAnimate: false
+#+REVEAL_INIT_OPTIONS: controls:true, center:true, progress:false, transition:"none", autoAnimate: false
 #+REVEAL_ROOT: ../reveal.js-3.8.0/
 
 #+OPTIONS: num:nil toc:nil timestamp:nil email:t
